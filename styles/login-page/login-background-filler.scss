@@ -1,0 +1,192 @@
+@keyframes animate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
+  }
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
+  }
+}
+
+#login-background-filler {
+  position: fixed;
+  width: 100%;
+  height: 75vh;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  background: #2a2a2a;
+  overflow: hidden;
+  position: absolute;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: -1;
+}
+#login-background-filler li {
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  animation: animate 19s linear infinite;
+}
+
+#login-background-filler li:nth-child(0) {
+  left: 65%;
+  width: 85px;
+  height: 85px;
+  bottom: -85px;
+  animation-delay: 1s;
+}
+#login-background-filler li:nth-child(1) {
+  left: 78%;
+  width: 72px;
+  height: 72px;
+  bottom: -72px;
+  animation-delay: 3s;
+}
+#login-background-filler li:nth-child(2) {
+  left: 43%;
+  width: 158px;
+  height: 158px;
+  bottom: -158px;
+  animation-delay: 1s;
+}
+#login-background-filler li:nth-child(3) {
+  left: 53%;
+  width: 81px;
+  height: 81px;
+  bottom: -81px;
+  animation-delay: 3s;
+}
+#login-background-filler li:nth-child(4) {
+  left: 84%;
+  width: 163px;
+  height: 163px;
+  bottom: -163px;
+  animation-delay: 15s;
+}
+#login-background-filler li:nth-child(5) {
+  left: 13%;
+  width: 64px;
+  height: 64px;
+  bottom: -64px;
+  animation-delay: 18s;
+}
+#login-background-filler li:nth-child(6) {
+  left: 88%;
+  width: 130px;
+  height: 130px;
+  bottom: -130px;
+  animation-delay: 13s;
+}
+#login-background-filler li:nth-child(7) {
+  left: 7%;
+  width: 147px;
+  height: 147px;
+  bottom: -147px;
+  animation-delay: 23s;
+}
+#login-background-filler li:nth-child(8) {
+  left: 7%;
+  width: 59px;
+  height: 59px;
+  bottom: -59px;
+  animation-delay: 19s;
+}
+#login-background-filler li:nth-child(9) {
+  left: 47%;
+  width: 109px;
+  height: 109px;
+  bottom: -109px;
+  animation-delay: 22s;
+}
+#login-background-filler li:nth-child(10) {
+  left: 66%;
+  width: 60px;
+  height: 60px;
+  bottom: -60px;
+  animation-delay: 23s;
+}
+#login-background-filler li:nth-child(11) {
+  left: 44%;
+  width: 113px;
+  height: 113px;
+  bottom: -113px;
+  animation-delay: 44s;
+}
+#login-background-filler li:nth-child(12) {
+  left: 34%;
+  width: 98px;
+  height: 98px;
+  bottom: -98px;
+  animation-delay: 56s;
+}
+#login-background-filler li:nth-child(13) {
+  left: 35%;
+  width: 130px;
+  height: 130px;
+  bottom: -130px;
+  animation-delay: 39s;
+}
+#login-background-filler li:nth-child(14) {
+  left: 87%;
+  width: 78px;
+  height: 78px;
+  bottom: -78px;
+  animation-delay: 30s;
+}
+#login-background-filler li:nth-child(15) {
+  left: 10%;
+  width: 64px;
+  height: 64px;
+  bottom: -64px;
+  animation-delay: 68s;
+}
+#login-background-filler li:nth-child(16) {
+  left: 49%;
+  width: 93px;
+  height: 93px;
+  bottom: -93px;
+  animation-delay: 62s;
+}
+#login-background-filler li:nth-child(17) {
+  left: 6%;
+  width: 161px;
+  height: 161px;
+  bottom: -161px;
+  animation-delay: 47s;
+}
+#login-background-filler li:nth-child(18) {
+  left: 84%;
+  width: 135px;
+  height: 135px;
+  bottom: -135px;
+  animation-delay: 13s;
+}
+#login-background-filler li:nth-child(19) {
+  left: 14%;
+  width: 141px;
+  height: 141px;
+  bottom: -141px;
+  animation-delay: 21s;
+}
+#login-background-filler li:nth-child(20) {
+  left: 27%;
+  width: 52px;
+  height: 52px;
+  bottom: -52px;
+  animation-delay: 20s;
+}
+#login-background-filler li:nth-child(21) {
+  left: 41%;
+  width: 143px;
+  height: 143px;
+  bottom: -143px;
+  animation-delay: 53s;
+}
