@@ -8,27 +8,91 @@
     align-items: center;
     justify-content: space-evenly;
 
+    h1 {
+      font-size: 2rem;
+      margin: 0;
+    }
+
     .login-form {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 20px;
       flex-direction: column;
-      width: 50%;
+      width: 60%;
 
       .input-field {
         display: flex;
-        justify-content: space-between;
         gap: 10px;
-        border: 1px solid rgb(184, 184, 184);
+        border: 1px solid rgba(184, 184, 184, 0.4);
+        min-width: 100%;
+
+        padding: 7px 10px;
+        border-radius: 5px;
+
+        input {
+          flex: 2;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+          color: rgba(0, 0, 0, 0.65);
+        }
+      }
+      .forgot-password-container {
         width: 100%;
         display: flex;
-        padding: 5px 10px;
-        border-radius: 5px;
-        .login-label {
+        justify-content: flex-end;
+
+        .forgot-password-button {
+          background: transparent;
+          outline: none;
+          border: none;
+          color: #5484f0;
+          cursor: pointer;
+        }
+      }
+
+      .login-button {
+        width: 100%;
+        padding: 15px 0;
+        border: none;
+        outline: none;
+        background-color: #185ad8;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+        transition: 200ms ease;
+
+        &:hover {
+          background-color: #1a6afd;
+        }
+      }
+
+      .login-method-paragraph {
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        color: rgba(0, 0, 0, 0.75);
+      }
+
+      .login-methods-container {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+        background-color: white;
+        gap: 20px;
+        cursor: pointer;
+        .login-method {
           display: flex;
           align-items: center;
           gap: 10px;
+          border: 1px solid rgba(0, 0, 0, 0.2);
+          border-radius: 10px;
+          padding: 10px 25px;
+          .facebook-icon {
+            fill: #1877f2;
+          }
         }
       }
     }

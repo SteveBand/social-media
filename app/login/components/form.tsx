@@ -1,4 +1,7 @@
 import { CiLock, CiMail } from "react-icons/ci";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa";
+import { poppins } from "@/lib/fonts";
 
 export default function LoginForm() {
   return (
@@ -7,18 +10,29 @@ export default function LoginForm() {
       <h2>Log in to your Account</h2>
       <form className="login-form">
         <div className="input-field">
-          <span className="login-label">
-            <CiMail />
-            <label htmlFor="email">Email</label>
-          </span>
-          <input type="text" id="email" />
+          <CiMail />
+          <input type="text" id="email" placeholder="Email" />
         </div>
         <div className="input-field">
-          <span className="login-label">
-            <CiLock />
-            <label htmlFor="password">Password</label>
-          </span>
-          <input type="password" id="password" />
+          <CiLock />
+          <input type="password" id="password" placeholder="Password" />
+        </div>
+        <div className="forgot-password-container">
+          <button className="forgot-password-button">Forgot Password?</button>
+        </div>
+        <button className="login-button">Log in</button>
+        <p className="login-method-paragraph">
+          Or Login using diffrent method:
+        </p>
+        <div className="login-methods-container google">
+          <div className="login-method">
+            <FcGoogle />
+            Google
+          </div>
+          <div className="login-method">
+            <FaFacebook className="facebook-icon" />
+            <span>Facebook</span>
+          </div>
         </div>
       </form>
     </article>

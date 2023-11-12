@@ -7,13 +7,15 @@ section.login-page-wrapper {
 
   section.container {
     width: 80%;
+    max-width: 1800px;
     height: 75vh;
+    max-height: 1015px;
     border-radius: 20px;
     display: flex;
-    border: 1px solid gray;
+    border: 1px solid rgba(0, 0, 0, 0.3);
 
     article {
-      height: 75vh;
+      height: inherit;
       flex: 1;
     }
 
