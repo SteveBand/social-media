@@ -1,0 +1,43 @@
+@media screen and (max-width: 786px) {
+  section.login-page-wrapper {
+    section.container {
+      width: 90%;
+      min-width: 300px;
+      height: 95vh;
+      .login-container {
+        .login-content {
+          height: 10vh;
+          h1 {
+            font-size: 1.2rem;
+          }
+
+          h2 {
+            font-size: 1rem;
+            margin: 0;
+          }
+          .login-form {
+            .input-field {
+              min-width: 250px;
+            }
+
+            .login-button {
+              min-width: 250px;
+            }
+
+            .login-methods-container {
+              flex-direction: column;
+            }
+
+            .create-account {
+              flex-direction: column;
+              gap: 5px;
+            }
+          }
+        }
+      }
+      .background-filler-container {
+        display: none;
+      }
+    }
+  }
+}

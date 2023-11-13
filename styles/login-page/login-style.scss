@@ -4,15 +4,15 @@ section.login-page-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-
   section.container {
-    width: 80%;
+    width: 50%;
     max-width: 1800px;
+    min-width: 786px;
     height: 75vh;
     max-height: 1015px;
-    border-radius: 20px;
     display: flex;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    z-index: 11;
+    position: relative;
 
     article {
       height: inherit;
@@ -26,16 +26,19 @@ section.login-page-wrapper {
     }
 
     article.background-filler {
-      position: relative;
+      position: absolute;
+      width: 50%;
+      z-index: 20;
+      transition: 200ms ease;
       .background-filler-content {
-        z-index: 10;
+        position: relative;
         color: white;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 75vh;
+        height: inherit;
         flex-direction: column;
-
+        z-index: 20;
         h1 {
           font-size: 2rem;
           letter-spacing: 3px;

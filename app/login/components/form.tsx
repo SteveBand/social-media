@@ -1,7 +1,6 @@
 import { CiLock, CiMail } from "react-icons/ci";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-import { poppins } from "@/lib/fonts";
 
 export default function LoginForm() {
   return (
@@ -22,7 +21,7 @@ export default function LoginForm() {
         </div>
         <button className="login-button">Log in</button>
         <p className="login-method-paragraph">
-          Or Login using diffrent method:
+          Or Login using diffrent method :
         </p>
         <div className="login-methods-container google">
           <div className="login-method">
@@ -33,6 +32,10 @@ export default function LoginForm() {
             <FaFacebook className="facebook-icon" />
             <span>Facebook</span>
           </div>
+        </div>
+        <div className="create-account">
+          <span>Don't have an Account ?</span>
+          <button className="create-account-btn">Create an Account</button>
         </div>
       </form>
     </article>

@@ -2,6 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 0;
+  background-color: white;
+
   .login-content {
     display: flex;
     flex-direction: column;
@@ -19,14 +22,14 @@
       align-items: center;
       gap: 20px;
       flex-direction: column;
-      width: 60%;
+      width: 100%;
 
       .input-field {
         display: flex;
         gap: 10px;
         border: 1px solid rgba(184, 184, 184, 0.4);
-        min-width: 100%;
-
+        width: 70%;
+        min-width: 100px;
         padding: 7px 10px;
         border-radius: 5px;
 
@@ -36,10 +39,11 @@
           border: none;
           outline: none;
           color: rgba(0, 0, 0, 0.65);
+          background-color: transparent;
         }
       }
       .forgot-password-container {
-        width: 100%;
+        width: 70%;
         display: flex;
         justify-content: flex-end;
 
@@ -53,7 +57,7 @@
       }
 
       .login-button {
-        width: 100%;
+        width: 70%;
         padding: 15px 0;
         border: none;
         outline: none;
@@ -79,8 +83,7 @@
       .login-methods-container {
         display: flex;
         justify-content: space-evenly;
-        width: 100%;
-        background-color: white;
+        width: 70%;
         gap: 20px;
         cursor: pointer;
         .login-method {
@@ -90,9 +93,31 @@
           border: 1px solid rgba(0, 0, 0, 0.2);
           border-radius: 10px;
           padding: 10px 25px;
+          background-color: whitesmoke;
+          transition: 300ms ease;
           .facebook-icon {
             fill: #1877f2;
           }
+
+          &:hover {
+            background-color: rgb(233, 231, 231);
+          }
+        }
+      }
+
+      .create-account {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        span {
+          font-size: 0.75rem;
+          letter-spacing: 0.8px;
+        }
+        button {
+          border: none;
+          color: #1877f2;
+          letter-spacing: 0.8px;
+          cursor: pointer;
         }
       }
     }
