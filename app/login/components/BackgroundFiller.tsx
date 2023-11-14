@@ -1,8 +1,4 @@
-interface Props {
-  side: boolean;
-}
-
-export default function BackgroundFiller(props: Props) {
+export default function BackgroundFiller() {
   return (
     <>
       <article className="background-filler">

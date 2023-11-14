@@ -1,7 +1,6 @@
 import BackgroundFiller from "./components/BackgroundFiller";
 import Form from "./components/form";
 export default function Page() {
-  let backgroundfillerSide = true;
   return (
     <section className="login-page-wrapper">
       <section className="container">
@@ -9,7 +8,7 @@ export default function Page() {
           <Form />
         </article>
         <article className="background-filler-container">
-          <BackgroundFiller side={backgroundfillerSide} />
+          <BackgroundFiller />
         </article>
       </section>
     </section>
