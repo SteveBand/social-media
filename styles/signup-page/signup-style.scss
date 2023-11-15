@@ -6,7 +6,7 @@ section.signup-page-wrapper {
   align-items: center;
 
   .signup-form {
-    border: 1px solid black;
+    border: 1px solid rgba(0, 0, 0, 0.191);
     width: 40vw;
     min-height: 50vh;
     border-radius: 20px;
@@ -16,6 +16,7 @@ section.signup-page-wrapper {
     flex-direction: column;
     background-color: white;
     max-width: 960px;
+    min-width: 600px;
 
     .signup-input-container {
       display: flex;
