@@ -1,14 +1,16 @@
 import Joi, { options } from "joi";
-import { tlds } from "@hapi/tlds";
+
+const passwordValidation =
+  "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$";
 
 export const signupSchema = Joi.object({
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required(),
   password: Joi.string()
-    .pattern(new RegExp("^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$"))
+    .pattern(new RegExp(passwordValidation))
     .messages({
-      any: "Password must contain atleast 1 Uppercase letter 1 Lowercase letter a number and min length of 6",
+      any: "Password must contain atleast 1 Uppercasse letter 1 Lowercase letter a number and min length of 6",
     })
     .required(),
   firstName: Joi.string().min(2).max(10).required(),
@@ -22,7 +24,7 @@ export const loginSchema = Joi.object({
     .email({ tlds: { allow: false } })
     .required(),
   password: Joi.string()
-    .pattern(new RegExp("^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$"))
+    .pattern(new RegExp(passwordValidation))
     .messages({
       any: "Password must contain atleast 1 Uppercase letter 1 Lowercase letter a number and min length of 6",
     })

@@ -74,6 +74,24 @@
         }
       }
 
+      .invalid-login-button {
+        width: 70%;
+        padding: 15px 0;
+        border: none;
+        outline: none;
+        background-color: gray;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+        transition: 200ms ease;
+
+        &:hover {
+          background-color: rgb(172, 172, 172);
+        }
+      }
+
       .login-method-paragraph {
         font-size: 0.8rem;
         letter-spacing: 1px;

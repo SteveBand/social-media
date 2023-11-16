@@ -3,10 +3,10 @@
 import { CiLock, CiMail } from "react-icons/ci";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
-import { ValidationErrorItem } from "joi";
+import Link from "next/link";
 
 export default function LoginForm() {
   const [loginParams, setLoginParams] = useState<LoginParams>({
@@ -14,6 +14,7 @@ export default function LoginForm() {
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [errors, setErrors] = useState();
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;
@@ -26,6 +27,7 @@ export default function LoginForm() {
 
     const validation = loginSchema.validate(paramsObj, { abortEarly: false });
     const errorsObj: any = {};
+    console.log(validation.error);
 
     if (validation.error) {
       const error = validation.error.details.find((e) => e.context?.key === id);
@@ -33,9 +35,11 @@ export default function LoginForm() {
       if (error) {
         errorsObj[id] = error.message;
         setIsValid(false);
-      } else {
-        setIsValid(true);
       }
+    }
+
+    if (validation.error === undefined) {
+      setIsValid(true);
     }
   };
 
@@ -55,13 +59,19 @@ export default function LoginForm() {
         </div>
         <div className="input-field">
           <CiLock />
-          <input type="password" id="password" placeholder="Password" />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            onChange={handleInputs}
+          />
         </div>
         <div className="forgot-password-container">
           <button className="forgot-password-button">Forgot Password?</button>
         </div>
         <button
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
+          onClick={() => console.log("isValid")}
           disabled={!isValid}
         >
           Log in
@@ -81,7 +91,9 @@ export default function LoginForm() {
         </div>
         <div className="create-account">
           <span>Don't have an Account ?</span>
-          <button className="create-account-btn">Create an Account</button>
+          <Link className="create-account-btn" href="/signup">
+            Create an Account
+          </Link>
         </div>
       </form>
     </article>
