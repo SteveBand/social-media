@@ -14,7 +14,6 @@ export default function LoginForm() {
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
-  const [errors, setErrors] = useState();
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;
@@ -26,18 +25,13 @@ export default function LoginForm() {
     setLoginParams(paramsObj);
 
     const validation = loginSchema.validate(paramsObj, { abortEarly: false });
-    const errorsObj: any = {};
-    console.log(validation.error);
 
     if (validation.error) {
       const error = validation.error.details.find((e) => e.context?.key === id);
-
       if (error) {
-        errorsObj[id] = error.message;
         setIsValid(false);
       }
     }
-
     if (validation.error === undefined) {
       setIsValid(true);
     }

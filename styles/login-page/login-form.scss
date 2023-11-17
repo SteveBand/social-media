@@ -127,15 +127,17 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 10px;
         span {
           font-size: 0.75rem;
           letter-spacing: 0.8px;
         }
-        button {
+        a {
           border: none;
           color: #1877f2;
           letter-spacing: 0.8px;
           cursor: pointer;
+          font-size: 0.75rem;
         }
       }
     }
