@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface LoginParams {
   email: string;
   password: string;
@@ -10,3 +12,4 @@ export interface SignupParams {
   lastName: string;
   gender: string;
 }
+

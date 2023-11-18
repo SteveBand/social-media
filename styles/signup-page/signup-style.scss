@@ -75,15 +75,32 @@ section.signup-page-wrapper {
       }
     }
 
-    .back-to-login {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      a {
-        color: #185ad8;
-        letter-spacing: 0.8px;
+    .signup-button-disabled {
+      border: none;
+      outline: none;
+      background-color: gray;
+      transition: 300ms ease;
+      color: white;
+      width: 50%;
+      padding: 10px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      max-width: 480px;
+
+      &:hover {
+        background-color: rgb(172, 172, 172);
       }
+    }
+  }
+
+  .back-to-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    a {
+      color: #185ad8;
+      letter-spacing: 0.8px;
     }
   }
 }

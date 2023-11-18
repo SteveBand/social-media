@@ -9,6 +9,6 @@ const signupSchema = new mongoose.Schema({
   gender: String,
 });
 
-const SignupModel = mongoose.model("Users", signupSchema);
+const SignupModel = mongoose.model("users", signupSchema);
 
 export default SignupModel;

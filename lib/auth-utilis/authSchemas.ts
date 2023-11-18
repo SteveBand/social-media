@@ -15,8 +15,8 @@ export const signupSchema = Joi.object({
     .required(),
   firstName: Joi.string().min(2).max(10).required(),
   lastName: Joi.string().min(2).max(14).required(),
-  phoneNumber: Joi.number().min(6).max(15),
-  gender: Joi.string(),
+  phoneNumber: Joi.number().min(6).required(),
+  gender: Joi.string().required(),
 });
 
 export const loginSchema = Joi.object({
