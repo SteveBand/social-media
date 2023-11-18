@@ -1,8 +1,6 @@
 import bcrypt from "bcrypt";
-import { sign } from "jsonwebtoken";
 import { connectToDB } from "@/lib/dbConnect";
 import SignupModel from "@/models/auth/signup";
-import Joi from "joi";
 import { signupSchema } from "@/lib/auth-utilis/authSchemas";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,8 +12,8 @@ export async function POST(request: Request) {
     { abortEarly: true }
   );
 
-  if (validation.error) {
-    return NextResponse.json({}, { status: 400 });
+  if (!validation.error === undefined) {
+    return NextResponse.json({ message: "validation shit" }, { status: 400 });
   }
 
   connectToDB();

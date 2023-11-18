@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import { SignupParams } from "@/lib/auth-utilis/authTypes";
 import { signupSchema } from "@/lib/auth-utilis/authSchemas";
+import { signupFunc } from "@/lib/auth-utilis/actions";
 
 export default function Page() {
   const [params, setParams] = useState<Partial<SignupParams>>({
@@ -98,11 +99,10 @@ export default function Page() {
         </div>
         <button
           className={`${isValid ? "signup-button" : "signup-button-disabled"}`}
-          type="submit"
           disabled={!isValid}
           onClick={(e) => {
             e.preventDefault();
-            console.log(params);
+            signupFunc(params);
           }}
         >
           Sign up
