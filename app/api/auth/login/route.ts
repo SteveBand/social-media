@@ -1,12 +1,12 @@
 "use server";
 
-import mongoose from "mongoose";
 import { connectToDB } from "@/lib/dbConnect";
 import LoginModel from "@/models/auth/login";
 import { NextResponse } from "next/server";
-import { Jwt, sign } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
   const params = await request.json();
@@ -21,31 +21,31 @@ export async function POST(request: Request) {
   const user = await LoginModel.findOne({ email: params.email });
 
   if (!user) {
-    return NextResponse.json({
-      message: "Email or Password is incorrect, user not found",
-    });
+    return NextResponse.json(
+      {
+        message: "Email or Password is incorrect, email",
+      },
+      { status: 403 }
+    );
   }
 
   const validatePassword = await bcrypt.compare(params.password, user.password);
 
   if (!validatePassword) {
-    return NextResponse.json({
-      message: "Email or Password is incorrect, password not right",
-    });
+    return NextResponse.json(
+      {
+        message: "Email or Password is incorrect, password",
+      },
+      { status: 403 }
+    );
   }
-
-  const response = NextResponse.next();
 
   const token = sign(params, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
   });
 
-  response.headers.set("bearer-token", token);
-
-  console.log(response.headers);
-
-  return NextResponse.json(
-    { messsage: "User logged in successfully" },
-    { status: 200 }
-  );
+  return new Response("Login success", {
+    status: 200,
+    headers: { "Set-Cookie": `${token}` },
+  });
 }

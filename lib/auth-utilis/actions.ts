@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { LoginParams, SignupParams } from "./authTypes";
+import { setCookie } from "cookies-next";
 
 export async function signupFunc(params: Partial<SignupParams>) {
   const res = await fetch("http://localhost:3000/api/auth/signup", {
@@ -19,6 +20,7 @@ export async function signupFunc(params: Partial<SignupParams>) {
 
 export async function loginFunc(params: Partial<LoginParams>) {
   const res = await fetch("http://localhost:3000/api/auth/login", {
+    cache: "no-store",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -26,7 +28,5 @@ export async function loginFunc(params: Partial<LoginParams>) {
     body: JSON.stringify(params),
   });
 
-  if (res.status === 200) {
-    console.log("success");
-  }
+  return res.headers.get("set-cookie");
 }

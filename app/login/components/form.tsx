@@ -8,6 +8,7 @@ import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 import Link from "next/link";
 import { loginFunc } from "@/lib/auth-utilis/actions";
+import { setCookie } from "cookies-next";
 
 export default function LoginForm() {
   const [loginParams, setLoginParams] = useState<LoginParams>({
@@ -37,6 +38,11 @@ export default function LoginForm() {
       setIsValid(true);
     }
   };
+
+  async function handleSubmit() {
+    const token = await loginFunc(loginParams);
+    setCookie("token", token);
+  }
 
   return (
     <article className="login-content">
@@ -68,7 +74,7 @@ export default function LoginForm() {
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
           onClick={(e) => {
             e.preventDefault();
-            loginFunc(loginParams);
+            handleSubmit();
           }}
           disabled={!isValid}
         >
