@@ -7,6 +7,7 @@ import { useState } from "react";
 import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 import Link from "next/link";
+import { loginFunc } from "@/lib/auth-utilis/actions";
 
 export default function LoginForm() {
   const [loginParams, setLoginParams] = useState<LoginParams>({
@@ -65,7 +66,10 @@ export default function LoginForm() {
         </div>
         <button
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
-          onClick={() => console.log("isValid")}
+          onClick={(e) => {
+            e.preventDefault();
+            loginFunc(loginParams);
+          }}
           disabled={!isValid}
         >
           Log in

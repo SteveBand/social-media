@@ -30,5 +30,8 @@ export async function POST(request: Request) {
 
   const userObj = await new SignupModel(params);
   await userObj.save();
-  return NextResponse.redirect(new URL("http://localhost:3000/login"));
+  return NextResponse.json(
+    { message: "User created successfully" },
+    { status: 200 }
+  );
 }

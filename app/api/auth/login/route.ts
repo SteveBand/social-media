@@ -8,7 +8,7 @@ import { Jwt, sign } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 
-export default async function POST(request: Request) {
+export async function POST(request: Request) {
   const params = await request.json();
   const validation = loginSchema.validate(params, { abortEarly: true });
 
@@ -21,18 +21,31 @@ export default async function POST(request: Request) {
   const user = await LoginModel.findOne({ email: params.email });
 
   if (!user) {
-    return NextResponse.json({ message: "Email or Password is incorrect" });
+    return NextResponse.json({
+      message: "Email or Password is incorrect, user not found",
+    });
   }
 
-  const validatePassword = await bcrypt.compare(user.password, params.password);
+  const validatePassword = await bcrypt.compare(params.password, user.password);
 
   if (!validatePassword) {
-    return NextResponse.json({ message: "Email or Password is incorrect" });
+    return NextResponse.json({
+      message: "Email or Password is incorrect, password not right",
+    });
   }
+
+  const response = NextResponse.next();
 
   const token = sign(params, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
   });
 
-  return NextResponse.redirect("/login");
+  response.headers.set("bearer-token", token);
+
+  console.log(response.headers);
+
+  return NextResponse.json(
+    { messsage: "User logged in successfully" },
+    { status: 200 }
+  );
 }
