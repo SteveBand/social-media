@@ -2,6 +2,7 @@ import React from "react";
 import Searchbar from "../searchbar/Searchbar";
 import HeaderProfile from "./components/HeaderProfile";
 
+
 type Props = {};
 
 export default function Header({}: Props) {
