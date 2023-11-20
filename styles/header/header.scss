@@ -1,0 +1,18 @@
+.header-wrapper {
+  display: flex;
+  height: 80px;
+  justify-content: space-around;
+  align-items: center;
+
+  /// Header Title ///
+
+  .header-title {
+    letter-spacing: 2px;
+    color: rgb(112, 112, 112);
+  }
+
+  /// Header Search ///
+
+  .header-search {
+  }
+}
