@@ -1,7 +1,7 @@
 "use server";
 
 import { connectToDB } from "@/lib/dbConnect";
-import LoginModel from "@/models/auth/login";
+import LoginModel from "@/models/login";
 import { NextResponse } from "next/server";
 import { sign } from "jsonwebtoken";
 import bcrypt from "bcrypt";

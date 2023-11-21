@@ -1,5 +1,6 @@
 .navbar-wrapper {
   height: calc(100vh - 80px);
+  position: sticky;
   max-width: 220px;
   flex: 1;
   display: flex;

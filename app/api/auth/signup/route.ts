@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { connectToDB } from "@/lib/dbConnect";
-import SignupModel from "@/models/auth/signup";
+import SignupModel from "@/models/signup";
 import { signupSchema } from "@/lib/auth-utilis/authSchemas";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -9,7 +9,7 @@ export const navLinks = [
   },
   {
     path: "/search",
-    name: "Search,",
+    name: "Search",
     icon: <BsSearch className="navbar-link-icon" />,
   },
   {
