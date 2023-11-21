@@ -5,7 +5,7 @@ import { PiUserCircle } from "react-icons/pi";
 type Props = {};
 
 export default function HeaderProfile({}: Props) {
-  const [dropdown, setDropdown] = useState(true);
+  const [dropdown, setDropdown] = useState(false);
 
   function handleDropdown() {
     setDropdown((prev) => !prev);
