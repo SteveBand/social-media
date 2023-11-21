@@ -1,5 +1,4 @@
 import Header from "@/components/header/Header";
-import Navbar from "@/components/navbar/Navbar";
 import "@/styles/main.scss";
 
 export const metadata = {

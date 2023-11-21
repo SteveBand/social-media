@@ -1,3 +1,20 @@
-.feed-wrapper {
+.homepage-container {
   display: flex;
+
+  .feed-wrapper {
+    min-height: calc(100vh - 80px);
+    flex: 6;
+    display: flex;
+    justify-content: center;
+
+    // PostInput component Styles //
+
+    .feed-post-input-container {
+    }
+    /////////
+    .feed-container {
+      border: 1px solid black;
+      width: 60%;
+    }
+  }
 }
