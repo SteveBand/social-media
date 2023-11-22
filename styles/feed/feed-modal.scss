@@ -1,0 +1,21 @@
+.feed-post-modal-wrapper {
+  position: fixed;
+  width: 100%;
+  min-height: 100vh;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .feed-post-modal-container {
+    min-width: 620px;
+    min-height: 240px;
+    background-color: white;
+    border-radius: 15px;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+}
