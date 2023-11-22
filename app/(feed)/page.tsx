@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar/Navbar";
+import PostInput from "./components/PostInput";
 
 export default function Page() {
   return (
@@ -6,10 +7,8 @@ export default function Page() {
       <section className="homepage-container">
         <Navbar />
         <section className="feed-wrapper">
-          
-          <section className="feed-container">
-            
-          </section>
+          <PostInput />
+          <section className="feed-container"></section>
         </section>
       </section>
     </>
