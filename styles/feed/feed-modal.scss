@@ -16,6 +16,74 @@
     background-color: white;
     border-radius: 15px;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 20px;
+
+    .feed-post-modal-upper {
+      display: flex;
+      gap: 10px;
+
+      .feed-post-modal-profile-image {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 7px;
+        flex: 1;
+        justify-content: space-evenly;
+        .big-image {
+          font-size: 45px;
+          flex: 1.4;
+        }
+
+        .small-image {
+          font-size: 25px;
+          flex: 1;
+        }
+
+        .line {
+          height: 40px;
+          background-color: gray;
+          width: 2px;
+          flex: 2;
+        }
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        flex: 11;
+        .content-title {
+          height: min-content;
+          h6 {
+            margin: 0;
+            font-size: 0.9rem;
+            letter-spacing: 0.8px;
+          }
+
+          textarea {
+            margin: 0;
+            font-size: 0.85rem;
+            outline: none;
+            border: none;
+            background-color: transparent;
+            letter-spacing: 0.4px;
+            resize: none;
+            width: 100%;
+          }
+        }
+
+        .upload-image-icon {
+          font-size: 25px;
+          cursor: pointer;
+          opacity: 0.6;
+        }
+
+        .add-to-post-button {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          margin: 0;
+        }
+      }
+    }
   }
 }
