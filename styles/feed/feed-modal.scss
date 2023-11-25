@@ -16,73 +16,60 @@
     background-color: white;
     border-radius: 15px;
     box-sizing: border-box;
-    padding: 20px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 
-    .feed-post-modal-upper {
+    .profile-content {
       display: flex;
       gap: 10px;
-
-      .feed-post-modal-profile-image {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 7px;
-        flex: 1;
-        justify-content: space-evenly;
-        .big-image {
-          font-size: 45px;
-          flex: 1.4;
-        }
-
-        .small-image {
-          font-size: 25px;
-          flex: 1;
-        }
-
-        .line {
-          height: 40px;
-          background-color: gray;
-          width: 2px;
-          flex: 2;
-        }
+      align-items: center;
+      .icon {
+        font-size: 35px;
       }
 
-      .content {
-        display: flex;
-        flex-direction: column;
-        flex: 11;
-        .content-title {
-          height: min-content;
-          h6 {
-            margin: 0;
-            font-size: 0.9rem;
-            letter-spacing: 0.8px;
-          }
+      p {
+        letter-spacing: 0.7px;
+      }
+    }
 
-          textarea {
-            margin: 0;
-            font-size: 0.85rem;
-            outline: none;
-            border: none;
-            background-color: transparent;
-            letter-spacing: 0.4px;
-            resize: none;
-            width: 100%;
-          }
-        }
+    .inputs {
+      display: flex;
+      gap: 20px;
+      flex-direction: column;
+      .textarea {
+        resize: none;
+        border: none;
+        outline: none;
+        width: 70%;
+        border-bottom: 0.5px solid gray;
+        padding-bottom: 10px;
+        overflow: hidden;
+      }
 
-        .upload-image-icon {
-          font-size: 25px;
-          cursor: pointer;
-          opacity: 0.6;
-        }
+      .textarea[contenteditable]:empty::before {
+        content: "Write here";
+        color: gray;
+      }
+      .icon {
+        font-size: 30px;
+        cursor: pointer;
+      }
+    }
 
-        .add-to-post-button {
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          margin: 0;
-        }
+    .feed-post-modal-button {
+      width: 100px;
+      margin: 0 auto;
+      cursor: pointer;
+      background-color: #185ad8;
+      color: white;
+      border: none;
+      padding: 5px 20px;
+      border-radius: 10px;
+
+      &:hover {
+        background-color: #1a6afd;
       }
     }
   }
