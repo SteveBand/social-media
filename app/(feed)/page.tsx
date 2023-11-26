@@ -7,7 +7,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function Page() {
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   return (
     <>
       {modal && createPortal(<PostModal />, document.body)}
@@ -15,7 +15,9 @@ export default function Page() {
         <Navbar />
         <section className="feed-wrapper">
           <PostInput setModal={setModal} />
-          <section className="feed-container"></section>
+          <section className="feed-container">
+            
+          </section>
         </section>
       </section>
     </>

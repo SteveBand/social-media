@@ -15,6 +15,7 @@ export default function Navbar({}: Props) {
         {navLinks.map((el) => {
           return (
             <Link
+              key={el.path}
               href={el.path}
               className={`${
                 pathname === el.path ? "navbar-link-active" : "navbar-link"
