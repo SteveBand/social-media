@@ -28,5 +28,13 @@ export async function loginFunc(params: Partial<LoginParams>) {
     body: JSON.stringify(params),
   });
 
-  return res.headers.get("set-cookie");
+  const value = await res.json();
+  return value;
 }
+
+type LoginResponse = {
+  firstName: string;
+  lastName: string;
+  id: string;
+  token: string;
+};

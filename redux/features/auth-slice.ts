@@ -1,22 +1,29 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { loginFunc } from "@/lib/auth-utilis/actions";
+import { LoginParams } from "@/lib/auth-utilis/authTypes";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InitialState = {
-  value: AuthState;
+  firstName: string;
+  lastName: string;
+  id: string;
+  token: string;
 };
 
-type AuthState = {
-  isAuth: boolean;
-  username: string;
-  uid: string;
+const initialState: InitialState = {
+  firstName: "",
+  lastName: "",
+  id: "",
+  token: "",
 };
 
-const initialState = {
-  value: {
-    isAuth: false,
-    username: "",
-    uid: "",
-  } as AuthState,
-} as InitialState;
+export const login = createAsyncThunk(
+  "auth/login",
+  async (params: Partial<LoginParams>) => {
+    const response = await loginFunc(params);
+    console.log(response);
+    return response;
+  }
+);
 
 export const auth = createSlice({
   name: "auth",
@@ -25,17 +32,16 @@ export const auth = createSlice({
     logOut: () => {
       return initialState;
     },
-    logIn: (state, action: PayloadAction<string>) => {
+  },
+  extraReducers: (builder) => {
+    builder.addCase(login.fulfilled, (state, action: PayloadAction<any>) => {
       return {
-        value: {
-          isAuth: true,
-          username: action.payload,
-          uid: "ssafsafpsa123123",
-        },
+        ...state,
+        ...action.payload,
       };
-    },
+    });
   },
 });
 
-export const { logIn, logOut } = auth.actions;
+export const { logOut } = auth.actions;
 export default auth.reducer;

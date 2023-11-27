@@ -9,6 +9,8 @@ import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 import Link from "next/link";
 import { loginFunc } from "@/lib/auth-utilis/actions";
 import { setCookie } from "cookies-next";
+import { login } from "@/redux/features/auth-slice";
+import { useAppDispatch } from "@/hooks";
 
 export default function LoginForm() {
   const [loginParams, setLoginParams] = useState<LoginParams>({
@@ -16,7 +18,7 @@ export default function LoginForm() {
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
-
+  const dispatch = useAppDispatch();
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;
     const { id, value } = event;
@@ -38,11 +40,6 @@ export default function LoginForm() {
       setIsValid(true);
     }
   };
-
-  async function handleSubmit() {
-    const token = await loginFunc(loginParams);
-    setCookie("token", token);
-  }
 
   return (
     <article className="login-content">
@@ -74,7 +71,7 @@ export default function LoginForm() {
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
           onClick={(e) => {
             e.preventDefault();
-            handleSubmit();
+            dispatch(login(loginParams));
           }}
           disabled={!isValid}
         >

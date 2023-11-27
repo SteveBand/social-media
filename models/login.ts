@@ -6,6 +6,6 @@ const loginSchema = new mongoose.Schema({
 });
 
 const LoginModel =
-  mongoose.models.Users|| mongoose.model("Users", loginSchema);
+  mongoose.models.users || mongoose.model("users", loginSchema);
 
 export default LoginModel;
