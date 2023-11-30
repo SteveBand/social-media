@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongodb, { Db } from "mongodb";
 let isConnected = false;
 
 export const connectToDB = async () => {
@@ -10,9 +10,10 @@ export const connectToDB = async () => {
     return;
   }
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    const connection = await mongoose.connect(process.env.MONGODB_URI);
     isConnected = true;
     console.log("MongoDB connected");
+    return connection.connection.db;
   } catch (error) {
     console.log(error);
   }

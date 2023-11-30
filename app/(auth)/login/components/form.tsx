@@ -7,10 +7,9 @@ import { useState } from "react";
 import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 import Link from "next/link";
-import { loginFunc } from "@/lib/auth-utilis/actions";
-import { setCookie } from "cookies-next";
 import { login } from "@/redux/features/auth-slice";
 import { useAppDispatch } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [loginParams, setLoginParams] = useState<LoginParams>({
@@ -18,6 +17,7 @@ export default function LoginForm() {
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;
@@ -40,6 +40,16 @@ export default function LoginForm() {
       setIsValid(true);
     }
   };
+
+  async function handleSubmit(loginParams: Partial<LoginParams>) {
+    try {
+      await dispatch(login(loginParams)).unwrap();
+
+      router.push("/");
+    } catch (err) {
+      console.log("Login failed", err);
+    }
+  }
 
   return (
     <article className="login-content">
@@ -71,7 +81,7 @@ export default function LoginForm() {
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
           onClick={(e) => {
             e.preventDefault();
-            dispatch(login(loginParams));
+            handleSubmit(loginParams);
           }}
           disabled={!isValid}
         >

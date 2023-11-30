@@ -1,4 +1,3 @@
-import { loginFunc } from "@/lib/auth-utilis/actions";
 import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -18,10 +17,19 @@ const initialState: InitialState = {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (params: Partial<LoginParams>) => {
-    const response = await loginFunc(params);
-    console.log(response);
-    return response;
+  async (params: Partial<LoginParams>, router) => {
+    const res = await fetch("http://localhost:3000/api/auth/login", {
+      cache: "no-store",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+
+    const value = await res.json();
+
+    return value;
   }
 );
 

@@ -1,4 +1,4 @@
-import Joi, { options } from "joi";
+import Joi from "joi";
 
 const passwordValidation =
   "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$";

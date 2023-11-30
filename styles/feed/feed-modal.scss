@@ -38,7 +38,7 @@
       display: flex;
       gap: 20px;
       flex-direction: column;
-      .textarea {
+      textarea {
         resize: none;
         border: none;
         outline: none;
@@ -49,13 +49,13 @@
         max-height: 70vh;
       }
 
-      .textarea[contenteditable]:empty::before {
-        content: "Write here";
-        color: gray;
-      }
       .icon {
         font-size: 30px;
         cursor: pointer;
+      }
+
+      .hidden-input {
+        display: none;
       }
     }
 
@@ -68,9 +68,24 @@
       border: none;
       padding: 5px 20px;
       border-radius: 10px;
-
+      transition: 200ms ease;
       &:hover {
         background-color: #1a6afd;
+      }
+    }
+
+    .feed-post-modal-button-invalid {
+      width: 100px;
+      margin: 0 auto;
+      cursor: pointer;
+      background-color: gray;
+      color: white;
+      border: none;
+      padding: 5px 20px;
+      border-radius: 10px;
+      transition: 200ms ease;
+      &:hover {
+        background-color: rgb(194, 193, 193);
       }
     }
   }
