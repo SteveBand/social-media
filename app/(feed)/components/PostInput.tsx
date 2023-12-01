@@ -1,14 +1,14 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
+import { useAppDispatch } from "@/hooks";
+import { enable } from "@/redux/features/post-slice";
 import { PiUserCircle } from "react-icons/pi";
-type Props = {
-  setModal: Dispatch<SetStateAction<boolean>>;
-};
 
-export default function PostInput({ setModal }: Props) {
+export default function PostInput() {
+  const dispatch = useAppDispatch();
   return (
     <div className="feed-post-input-container">
       <PiUserCircle className="feed-post-input-icon" />
-      <p className="feed-post-input" onClick={() => setModal(true)}>
+      <p className="feed-post-input" onClick={() => dispatch(enable())}>
         Start a post...
       </p>
       <button className="feed-post-input-button">Post</button>

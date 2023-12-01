@@ -55,7 +55,7 @@ export default function PostModal({}: Props) {
       <form className="feed-post-modal-container">
         <div className="profile-content">
           <PiUserCircle className="icon" />
-          <p>Steve.Bndkr</p>
+          <p>{`${user.firstName}.${user.lastName}`}</p>
         </div>
         <div className="inputs">
           <textarea
