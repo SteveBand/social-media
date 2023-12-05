@@ -1,16 +1,18 @@
 "use client";
-
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
 import { useAppSelector } from "@/hooks";
 import { PostSchema } from "@/lib/schemas";
 import moment from "moment";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 type Props = {};
 
 export default function PostModal({}: Props) {
   const user = useAppSelector((state) => state.authReducer);
+  const { data: session } = useSession();
   const [params, setParams] = useState({
-    parentId: user.id,
+    parentId: session ? session.user?.email : user.id,
     content: "",
   });
   const [isValid, setIsValid] = useState(false);
@@ -50,12 +52,14 @@ export default function PostModal({}: Props) {
     });
   }
 
+  // const profileImage = session?.user?.image && <Image src={session.}/>
+
   return (
     <section className="feed-post-modal-wrapper">
       <form className="feed-post-modal-container">
         <div className="profile-content">
           <PiUserCircle className="icon" />
-          <p>{`${user.firstName}.${user.lastName}`}</p>
+          <p>{`${session?.user?.name}`}</p>
         </div>
         <div className="inputs">
           <textarea

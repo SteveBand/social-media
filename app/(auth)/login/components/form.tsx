@@ -3,22 +3,36 @@
 import { CiLock, CiMail } from "react-icons/ci";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 import Link from "next/link";
-import { login } from "@/redux/features/auth-slice";
 import { useAppDispatch } from "@/hooks";
 import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+import { Providers } from "./Providers";
+import { BuiltInProviderType } from "next-auth/providers/index";
+import { ClientSafeProvider, LiteralUnion } from "next-auth/react";
+
+type Props = {
+  providers: Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  > | null;
+};
+
+export default function LoginForm({ providers }: Props) {
   const [loginParams, setLoginParams] = useState<LoginParams>({
     email: "",
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
+  const providersList = providers && Object.values(providers);
+
+  console.log(providersList);
   const router = useRouter();
   const dispatch = useAppDispatch();
+
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;
     const { id, value } = event;
@@ -40,16 +54,6 @@ export default function LoginForm() {
       setIsValid(true);
     }
   };
-
-  async function handleSubmit(loginParams: Partial<LoginParams>) {
-    try {
-      await dispatch(login(loginParams)).unwrap();
-
-      router.push("/");
-    } catch (err) {
-      console.log("Login failed", err);
-    }
-  }
 
   return (
     <article className="login-content">
@@ -79,10 +83,6 @@ export default function LoginForm() {
         </div>
         <button
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
-          onClick={(e) => {
-            e.preventDefault();
-            handleSubmit(loginParams);
-          }}
           disabled={!isValid}
         >
           Log in
@@ -90,16 +90,7 @@ export default function LoginForm() {
         <p className="login-method-paragraph">
           Or Login using diffrent method :
         </p>
-        <div className="login-methods-container google">
-          <div className="login-method">
-            <FcGoogle />
-            Google
-          </div>
-          <div className="login-method">
-            <FaFacebook className="facebook-icon" />
-            <span>Facebook</span>
-          </div>
-        </div>
+        <Providers />
         <div className="create-account">
           <span>Don't have an Account ?</span>
           <Link className="create-account-btn" href="/signup">

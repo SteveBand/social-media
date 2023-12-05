@@ -1,8 +1,7 @@
-import cors from "cors";
+export { default } from "next-auth/middleware";
 
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  const res = NextResponse.next();
-}
+
+
+
+export const config = {matcher: ['/profile',]}
