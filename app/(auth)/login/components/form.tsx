@@ -29,9 +29,7 @@ export default function LoginForm({ providers }: Props) {
   const [isValid, setIsValid] = useState<boolean>(false);
   const providersList = providers && Object.values(providers);
 
-  console.log(providersList);
-  const router = useRouter();
-  const dispatch = useAppDispatch();
+  console.log(providers);
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;

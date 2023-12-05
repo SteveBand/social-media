@@ -1,5 +1,5 @@
-import { getProviders, signIn } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import {  signIn } from "next-auth/react";
+
 
 export function Providers() {
   // const [providers, setProviders] = useState();

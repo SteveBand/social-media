@@ -4,6 +4,7 @@ import Form from "./components/form";
 
 export default async function Page() {
   const providers = await getProviders();
+  console.log(providers);
 
   return (
     <section className="login-page-wrapper">
