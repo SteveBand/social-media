@@ -7,8 +7,11 @@ const app = express();
 const cookieParser = require("cookie-parser");
 
 async function main() {
-  await mongoose.connect("mongodb://localhost:27017/social-media");
-  console.log("Database connection established on port 27017");
+  const dbConnection = await mongoose.connect(
+    "mongodb://localhost:27017/social-media"
+  );
+  console.log("Established connection to dataBase on port 27017");
+  return dbConnection;
 }
 main().catch((err) => console.log(err));
 
@@ -29,3 +32,4 @@ app.listen("4000", () => {
 });
 
 require("./handlers/post")(app);
+require("./handlers/like")(app);

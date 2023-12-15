@@ -1,18 +1,16 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const { authGuard } = require("./authGuard");
+const { JWT_SECRET } = require("../config");
+const { authGuard } = require("../middlewares/authGuard");
+const { catchCookies } = require("../middlewares/catchCookies");
 const { postSchema } = require("../schemas");
+const { Post, LikesModel } = require("../models/models");
+const { postsIfNoUser, postsIfUserLogged } = require("../lib/aggregations");
 module.exports = (app) => {
-  const schema = new mongoose.Schema({
-    content: String,
-    parentId: String,
-    date: String,
-  });
-
-  const Post = mongoose.model("posts", schema);
+  const db = mongoose.connection.getClient();
 
   app.post("/new/post", authGuard, async (req, res) => {
-    const postBody = await req.body;
+    const postBody = req.body;
     const validation = postSchema.validate(postBody, { abortEarly: true });
 
     if (validation.error !== undefined) {
@@ -24,8 +22,16 @@ module.exports = (app) => {
     res.send({ message: "Post successfully created" }).status(200);
   });
 
-  app.get("/posts", async (req, res) => {
-    const posts = await Post.find().sort({ date: 1 }).limit(5);
-    res.send(posts).status(200);
+  app.get("/posts", catchCookies, async (req, res) => {
+    if (req.access_token) {
+      const userData = jwt.verify(req.access_token, JWT_SECRET);
+      const userId = userData.email;
+      const posts = await Post.aggregate(postsIfUserLogged(userId));
+      console.log(posts);
+      res.send(posts).status(200);
+    } else {
+      const posts = await Post.aggregate(postsIfNoUser);
+      res.send(posts).status(200);
+    }
   });
 };
