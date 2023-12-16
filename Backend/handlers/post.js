@@ -17,17 +17,15 @@ module.exports = (app) => {
       return res.status(400).send({ message: "malware" });
     }
 
-    const post = await Post(postBody).save();
+    await Post(postBody).save();
 
     res.send({ message: "Post successfully created" }).status(200);
   });
 
   app.get("/posts", catchCookies, async (req, res) => {
     if (req.access_token) {
-      const userData = jwt.verify(req.access_token, JWT_SECRET);
-      const userId = userData.email;
-      const posts = await Post.aggregate(postsIfUserLogged(userId));
-      console.log(posts);
+      const userData = req.userData;
+      const posts = await Post.aggregate(postsIfUserLogged(userData.email));
       res.send(posts).status(200);
     } else {
       const posts = await Post.aggregate(postsIfNoUser);

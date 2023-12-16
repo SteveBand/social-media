@@ -111,8 +111,7 @@ const postsIfNoUser = [
   },
   {
     $project: {
-      //   likes: 0,
-      numberOfLikes: 1,
+      likes: 0,
     },
   },
 ];
