@@ -18,7 +18,7 @@ export default function Page() {
         <section className="feed-wrapper">
           <PostInput />
           <section className="feed-container">
-            <Suspense>
+            <Suspense fallback={<div>hi</div>}>
               <PostsFeed />
             </Suspense>
           </section>

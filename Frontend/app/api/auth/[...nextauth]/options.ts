@@ -10,8 +10,8 @@ import {
   validateCredentials,
 } from "@/lib/auth-utilis/actions";
 import { compare } from "bcrypt";
-// import { encode } from "next-auth/jwt";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -42,7 +42,7 @@ export const authOptions: AuthOptions = {
         const isValid = await validateCredentials(req);
         if (!isValid) return null;
         const { email, password } = req.body;
-        const user = await fetchUser(req);
+        const user = await fetchUser(email);
         const isPasswordValid = compare(password, user.password);
         if (!isPasswordValid) return null;
         const userObj = {
@@ -74,6 +74,7 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token, user }: any) {
       const encodedToken = jwt.sign(token, process.env.JWT_SECRET as string);
+      cookies().set("access_token", encodedToken);
       session.token = encodedToken;
       return session;
     },

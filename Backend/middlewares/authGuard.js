@@ -8,9 +8,9 @@ function authGuard(req, res, next) {
       res.status(401).send("User is not authorized");
     } else {
       req.userData = data;
-      next();
     }
   });
+  next();
 }
 
 exports.authGuard = authGuard;

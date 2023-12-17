@@ -1,29 +1,31 @@
 import { redirect } from "next/navigation";
-import { LoginParams, SignupParams } from "./authTypes";
 import { loginSchema } from "./authSchemas";
 import { Profile, RequestInternal } from "next-auth";
 import { connectToDB } from "../dbConnect";
-import LoginModel from "@/models/login";
 
-import SignupModel from "@/models/signup";
 import { CredentialInput } from "next-auth/providers/credentials";
+import UserModel from "@/models/user";
 
 async function profileSignIn(profile: any) {
   try {
-    if (!profile) return false;
-    const { email, name, id, avatar_url } = profile;
+    if (!profile || !profile.email) return false;
+    const { email, name, id, avatar_url, bio } = profile;
 
     await connectToDB();
-    const user = await LoginModel.findOne({ email });
+    const user = await UserModel.findOne({ email });
     if (user) return true;
-    const newUser = {
+    const newUser = new UserModel({
       email,
-      name: profile.name,
-      id: profile.node_id,
-      avatar_url: profile.avater_url,
-    };
-    const createUser = await new SignupModel(newUser);
-    await createUser.save();
+      name: profile.name || "akuna matata",
+      avatar_url: profile.avatar_url || "avatar_url",
+      bio: profile.bio || "bio",
+    });
+
+    console.log("New user Object: ", newUser);
+    console.log("Profile object: ", profile);
+
+    await newUser.save();
+
     return true;
   } catch (error) {
     console.log(error);
@@ -37,7 +39,7 @@ async function credentialsSignIn(credentials: CredentialInput | undefined) {
     if (credentials && "email" in credentials) {
       const { email } = credentials;
       await connectToDB();
-      const user = await LoginModel.findOne({ email });
+      const user = await UserModel.findOne({ email });
       if (user) {
         isSignIn = true;
       } else {
@@ -78,15 +80,21 @@ export async function validateCredentials(
   }
 }
 
-export async function fetchUser(
-  req: Pick<RequestInternal, "method" | "headers" | "body" | "query">
-) {
-  if (!req.body) {
-    return false;
-  }
-  const { email } = req.body;
+export async function fetchUser(email: string) {
   await connectToDB();
-  const user = await LoginModel.findOne({ email });
+  const user = await UserModel.findOne({ email });
   const newUser = await user.toObject();
   return newUser;
+}
+
+export async function fetchProfileImage(parentId: string) {
+  const profileImage = await UserModel.find({ email: parentId }).select({
+    avatar_url: 1,
+    _id: 0,
+  });
+
+  if (profileImage) {
+    console.log(profileImage);
+    return profileImage.pop();
+  }
 }

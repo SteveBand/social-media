@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppDispatch } from "@/hooks";
-import { enable } from "@/redux/features/post-slice";
+import { enable } from "@/redux/features/postModal-slice";
 import { PiUserCircle } from "react-icons/pi";
 
 export default function PostInput() {

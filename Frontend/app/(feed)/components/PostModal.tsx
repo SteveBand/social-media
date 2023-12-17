@@ -1,11 +1,11 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
 import { PostSchema } from "@/lib/schemas";
 import moment from "moment";
 import { useSession } from "next-auth/react";
 import { useAppDispatch } from "@/hooks";
-import { disable } from "@/redux/features/post-slice";
+import { disable } from "@/redux/features/postModal-slice";
 
 type Props = {};
 
@@ -13,7 +13,6 @@ export default function PostModal({}: Props) {
   const { data: session }: any = useSession();
   const dispatch = useAppDispatch();
   const [params, setParams] = useState({
-    parentId: session?.user?.email,
     content: "",
   });
   const [isValid, setIsValid] = useState(false);
@@ -31,6 +30,7 @@ export default function PostModal({}: Props) {
     if (validation.error !== undefined) {
       const error = validation.error.details.find((e) => e.context?.key === id);
       error && setIsValid(false);
+      console.log(validation.error);
     }
     if (validation.error === undefined) {
       setIsValid(true);
@@ -50,7 +50,6 @@ export default function PostModal({}: Props) {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.token}`,
       },
       body: JSON.stringify(newObj),
     });

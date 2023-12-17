@@ -1,0 +1,16 @@
+.post-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .post-page-container {
+    width: 35vw;
+    min-height: 100vh;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+
+    .main-post {
+        
+    }
+  }
+}
