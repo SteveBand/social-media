@@ -1,21 +1,19 @@
 "use client";
 
 import { BsHeartFill } from "react-icons/bs";
-
-import { useSession } from "next-auth/react";
-import { Post } from "../../../types";
-import { useEffect, useState } from "react";
+import { PostType } from "../../../types";
+import { useState } from "react";
 
 type Props = {
-  post: Post;
+  post: PostType;
 };
 
 export function PostLike({ post }: Props) {
   const [isLiked, setIsLiked] = useState({
     liked: post.liked,
-    likesCount: post.numberOfLikes,
+    likesCount: post.likesCount,
   });
-  async function handleLike(post: Post) {
+  async function handleLike(post: PostType) {
     if (isLiked.liked === true) {
       try {
         const res = await fetch("http://localhost:4000/delete/like", {
@@ -24,9 +22,7 @@ export function PostLike({ post }: Props) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            parentId: post._id,
-          }),
+          body: JSON.stringify(post),
         });
         if (res.ok) {
           setIsLiked((prev) => ({
@@ -46,16 +42,13 @@ export function PostLike({ post }: Props) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            parentId: post._id,
-          }),
+          body: JSON.stringify(post),
         });
         if (res.ok) {
           setIsLiked((prev) => ({
             liked: true,
             likesCount: prev.likesCount + 1,
           }));
-          console.log(isLiked);
         }
       } catch (err) {
         console.log(err);
@@ -67,7 +60,7 @@ export function PostLike({ post }: Props) {
     <div className="button-container" onClick={() => handleLike(post)}>
       <BsHeartFill
         className={`post-like-button${
-          isLiked.liked === true ? "-active" : null
+          isLiked.liked === true ? "-active" : ""
         } action-button-icon `}
       />
       {isLiked.likesCount > 0 && <p>{isLiked.likesCount}</p>}

@@ -20,7 +20,7 @@ export function Post({ post }: { post: PostType }) {
         <PostLike post={post} />
         <div className="button-container">
           <IoChatboxOutline className="action-button-icon" />
-          <p>{post.numberOfComments > 0 && post.numberOfComments}</p>
+          <p>{post.commentsCount > 0 && post.commentsCount}</p>
         </div>
         <div className="button-container">
           <IoIosShareAlt className="action-button-icon" />

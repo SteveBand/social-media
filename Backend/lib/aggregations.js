@@ -36,51 +36,8 @@ function postsIfUserLogged(userId) {
       },
     },
     {
-      $lookup: {
-        from: "likes",
-        let: { postId: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$postId" },
-                    ],
-                  },
-                ],
-              },
-            },
-          },
-        ],
-        as: "likesArray",
-      },
-    },
-    {
-      $lookup: {
-        from: "comments",
-        let: { postId: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: {
-                  $eq: [{ $toString: "$parentId" }, { $toString: "$postId" }],
-                },
-              },
-            },
-          },
-        ],
-        as: "comments",
-      },
-    },
-    {
       $addFields: {
         liked: { $ne: [{ $size: "$likes" }, 0] },
-        numberOfLikes: { $size: "$likesArray" },
-        numberOfComments: { $size: "$comments" },
       },
     },
     {
@@ -141,12 +98,7 @@ const postsIfNoUser = [
       as: "comments",
     },
   },
-  {
-    $addFields: {
-      numberOfLikes: { $size: "$likes" },
-      numberOfComments: { $size: "$comments" },
-    },
-  },
+
   {
     $project: {
       likes: 0,

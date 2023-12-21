@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { postSchema } = require("../schemas");
@@ -20,6 +18,9 @@ module.exports = (app) => {
     const obj = {
       ...postBody,
       parentId: userData.email,
+      likesCount: 0,
+      commentsCount: 0,
+      sharesCount: 0,
     };
     const validation = postSchema.validate(postBody, { abortEarly: true });
 
@@ -49,7 +50,7 @@ module.exports = (app) => {
       return res.send("Bad Request").status(421);
     }
     try {
-      const foundPost = await Post.findById(params);
+      const foundPost = await Post.findOne({ _id: params });
       const user = await UserModel.findOne({ email: foundPost.parentId });
       const obj = { ...foundPost._doc, user_info: user };
       await res.send(obj).status(200);

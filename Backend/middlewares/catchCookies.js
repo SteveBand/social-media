@@ -8,6 +8,7 @@ function catchCookies(req, res, next) {
         console.log("Verification error: " + err.name);
       } else {
         req.userData = decode;
+        req.access_token = req.cookies.access_token;
       }
     });
   }

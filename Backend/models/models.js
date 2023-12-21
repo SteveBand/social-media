@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 /// Likes Model + Schema
 
-const Schema = new mongoose.Schema({
+const likesSchema = new mongoose.Schema({
   parentId: String,
   userId: String,
 });
 const LikesModel =
-  mongoose.models.LikesModel || mongoose.model("likes", Schema);
+  mongoose.models.LikesModel || mongoose.model("likes", likesSchema);
 
 /// User Model + Schema
 
@@ -25,13 +25,16 @@ const UserModel = mongoose.models.users || mongoose.model("users", userSchema);
 
 /// Post Model + Schema
 
-const schema = new mongoose.Schema({
+const postSchema = new mongoose.Schema({
   content: String,
   parentId: String,
   date: String,
+  likesCount: Number,
+  commentsCount: Number,
+  sharesCount: Number,
 });
 
-const Post = mongoose.models.Post || mongoose.model("posts", schema);
+const Post = mongoose.models.Post || mongoose.model("posts", postSchema);
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;

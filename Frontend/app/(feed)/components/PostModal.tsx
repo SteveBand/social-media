@@ -16,7 +16,6 @@ export default function PostModal({}: Props) {
     content: "",
   });
   const [isValid, setIsValid] = useState(false);
-  console.log(session);
 
   function handleInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const { id, value } = e.target;
@@ -30,7 +29,6 @@ export default function PostModal({}: Props) {
     if (validation.error !== undefined) {
       const error = validation.error.details.find((e) => e.context?.key === id);
       error && setIsValid(false);
-      console.log(validation.error);
     }
     if (validation.error === undefined) {
       setIsValid(true);
