@@ -1,7 +1,7 @@
 const { fetchComments } = require("../lib/aggregations");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
-const { CommentModel, Post } = require("../models/models");
+const { CommentModel, Post, UserModel } = require("../models/models");
 
 module.exports = (app) => {
   app.post("/new/comment/:parentId", authGuard, async (req, res) => {
@@ -18,19 +18,35 @@ module.exports = (app) => {
     };
 
     try {
-      const existingPost = await Post.findById(req.params.parentId);
-      if (!existingPost) {
-        return res.send({ message: "404 Post not Found" }).status(404);
+      if (req.body.target === "post") {
+        const existingPost = await Post.findById(req.params.parentId);
+        if (!existingPost) {
+          return res.send({ message: "404 Post not Found" }).status(404);
+        }
+
+        await Post.findOneAndUpdate(
+          { _id: req.params.parentId },
+          { $inc: { __v: 1, commentsCount: 1 } }
+        );
+      } else if (req.body.target === "comment") {
+        const existingComment = await CommentModel.findById(
+          req.params.parentId
+        );
+        if (!existingComment) {
+          return res.send({ message: "404 Comment not Found" }).status(404);
+        }
+
+        await CommentModel.findOneAndUpdate(
+          { _id: req.params.parentId },
+          { $inc: { __v: 1, commentsCount: 1 } }
+        );
       }
-
-      await Post.findOneAndUpdate(
-        { _id: req.params.parentId },
-        { $inc: { __v: 1, commentsCount: 1 } }
-      );
-
-      await new CommentModel(comment).save();
-
-      res.send({ message: "Comment added successfully" }).status(200);
+      const newComment = await new CommentModel(comment).save();
+      const user_info = (
+        await UserModel.find({ email: newComment.userId })
+      ).pop();
+      console.log({ ...newComment._doc });
+      res.send({ ...newComment._doc, user_info }).status(200);
     } catch (err) {
       console.log(`Error: ${err.message}`);
       res
@@ -41,9 +57,7 @@ module.exports = (app) => {
 
   app.get("/comments/:postId", catchCookies, async (req, res) => {
     const postId = req.params.postId;
-    // const comments = await CommentModel.find({ parentId: postId });
     const comments = await CommentModel.aggregate(fetchComments(postId));
-    console.log(comments);
     res.send(comments).status(200);
   });
 };

@@ -4,10 +4,10 @@ import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
-import { ProfileImage } from "@/components/ProfileImage";
 import Link from "next/link";
-import { useState } from "react";
+import { ReactHTMLElement, useState } from "react";
 import { CommentLike } from "@/components/action-buttons/CommentLike";
+import { useRouter } from "next/navigation";
 
 type Props = {
   comment: CommentType;
@@ -15,32 +15,56 @@ type Props = {
 
 export function Comment({ comment }: Props) {
   const [showComment, setShowComment] = useState(false);
+  const router = useRouter();
   if (!comment || comment === undefined) {
     return <div>No Comments</div>;
   }
 
+  const handleCommentModel = (e: React.MouseEvent<HTMLDivElement>) => {
+    setShowComment(true);
+  };
+
   return (
-    <Link
+    <article
       key={comment._id}
       className="comment-wrapper"
-      href={`/comment/${comment._id}`}
+      onClick={(e) => {
+        const target = e.target as HTMLElement;
+        const attribute = target.getAttribute("data-navigate-to");
+        if (!attribute) {
+          return;
+        } else {
+          router.push(attribute);
+        }
+      }}
     >
-      <div className="comment-container">
+      {showComment &&
+        createPortal(
+          <CommentModal post={comment} setShowComment={setShowComment} />,
+          document.body
+        )}
+      <div
+        className="comment-container"
+        data-navigate-to={`/post/${comment._id}`}
+      >
         <img src={comment.user_info.avatar_url} />
-        <div className="content">
+        <div className="content" data-navigate-to={`/post/${comment._id}`}>
           <p>{comment.user_info.name}</p>
-          <p>{comment.content}</p>
+          <p data-navigate-to={`/post/${comment._id}`}>{comment.content}</p>
         </div>
         <SlOptions />
       </div>
-      <footer>
+      <footer data-navigate-to={`/post/${comment._id}`}>
         <CommentLike comment={comment} />
-        <div className="button-container">
-          <IoChatboxOutline />
+        <div className="button-container" onClick={handleCommentModel} id="">
+          <IoChatboxOutline className="icon" />
           <p>{comment.commentsCount > 0 && comment.commentsCount}</p>
         </div>
-        <div className="button-container"></div>
+        <div className="button-container">
+          <IoIosShareAlt className="icon" />
+          <p>{comment.sharesCount > 0 && comment.sharesCount}</p>
+        </div>
       </footer>
-    </Link>
+    </article>
   );
 }

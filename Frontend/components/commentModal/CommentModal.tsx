@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
-import { PostType } from "../../../types";
+import { CommentType, PostType } from "../../../types";
 import { IoIosClose } from "react-icons/io";
 import { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
-  post: PostType;
+  post: PostType | CommentType;
   setShowComment: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -23,7 +23,7 @@ export function CommentModal({ post, setShowComment }: Props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ params }),
+      body: JSON.stringify({ params, target: "post" }),
     });
     if (res.status === 200) {
       setShowComment(false);

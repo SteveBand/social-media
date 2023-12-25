@@ -33,12 +33,18 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-
+    padding: 5px 0;
     .button-container {
       display: flex;
       align-items: center;
+      justify-content: center;
       cursor: pointer;
       gap: 7px;
+      z-index: 10;
+      border-radius: 50%;
+      &:hover {
+        background-color: gray;
+      }
 
       .post-like-button {
         fill: gray;

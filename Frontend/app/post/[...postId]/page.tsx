@@ -1,18 +1,23 @@
 "use client";
 
 import { FaArrowLeft } from "react-icons/fa6";
+import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { CommentType, PostType } from "../../../../types";
 import { MainPost } from "./components/MainPost";
 import { Comment } from "./components/Comment";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function PostPage({ params }: { params: { postId: any } }) {
   const [content, setContent] = useState<PostType | null>();
   const [comments, setComments] = useState<CommentType[] | null>([]);
+  const [textAreaValue, setTextAreaValue] = useState("");
+  const { data: session } = useSession();
+  const user = session?.user;
   async function fetchPostData() {
     try {
       const postId = params?.postId?.[0];
-      console.log(postId);
       await fetch(`http://localhost:4000/post/${postId}`, {
         cache: "no-cache",
         method: "GET",
@@ -44,6 +49,32 @@ export default function PostPage({ params }: { params: { postId: any } }) {
     }
   }
 
+  async function PostReply(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+    const postId = params?.postId?.[0];
+    const res = await fetch(`http://localhost:4000/new/comment/${postId}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ params: textAreaValue, target: "post" }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setTextAreaValue("");
+      setComments((prev) => {
+        if (prev) {
+          const arr = [data, ...prev];
+          return arr;
+        } else {
+          const arr = [data];
+          return arr;
+        }
+      });
+    }
+  }
+
   useEffect(() => {
     Promise.all([fetchPostData(), fetchCommentsData()]).catch((err: any) => {
       console.log(err);
@@ -62,9 +93,23 @@ export default function PostPage({ params }: { params: { postId: any } }) {
           <p>Post</p>
         </header>
         <MainPost content={content} />
-        <section>
+        <form>
+          <p>
+            Replying to <Link href={"/"}>{content.user_info.name}</Link>
+          </p>
+          <div className="content">
+            {user?.image ? <img src={user?.image} /> : <CgProfile />}
+            <textarea
+              placeholder="Post your Reply"
+              onChange={(e) => setTextAreaValue(e.target.value)}
+              maxLength={100}
+            />
+          </div>
+          <button onClick={PostReply}>Reply</button>
+        </form>
+        <section className="comments-section">
           {comments?.map((comment) => {
-            return <Comment comment={comment} />;
+            return <Comment comment={comment} key={comment._id} />;
           })}
         </section>
       </section>
