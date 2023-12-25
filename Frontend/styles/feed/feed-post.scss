@@ -1,11 +1,19 @@
 .homepage-container {
   .feed-wrapper {
     .feed-container {
-      .post-wrapper {
+      a.post-wrapper {
         width: 100%;
-        border-bottom: 1px solid gray;
+        display: block;
+        border: 1px solid rgb(217, 215, 215);
+        border-top: none;
         box-sizing: border-box;
         padding: 10px;
+        outline: none;
+        transition: 300ms ease;
+
+        &:hover {
+          background-color: rgb(214, 211, 211);
+        }
 
         .post-container {
           display: grid;

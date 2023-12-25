@@ -12,11 +12,33 @@ body {
 }
 
 a {
-  text-decoration: none;
-  color: black;
+  text-decoration: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+a:visited {
+  text-decoration: inherit;
+  color: inherit;
+  cursor: auto;
 }
 
 img {
   max-width: 100%;
   display: block;
+}
+
+@mixin darkButtons {
+  background-color: rgb(71, 70, 70);
+  transition: 300ms ease;
+  letter-spacing: 0.8px;
+  font-size: 0.75rem;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    background-color: rgb(107, 106, 106);
+  }
 }

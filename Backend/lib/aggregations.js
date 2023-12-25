@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 function postsIfUserLogged(userId) {
   return [
     {
@@ -107,5 +109,103 @@ const postsIfNoUser = [
   },
 ];
 
+const fetchPost = (id) => {
+  return [
+    { $match: { _id: new mongoose.Types.ObjectId(id) } },
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$parentId" },
+        pipeline: [{ $match: { $expr: { $eq: ["$email", "$$userId"] } } }],
+        as: "user_info",
+      },
+    },
+    { $unwind: "$user_info" },
+    {
+      $lookup: {
+        from: "likes",
+        let: { userId: "$parentId", postId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [
+                      { $toString: "$parentId" },
+                      { $toString: "$$postId" },
+                    ],
+                  },
+                  { $eq: ["$userId", "$$userId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "like",
+      },
+    },
+    // {
+    //   $lookup: {
+    //     from: "comments",
+    //     let: { userId: "$parentId", postId: "$_id" },
+    //     pipeline: [
+    //       {
+    //         $match: {
+    //           $expr: {
+    //             $and: [
+    //               {
+    //                 $eq: [
+    //                   { $toString: "$parentId" },
+    //                   { $toString: "$$postId" },
+    //                 ],
+    //               },
+    //               {
+    //                 $eq: ["$userId", "$$userId"],
+    //               },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //     ],
+    //     as: "comments",
+    //   },
+    // },
+    {
+      $addFields: {
+        liked: {
+          $cond: {
+            if: { $gt: [{ $size: "$like" }, 0] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        like: 0,
+      },
+    },
+  ];
+};
+
+function fetchComments(postId) {
+  return [
+    { $match: { parentId: postId } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "email",
+        as: "user_info",
+      },
+    },
+    { $unwind: "$user_info" },
+  ];
+}
+
 exports.postsIfNoUser = postsIfNoUser;
 exports.postsIfUserLogged = postsIfUserLogged;
+exports.fetchPost = fetchPost;
+exports.fetchComments = fetchComments;

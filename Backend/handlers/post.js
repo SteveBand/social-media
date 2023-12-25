@@ -3,7 +3,11 @@ const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { postSchema } = require("../schemas");
 const { Post, UserModel } = require("../models/models");
-const { postsIfNoUser, postsIfUserLogged } = require("../lib/aggregations");
+const {
+  postsIfNoUser,
+  postsIfUserLogged,
+  fetchPost,
+} = require("../lib/aggregations");
 module.exports = (app) => {
   const db = mongoose.connection.getClient();
 
@@ -50,9 +54,7 @@ module.exports = (app) => {
       return res.send("Bad Request").status(421);
     }
     try {
-      const foundPost = await Post.findOne({ _id: params });
-      const user = await UserModel.findOne({ email: foundPost.parentId });
-      const obj = { ...foundPost._doc, user_info: user };
+      const obj = await (await Post.aggregate(fetchPost(params))).pop();
       await res.send(obj).status(200);
     } catch (err) {
       console.log("Post not Found: ", err);

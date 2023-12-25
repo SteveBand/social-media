@@ -36,6 +36,24 @@ const postSchema = new mongoose.Schema({
 
 const Post = mongoose.models.Post || mongoose.model("posts", postSchema);
 
+/// Comment Model + Schema
+
+const commentSchema = new mongoose.Schema(
+  {
+    content: String,
+    parentId: String,
+    userId: String,
+    likesCount: Number,
+    commentsCount: Number,
+    sharesCount: Number,
+  },
+  { timestamps: true }
+);
+
+const CommentModel =
+  mongoose.models.CommentModel || mongoose.model("comments", commentSchema);
+
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
 exports.Post = Post;
+exports.CommentModel = CommentModel;

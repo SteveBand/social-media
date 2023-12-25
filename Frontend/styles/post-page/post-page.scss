@@ -9,7 +9,6 @@
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     box-sizing: border-box;
-    padding: 15px;
     position: relative;
 
     header {
@@ -42,11 +41,13 @@
     }
 
     .main-post {
+      padding: 15px 15px 0 15px;
       .upper-post {
         display: flex;
         align-items: center;
         box-sizing: border-box;
         justify-content: space-between;
+
         .user-details {
           display: flex;
           align-items: center;
@@ -63,18 +64,7 @@
           gap: 15px;
 
           .subscribe-btn {
-            border: none;
-            border-radius: 15px;
-            padding: 7px 15px;
-            letter-spacing: 0.8px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            background-color: rgb(71, 70, 70);
-            color: white;
-            transition: 300ms ease;
-            &:hover {
-              background-color: rgb(107, 106, 106);
-            }
+            @include darkButtons;
           }
 
           .options-btn {
@@ -118,9 +108,15 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            gap: 7px;
 
             .post-like-button {
               fill: gray;
+            }
+
+            .post-like-button-active {
+              fill: rgb(197, 38, 38);
+              scale: 1.1;
             }
           }
         }

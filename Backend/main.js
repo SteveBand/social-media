@@ -1,8 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const app = express();
 const cookieParser = require("cookie-parser");
 
@@ -33,3 +31,4 @@ app.listen("4000", () => {
 
 require("./handlers/post")(app);
 require("./handlers/like")(app);
+require("./handlers/comment")(app);
