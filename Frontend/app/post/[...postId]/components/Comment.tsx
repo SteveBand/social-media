@@ -45,16 +45,16 @@ export function Comment({ comment }: Props) {
         )}
       <div
         className="comment-container"
-        data-navigate-to={`/post/${comment._id}`}
+        data-navigate-to={`/comment/${comment._id}`}
       >
         <img src={comment.user_info.avatar_url} />
-        <div className="content" data-navigate-to={`/post/${comment._id}`}>
+        <div className="content" data-navigate-to={`/comment/${comment._id}`}>
           <p>{comment.user_info.name}</p>
-          <p data-navigate-to={`/post/${comment._id}`}>{comment.content}</p>
+          <p data-navigate-to={`/comment/${comment._id}`}>{comment.content}</p>
         </div>
         <SlOptions />
       </div>
-      <footer data-navigate-to={`/post/${comment._id}`}>
+      <footer data-navigate-to={`/comment/${comment._id}`}>
         <CommentLike comment={comment} />
         <div className="button-container" onClick={handleCommentModel} id="">
           <IoChatboxOutline className="icon" />

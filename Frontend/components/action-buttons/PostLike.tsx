@@ -16,7 +16,7 @@ export function PostLike({ post }: Props) {
   async function handleLike(post: PostType) {
     if (isLiked.liked === true) {
       try {
-        const res = await fetch("http://localhost:4000/delete/like", {
+        const res = await fetch("http://localhost:4000/delete/post/like", {
           method: "POST",
           credentials: "include",
           headers: {
@@ -36,7 +36,7 @@ export function PostLike({ post }: Props) {
     }
     if (isLiked.liked === false) {
       try {
-        const res = await fetch("http://localhost:4000/new/like", {
+        const res = await fetch("http://localhost:4000/new/post/like", {
           method: "POST",
           credentials: "include",
           headers: {

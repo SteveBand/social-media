@@ -1,4 +1,4 @@
-const { fetchComments } = require("../lib/aggregations");
+const { fetchComments, fetchCommentsLogged } = require("../lib/aggregations");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { CommentModel, Post, UserModel } = require("../models/models");
@@ -16,7 +16,6 @@ module.exports = (app) => {
       commentsCount: 0,
       sharesCount: 0,
     };
-
     try {
       if (req.body.target === "post") {
         const existingPost = await Post.findById(req.params.parentId);
@@ -45,7 +44,6 @@ module.exports = (app) => {
       const user_info = (
         await UserModel.find({ email: newComment.userId })
       ).pop();
-      console.log({ ...newComment._doc });
       res.send({ ...newComment._doc, user_info }).status(200);
     } catch (err) {
       console.log(`Error: ${err.message}`);
@@ -57,7 +55,14 @@ module.exports = (app) => {
 
   app.get("/comments/:postId", catchCookies, async (req, res) => {
     const postId = req.params.postId;
-    const comments = await CommentModel.aggregate(fetchComments(postId));
-    res.send(comments).status(200);
+    if (!req.userData) {
+      const comments = await CommentModel.aggregate(fetchComments(postId));
+      return res.send(comments).status(200);
+    } else if (req.userData) {
+      const comments = await CommentModel.aggregate(
+        fetchCommentsLogged(postId, req.userData.email)
+      );
+      return res.send(comments).status(200);
+    }
   });
 };

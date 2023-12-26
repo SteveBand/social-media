@@ -16,7 +16,7 @@ export function CommentLike({ comment }: Props) {
   async function handleLike(comment: CommentType) {
     if (isLiked.liked === true) {
       try {
-        const res = await fetch("http://localhost:4000/delete/like", {
+        const res = await fetch("http://localhost:4000/delete/comment/like", {
           method: "POST",
           credentials: "include",
           headers: {
@@ -36,7 +36,7 @@ export function CommentLike({ comment }: Props) {
     }
     if (isLiked.liked === false) {
       try {
-        const res = await fetch("http://localhost:4000/new/like", {
+        const res = await fetch("http://localhost:4000/new/comment/like", {
           method: "POST",
           credentials: "include",
           headers: {

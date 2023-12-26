@@ -8,6 +8,7 @@ import { MainPost } from "./components/MainPost";
 import { Comment } from "./components/Comment";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function PostPage({ params }: { params: { postId: any } }) {
   const [content, setContent] = useState<PostType | null>();
@@ -15,6 +16,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
   const [textAreaValue, setTextAreaValue] = useState("");
   const { data: session } = useSession();
   const user = session?.user;
+  const router = useRouter();
   async function fetchPostData() {
     try {
       const postId = params?.postId?.[0];
@@ -22,16 +24,13 @@ export default function PostPage({ params }: { params: { postId: any } }) {
         cache: "no-cache",
         method: "GET",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
       })
         .then((data) => data.json())
         .then((content) => {
           setContent(content);
         });
-    } catch (err) {
-      console.log("AHHH SHIT AN ERROR");
+    } catch (err: any) {
+      console.log("Fetch post Data Error", err.name);
     }
   }
 
@@ -44,8 +43,8 @@ export default function PostPage({ params }: { params: { postId: any } }) {
       })
         .then((data) => data.json())
         .then((comments) => setComments(comments));
-    } catch (err) {
-      console.log("AHH shit ERROR");
+    } catch (err: any) {
+      console.log(err);
     }
   }
 
@@ -89,7 +88,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
     <section className="post-page-wrapper">
       <section className="post-page-container">
         <header>
-          <FaArrowLeft className="back-button" />
+          <FaArrowLeft className="back-button" onClick={() => router.back()} />
           <p>Post</p>
         </header>
         <MainPost content={content} />
