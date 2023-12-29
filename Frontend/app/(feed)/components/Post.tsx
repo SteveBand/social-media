@@ -8,25 +8,39 @@ import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function Post({ post }: { post: PostType }) {
   const [showComment, setShowComment] = useState(false);
+  const router = useRouter();
+  function handleNavigation(
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    const target = e.target as HTMLElement;
+    const attribute = target.getAttribute("data-navigate-to");
+    if (attribute) {
+      router.push(attribute);
+    }
+  }
+
   return (
     <Link
       key={post._id}
       className="post-wrapper"
       href={`/post/${post._id}`}
       prefetch={true}
+      onClick={handleNavigation}
     >
       <div className="post-container">
         <ProfileImage userInfo={post.user_info} />
         <div className="post-content">
           <p className="username">{post.user_info.name}</p>
-          <p>{post.content}</p>
+          <p data-navigate-to={`/post/${post._id}`}> {post.content}</p>
         </div>
         <SlOptions className="post-options-button" />
       </div>
-      <div className="footer-container">
+      <div className="footer-container" data-navigate-to={`/post/${post._id}`}>
         <PostLike post={post} />
         <div className="button-container">
           <IoChatboxOutline

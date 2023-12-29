@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import { Post } from "./Post";
 import { PostType } from "../../../../types";
@@ -8,7 +8,7 @@ export function PostsFeed() {
   async function fetchPosts() {
     try {
       const res = await fetch("http://localhost:4000/posts", {
-        cache: "no-cache",
+        cache: "default",
         method: "GET",
         credentials: "include",
       });
@@ -23,14 +23,17 @@ export function PostsFeed() {
   }
 
   useEffect(() => {
-    fetchPosts();
+    if (posts.length === 0) {
+      fetchPosts();
+    }
   }, []);
 
+  console.log(posts);
   return (
     <>
       {posts &&
         posts.map((post) => {
-          return <Post post={post} />;
+          return <Post post={post} key={post._id} />;
         })}
     </>
   );

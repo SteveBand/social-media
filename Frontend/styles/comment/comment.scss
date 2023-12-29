@@ -39,9 +39,13 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      gap: 7px;
+      gap: 5px;
       z-index: 10;
       border-radius: 50%;
+
+      p {
+        margin: 0;
+      }
 
       svg {
         padding: 3.5px;

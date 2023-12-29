@@ -2,34 +2,36 @@
 
 import { FaArrowLeft } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CommentType, PostType } from "../../../../types";
-import { MainPost } from "./components/MainPost";
-import { Comment } from "./components/Comment";
+import { MainComment } from "./components/MainComment";
+import { Comment } from "@/app/post/[...postId]/components/Comment";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-export default function PostPage({ params }: { params: { postId: any } }) {
-  const [content, setContent] = useState<PostType | null>();
+export default function CommentPage() {
+  const [content, setContent] = useState<CommentType | null>();
   const [comments, setComments] = useState<CommentType[] | null>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const { data: session } = useSession();
   const user = session?.user;
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const postId = useMemo(() => {
+    return searchParams.get("postId");
+  }, [searchParams]);
   async function fetchPostData() {
     try {
-      const postId = params?.postId?.[0];
-      console.log(postId);
-      await fetch(`http://localhost:4000/post/${postId}`, {
+      const res = await fetch(`http://localhost:4000/comment/post/${postId}`, {
         credentials: "include",
         method: "GET",
-      })
-        .then((data) => data.json())
-        .then((content) => {
-          setContent(content);
-        });
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
     } catch (err: any) {
       console.log("Fetch post Data Error", err.name);
     }
@@ -37,13 +39,14 @@ export default function PostPage({ params }: { params: { postId: any } }) {
 
   async function fetchCommentsData() {
     try {
-      const postId = params?.postId?.[0];
-      await fetch(`http://localhost:4000/comments/${postId}`, {
+      const res = await fetch(`http://localhost:4000/comments/${postId}`, {
         method: "GET",
         credentials: "include",
-      })
-        .then((data) => data.json())
-        .then((comments) => setComments(comments));
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
     } catch (err: any) {
       console.log(err);
     }
@@ -51,14 +54,14 @@ export default function PostPage({ params }: { params: { postId: any } }) {
 
   async function PostReply(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    const postId = params?.postId?.[0];
+    console.log(postId);
     const res = await fetch(`http://localhost:4000/new/comment/${postId}`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ params: textAreaValue, target: "post" }),
+      body: JSON.stringify({ params: textAreaValue }),
     });
     if (res.ok) {
       const data = await res.json();
@@ -76,12 +79,18 @@ export default function PostPage({ params }: { params: { postId: any } }) {
   }
 
   useEffect(() => {
-    if (!content) {
-      Promise.all([fetchPostData(), fetchCommentsData()]).catch((err: any) => {
-        console.log(err);
-      });
-    }
-  }, []);
+    const fetchData = async () => {
+      const [postData, commentsData] = await Promise.all([
+        fetchPostData(),
+        fetchCommentsData(),
+      ]);
+      setContent(postData);
+      setComments(commentsData);
+    };
+    fetchData();
+  }, [postId]);
+
+  console.log("hi");
 
   if (!content) {
     return <div>no Content</div>;
@@ -93,7 +102,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
           <FaArrowLeft className="back-button" onClick={() => router.back()} />
           <p>Post</p>
         </header>
-        <MainPost content={content} />
+        <MainComment content={content} />
         <form>
           <p>
             Replying to <Link href={"/"}>{content.user_info.name}</Link>
@@ -103,6 +112,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
             <textarea
               placeholder="Post your Reply"
               onChange={(e) => setTextAreaValue(e.target.value)}
+              value={textAreaValue}
               maxLength={100}
             />
           </div>

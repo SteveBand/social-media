@@ -24,19 +24,22 @@ export function Comment({ comment }: Props) {
     setShowComment(true);
   };
 
+  function handleNavigation(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const target = e.target as HTMLElement;
+    const attribute = target.getAttribute("data-navigate-to");
+    console.log(attribute);
+    if (!attribute) {
+      return;
+    } else {
+      console.log(router.push(attribute));
+    }
+  }
+
   return (
     <article
       key={comment._id}
       className="comment-wrapper"
-      onClick={(e) => {
-        const target = e.target as HTMLElement;
-        const attribute = target.getAttribute("data-navigate-to");
-        if (!attribute) {
-          return;
-        } else {
-          router.push(attribute);
-        }
-      }}
+      onClick={handleNavigation}
     >
       {showComment &&
         createPortal(
@@ -45,16 +48,25 @@ export function Comment({ comment }: Props) {
         )}
       <div
         className="comment-container"
-        data-navigate-to={`/comment/${comment._id}`}
+        data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
       >
         <img src={comment.user_info.avatar_url} />
-        <div className="content" data-navigate-to={`/comment/${comment._id}`}>
+        <div
+          className="content"
+          data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
+        >
           <p>{comment.user_info.name}</p>
-          <p data-navigate-to={`/comment/${comment._id}`}>{comment.content}</p>
+          <p
+            data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
+          >
+            {comment.content}
+          </p>
         </div>
         <SlOptions />
       </div>
-      <footer data-navigate-to={`/comment/${comment._id}`}>
+      <footer
+        data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
+      >
         <CommentLike comment={comment} />
         <div className="button-container" onClick={handleCommentModel} id="">
           <IoChatboxOutline className="icon" />
