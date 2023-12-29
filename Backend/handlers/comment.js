@@ -1,4 +1,9 @@
-const { fetchComments, fetchCommentsLogged } = require("../lib/aggregations");
+const {
+  fetchComments,
+  fetchCommentsLogged,
+  fetchCommentPost,
+  fetchPost,
+} = require("../lib/aggregations");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { CommentModel, Post, UserModel } = require("../models/models");
@@ -55,14 +60,39 @@ module.exports = (app) => {
 
   app.get("/comments/:postId", catchCookies, async (req, res) => {
     const postId = req.params.postId;
-    if (!req.userData) {
-      const comments = await CommentModel.aggregate(fetchComments(postId));
-      return res.send(comments).status(200);
-    } else if (req.userData) {
-      const comments = await CommentModel.aggregate(
-        fetchCommentsLogged(postId, req.userData.email)
-      );
-      return res.send(comments).status(200);
+    try {
+      if (!req.userData) {
+        const comments = await CommentModel.aggregate(fetchComments(postId));
+        return res.send(comments).status(200);
+      } else if (req.userData) {
+        const comments = await CommentModel.aggregate(
+          fetchCommentsLogged(postId, req.userData.email)
+        );
+        return res.send(comments).status(200);
+      }
+    } catch (err) {
+      return res.send({ message: "an error has occured", err });
+    }
+  });
+
+  app.get("/comment/post/:postId", catchCookies, async (req, res) => {
+    const postId = req.params.postId;
+    const userId = req.userData.email;
+    try {
+      if (userId) {
+        const obj = await CommentModel.aggregate(
+          fetchCommentPost(postId, req.userData.email)
+        );
+        return res.send(obj.pop()).status(200);
+      } else if (!userId) {
+        const obj = await CommentModel.aggregate(
+          fetchCommentPost(postId, req.userData.email)
+        );
+        return res.send(obj.pop()).status(200);
+      }
+    } catch (err) {
+      console.log("An error has Occured at /comment/post/:postId", err);
+      return res.send({ message: "An error has Occured", ErrorMessage: err });
     }
   });
 };

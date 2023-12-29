@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { postSchema } = require("../schemas");
-const { Post, UserModel } = require("../models/models");
+const { Post, UserModel, CommentModel } = require("../models/models");
 const {
   postsIfNoUser,
   postsIfUserLogged,
   fetchPost,
+  fetchCommentPost,
 } = require("../lib/aggregations");
 module.exports = (app) => {
   const db = mongoose.connection.getClient();
@@ -51,14 +52,15 @@ module.exports = (app) => {
   app.get("/post/:postId", async (req, res) => {
     const params = req.params.postId;
     if (!params) {
-      return res.send("Bad Request").status(421);
+      return res.send("Bad Request").status(400);
     }
     try {
-      const obj = await (await Post.aggregate(fetchPost(params))).pop();
-      await res.send(obj).status(200);
+      const obj = await Post.aggregate(fetchPost(params));
+      console.log(obj);
+      return res.send(obj.pop()).status(200);
     } catch (err) {
-      console.log("Post not Found: ", err);
-      res.send({ message: "Error 404, Page not found!" }).status(404);
+      console.log("Post not Found: ");
+      return res.send({ message: "Error 404, Page not found!" }).status(404);
     }
   });
 };
