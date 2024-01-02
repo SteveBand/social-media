@@ -2,4 +2,94 @@ section.profile-page-wrapper {
   width: 100%;
   min-height: 100vh;
   display: flex;
+  gap: 100px;
+  overflow-x: hidden;
+
+  .profile-content {
+    width: 570px;
+    min-width: 300px;
+    min-height: 100vh;
+    border: 1px solid gray;
+    overflow-x: hidden;
+    header {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      letter-spacing: 0.8px;
+      position: sticky;
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      margin-left: 20px;
+
+      .icon {
+        font-size: 1.25rem;
+        cursor: pointer;
+      }
+    }
+
+    .user-content {
+      display: block;
+      justify-content: center;
+
+      img {
+        width: 250px;
+        border-radius: 50%;
+        margin: 0 auto;
+      }
+
+      .content {
+        box-sizing: border-box;
+        padding: 0 20px;
+
+        h5 {
+          font-size: 1rem;
+          letter-spacing: 0.8px;
+          margin: 10px 0;
+        }
+
+        p {
+          margin: 0;
+        }
+
+        .followers-container {
+          display: flex;
+          gap: 20px;
+        }
+      }
+    }
+
+    .profile-navbar-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      ul {
+        width: 100%;
+        list-style: none;
+        display: inline-flex;
+        box-sizing: border-box;
+        padding: 0 2px;
+        min-width: 540px;
+        overflow-x: auto;
+        white-space: nowrap;
+
+        li {
+          flex: 1;
+          text-align: center;
+          cursor: pointer;
+          padding: 5px 0;
+          letter-spacing: 0.5px;
+
+          &:hover {
+            background-color: rgb(208, 208, 208);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  section.profile-page-wrapper {
+    gap: 0;
+  }
 }
