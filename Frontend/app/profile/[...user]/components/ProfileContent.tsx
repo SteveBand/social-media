@@ -1,15 +1,16 @@
 "use client";
 
 import { FaArrowLeft } from "react-icons/fa";
-import { User } from "../../../../../types";
+import { PostType, User } from "../../../../../types";
 import { useEffect, useState } from "react";
+import { Post } from "@/components/Post";
 
 export function ProfileContent({ user }: { user: User }) {
   const [action, setAction] = useState("posts");
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   async function fetchData() {
     try {
-      const res = await fetch(`http://localhost:4000/${user.id}/${action}`, {
+      const res = await fetch(`http://localhost:4000/${user.email}/${action}`, {
         method: "GET",
         credentials: "include",
       });
@@ -72,6 +73,13 @@ export function ProfileContent({ user }: { user: User }) {
           </li>
         </ul>
       </div>
+      <section className="profile-page-data">
+        {data
+          ? data.map((post: PostType) => {
+              return <Post post={post} />;
+            })
+          : "No Posts"}
+      </section>
     </section>
   );
 }

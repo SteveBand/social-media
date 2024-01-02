@@ -1,4 +1,4 @@
-import Header from "@/components/header/Header";
+
 import "@/styles/main.scss";
 
 export const metadata = {

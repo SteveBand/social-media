@@ -1,5 +1,5 @@
 import { ProfileImage } from "@/components/ProfileImage";
-import { PostType } from "../../../../types";
+import { PostType } from "../../types";
 import { SlOptions } from "react-icons/sl";
 import { PostLike } from "@/components/action-buttons/PostLike";
 import { IoChatboxOutline } from "react-icons/io5";
@@ -9,7 +9,7 @@ import { createPortal } from "react-dom";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import "@/styles/components/post/post.scss";
 export function Post({ post }: { post: PostType }) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();

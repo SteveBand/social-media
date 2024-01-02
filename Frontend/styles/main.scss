@@ -12,15 +12,14 @@
 @import "./signup-page/signup-media-query.scss";
 
 // Navbar //
-@import "./navbar/navbar-style.scss";
+@import "./components/navbar/navbar-style.scss";
 
 // Header //
-@import "./header/header.scss";
+@import "./components/header/header.scss";
 
 // Feed //
 @import "./feed/feed.scss";
 @import "./feed/feed-modal.scss";
-@import "./feed/feed-post.scss";
 
 /// Post page ////
 @import "./post-page/post-page.scss";
@@ -33,3 +32,5 @@
 
 //// Profile Page ////
 @import "./profile-page/profile-page.scss";
+
+@import "./mixin.scss";
