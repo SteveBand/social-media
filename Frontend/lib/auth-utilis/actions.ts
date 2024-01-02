@@ -16,16 +16,13 @@ async function profileSignIn(profile: any) {
     if (user) return true;
     const newUser = new UserModel({
       email,
-      name: profile.name || "akuna matata",
+      name: profile.name || "",
       avatar_url: profile.avatar_url || "avatar_url",
-      bio: profile.bio || "bio",
+      bio: profile.bio || "",
     });
 
     console.log("New user Object: ", newUser);
-    console.log("Profile object: ", profile);
-
     await newUser.save();
-
     return true;
   } catch (error) {
     console.log(error);

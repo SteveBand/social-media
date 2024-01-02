@@ -22,17 +22,17 @@ export default function Navbar({}: Props) {
               }`}
             >
               {el.icon}
-              <div>{el.name}</div>
+              <div className="navbar-link-name">{el.name}</div>
             </Link>
           );
         })}
       </div>
-      <div className="navbar-logout-button">
+      {/* <div className="navbar-logout-button">
         <div className="navbar-logout-button-container">
           <CiLogout className="navbar-logout-icon" />
           Logout
         </div>
-      </div>
+      </div> */}
     </nav>
   );
 }

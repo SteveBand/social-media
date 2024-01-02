@@ -11,15 +11,22 @@ const LikesModel =
 
 /// User Model + Schema
 
-const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-  name: String,
-  phoneNumber: String,
-  gender: String,
-  bio: String,
-  avatar_url: String,
-});
+const userSchema = new mongoose.Schema(
+  {
+    email: String,
+    password: String,
+    name: String,
+    phoneNumber: String,
+    gender: String,
+    bio: String,
+    avatar_url: String,
+    followers: Number,
+    following: Number,
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const UserModel = mongoose.models.users || mongoose.model("users", userSchema);
 
@@ -53,7 +60,19 @@ const commentSchema = new mongoose.Schema(
 const CommentModel =
   mongoose.models.CommentModel || mongoose.model("comments", commentSchema);
 
+const followersScehma = new mongoose.Schema(
+  {
+    parnetId: String,
+    following: String,
+  },
+  { timestamps: true }
+);
+
+const FollowersModel =
+  mongoose.model.FollowersModel || mongoose.model("followers", followersScehma);
+
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
 exports.Post = Post;
 exports.CommentModel = CommentModel;
+exports.FollowersModel = FollowersModel;

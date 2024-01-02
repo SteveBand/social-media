@@ -32,3 +32,4 @@ app.listen("4000", () => {
 require("./handlers/post")(app);
 require("./handlers/like")(app);
 require("./handlers/comment")(app);
+require("./handlers/user")(app);

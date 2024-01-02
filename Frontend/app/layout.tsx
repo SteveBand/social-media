@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar/Navbar";
 import AuthProvider from "@/lib/AuthProvider";
 import { ReduxProvider } from "@/redux/Provider";
 import "@/styles/main.scss";

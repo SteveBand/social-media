@@ -28,7 +28,6 @@ export function PostsFeed() {
     }
   }, []);
 
-  console.log(posts);
   return (
     <>
       {posts &&
