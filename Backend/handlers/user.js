@@ -1,4 +1,11 @@
-const { UserModel, FollowersModel } = require("../models/models");
+const { catchCookies } = require("../middlewares/catchCookies");
+const {
+  UserModel,
+  FollowersModel,
+  Post,
+  LikesModel,
+  CommentModel,
+} = require("../models/models");
 
 UserModel;
 
@@ -11,5 +18,9 @@ module.exports = (app) => {
     } else {
       return res.send(user).status(200);
     }
+  });
+
+  app.get("/:user/posts", catchCookies, (req, res) => {
+    const userId = req.params.user;
   });
 };

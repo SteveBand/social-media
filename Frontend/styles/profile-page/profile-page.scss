@@ -62,6 +62,23 @@ section.profile-page-wrapper {
     .profile-navbar-container {
       overflow-x: auto;
       white-space: nowrap;
+      border-bottom: 1px solid gray;
+
+      &::-webkit-scrollbar {
+        width: 5px;
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: rgb(133, 132, 132);
+        border-radius: 15px;
+        max-width: 5px;
+      }
+
       ul {
         width: 100%;
         list-style: none;
@@ -71,6 +88,7 @@ section.profile-page-wrapper {
         min-width: 540px;
         overflow-x: auto;
         white-space: nowrap;
+        margin-bottom: 0;
 
         li {
           flex: 1;
