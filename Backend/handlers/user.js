@@ -70,4 +70,30 @@ module.exports = (app) => {
       return res.send({ message: "An error has occured try again later" });
     }
   });
+
+  app.get("/:user/followers", async (req, res) => {
+    const userId = req.params.user;
+    if (!userId) {
+      return res.send({ message: "User not Found!" });
+    }
+    try {
+      const obj = await FollowersModel.aggregate([
+        { $match: { follows: userId } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "parentId",
+            foreignField: "email",
+            as: "user_info",
+          },
+        },
+        { $unwind: "$user_info" },
+      ]);
+      console.log(obj);
+      return res.send(obj).status(200);
+    } catch (err) {
+      console.log("An error occured at /:user/followers", err.name);
+      return res.send({ message: "An error has Occured" }).status(400);
+    }
+  });
 };

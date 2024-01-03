@@ -80,7 +80,8 @@ const followersScehma = new mongoose.Schema(
 );
 
 const FollowersModel =
-  mongoose.model.FollowersModel || mongoose.model("followers", followersScehma);
+  mongoose.models.FollowersModel ||
+  mongoose.model("followers", followersScehma);
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;

@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
 export default function CommentPage() {
-  const [content, setContent] = useState<CommentType | null>();
-  const [comments, setComments] = useState<CommentType[] | null>([]);
+  const [content, setContent] = useState<PostType | null>();
+  const [comments, setComments] = useState<PostType[] | null>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const { data: session } = useSession();
   const user = session?.user;

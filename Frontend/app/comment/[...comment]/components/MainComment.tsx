@@ -1,11 +1,11 @@
 import { IoIosShareAlt } from "react-icons/io";
 import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
-import { CommentType } from "../../../../../types";
+import { PostType } from "../../../../../types";
 import { Date } from "@/components/Date";
-import { CommentLike } from "@/components/action-buttons/CommentLike";
+import { PostLike } from "@/components/action-buttons/PostLike";
 type Props = {
-  content: CommentType | null;
+  content: PostType | null;
 };
 
 export function MainComment({ content }: Props) {
@@ -33,7 +33,7 @@ export function MainComment({ content }: Props) {
           <Date date={content.createdAt} />
         </div>
         <div className="post-action-buttons">
-          <CommentLike comment={content} />
+          <PostLike post={content} />
 
           <div className="button-container">
             <IoChatboxOutline className="icon" />

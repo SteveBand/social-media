@@ -4,9 +4,7 @@ import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
-import Link from "next/link";
-import { ReactHTMLElement, useState } from "react";
-import { CommentLike } from "@/components/action-buttons/CommentLike";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PostLike } from "@/components/action-buttons/PostLike";
 
