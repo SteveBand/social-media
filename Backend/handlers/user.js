@@ -88,6 +88,18 @@ module.exports = (app) => {
           },
         },
         { $unwind: "$user_info" },
+        {
+          $project: {
+            _id: 0,
+            _parnetId: 0,
+            follows: 0,
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: "$user_info",
+          },
+        },
       ]);
       console.log(obj);
       return res.send(obj).status(200);

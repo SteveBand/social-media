@@ -4,9 +4,10 @@ import { FaArrowLeft } from "react-icons/fa";
 import { PostType, User } from "../../../../../types";
 import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
+import { Follower } from "@/components/Follower";
 
 export function ProfileContent({ user }: { user: User }) {
-  const [action, setAction] = useState("likes");
+  const [action, setAction] = useState("followers");
   const [data, setData] = useState([]);
   async function fetchData() {
     try {
@@ -74,12 +75,17 @@ export function ProfileContent({ user }: { user: User }) {
         </ul>
       </div>
       <section className="profile-page-data">
-        {data
+        {data && action !== "followers" && action !== "following"
           ? data.map((post: PostType) => {
               !post.user_info ? (post.user_info = user) : null;
               return <Post post={post} key={post._id} />;
             })
-          : "No Posts"}
+          : null}
+        {(data && action === "followers") || action === "following"
+          ? data.map((content) => {
+              return <Follower content={content} />;
+            })
+          : null}
       </section>
     </section>
   );

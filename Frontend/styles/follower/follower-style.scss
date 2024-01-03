@@ -1,0 +1,38 @@
+@import "./mixin.scss";
+
+a.follower-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border-bottom: 1px solid rgb(198, 196, 196);
+  display: block;
+  transition: 200ms ease;
+
+  &:hover {
+    background-color: rgb(212, 212, 212);
+  }
+  .upper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    img {
+      width: 50px;
+      border-radius: 50%;
+    }
+
+    h5 {
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      margin-left: auto;
+      @include darkButtons;
+    }
+  }
+}
