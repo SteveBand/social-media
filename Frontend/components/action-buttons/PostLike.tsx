@@ -13,6 +13,13 @@ export function PostLike({ post }: Props) {
     liked: post.liked,
     likesCount: post.likesCount,
   });
+
+  const fetchUrl = post.isPost
+    ? "http://localhost:4000/new/post/like"
+    : post.isComment
+    ? "http://localhost:4000/new/comment/like"
+    : "";
+
   async function handleLike(post: PostType) {
     if (isLiked.liked === true) {
       try {
@@ -36,7 +43,7 @@ export function PostLike({ post }: Props) {
     }
     if (isLiked.liked === false) {
       try {
-        const res = await fetch("http://localhost:4000/new/post/like", {
+        const res = await fetch(fetchUrl, {
           method: "POST",
           credentials: "include",
           headers: {

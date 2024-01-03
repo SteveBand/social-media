@@ -40,6 +40,10 @@ const postSchema = new mongoose.Schema(
     likesCount: Number,
     commentsCount: Number,
     sharesCount: Number,
+    isPost: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
@@ -56,6 +60,10 @@ const commentSchema = new mongoose.Schema(
     likesCount: Number,
     commentsCount: Number,
     sharesCount: Number,
+    isComment: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

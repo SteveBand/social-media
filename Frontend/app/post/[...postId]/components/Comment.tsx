@@ -1,5 +1,5 @@
 import { IoIosShareAlt } from "react-icons/io";
-import { CommentType } from "../../../../../types";
+import { PostType } from "../../../../../types";
 import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { IoChatboxOutline } from "react-icons/io5";
@@ -8,9 +8,10 @@ import Link from "next/link";
 import { ReactHTMLElement, useState } from "react";
 import { CommentLike } from "@/components/action-buttons/CommentLike";
 import { useRouter } from "next/navigation";
+import { PostLike } from "@/components/action-buttons/PostLike";
 
 type Props = {
-  comment: CommentType;
+  comment: PostType;
 };
 
 export function Comment({ comment }: Props) {
@@ -67,7 +68,7 @@ export function Comment({ comment }: Props) {
       <footer
         data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
       >
-        <CommentLike comment={comment} />
+        <PostLike post={comment} />
         <div className="button-container" onClick={handleCommentModel} id="">
           <IoChatboxOutline className="icon" />
           <p>{comment.commentsCount > 0 && comment.commentsCount}</p>

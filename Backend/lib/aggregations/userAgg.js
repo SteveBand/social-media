@@ -50,29 +50,6 @@ const userPostsAggregation = (userId) => {
   ];
 };
 
-function userCommentsLikes(userId) {
-  return [
-    { $match: { userId: userId } },
-    {
-      $lookup: {
-        from: "comments",
-        let: { parentId: "$parentId" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: [{ $toString: "$$parentId" }, { $toString: "$_id" }],
-              },
-            },
-          },
-        ],
-        as: "comments",
-      },
-    },
-    { $unwind: "$comments" },
-  ];
-}
-
 function userAllLiked(userId, loggedUserId) {
   return [
     { $match: { userId: userId } },
@@ -144,5 +121,47 @@ function userAllLiked(userId, loggedUserId) {
   ];
 }
 
+function userCommentLikes(userId, loggedUserId) {
+  return [
+    { $match: { userId: userId } },
+    {
+      $lookup: {
+        from: "likes",
+        let: { userId: loggedUserId, parentId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [
+                      { $toString: "$parentId" },
+                      { $toString: "$$parentId" },
+                    ],
+                  },
+                  { $eq: ["$userId", "$$userId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        liked: {
+          $cond: {
+            if: { $gt: [{ $size: "$likes" }, 0] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+  ];
+}
+
 exports.userPostsAggregation = userPostsAggregation;
 exports.userAllLiked = userAllLiked;
+exports.userCommentLikes = userCommentLikes;

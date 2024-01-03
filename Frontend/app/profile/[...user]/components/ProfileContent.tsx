@@ -77,7 +77,7 @@ export function ProfileContent({ user }: { user: User }) {
         {data
           ? data.map((post: PostType) => {
               !post.user_info ? (post.user_info = user) : null;
-              return <Post post={post} />;
+              return <Post post={post} key={post._id} />;
             })
           : "No Posts"}
       </section>

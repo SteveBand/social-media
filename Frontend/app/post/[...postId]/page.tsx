@@ -9,10 +9,17 @@ import { Comment } from "./components/Comment";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Post } from "@/components/Post";
 
-export default function PostPage({ params }: { params: { postId: any } }) {
+export default function PostPage({
+  params,
+  target,
+}: {
+  params: { postId: any };
+  target: string;
+}) {
   const [content, setContent] = useState<PostType | null>();
-  const [comments, setComments] = useState<CommentType[] | null>([]);
+  const [comments, setComments] = useState<PostType[] | null>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const { data: session } = useSession();
   const user = session?.user;
