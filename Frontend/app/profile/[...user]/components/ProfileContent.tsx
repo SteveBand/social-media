@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
 
 export function ProfileContent({ user }: { user: User }) {
-  const [action, setAction] = useState("posts");
+  const [action, setAction] = useState("likes");
   const [data, setData] = useState([]);
   async function fetchData() {
     try {
@@ -76,6 +76,7 @@ export function ProfileContent({ user }: { user: User }) {
       <section className="profile-page-data">
         {data
           ? data.map((post: PostType) => {
+              !post.user_info ? (post.user_info = user) : null;
               return <Post post={post} />;
             })
           : "No Posts"}

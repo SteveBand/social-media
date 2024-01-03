@@ -32,14 +32,17 @@ const UserModel = mongoose.models.users || mongoose.model("users", userSchema);
 
 /// Post Model + Schema
 
-const postSchema = new mongoose.Schema({
-  content: String,
-  parentId: String,
-  date: String,
-  likesCount: Number,
-  commentsCount: Number,
-  sharesCount: Number,
-});
+const postSchema = new mongoose.Schema(
+  {
+    content: String,
+    parentId: String,
+    date: String,
+    likesCount: Number,
+    commentsCount: Number,
+    sharesCount: Number,
+  },
+  { timestamps: true }
+);
 
 const Post = mongoose.models.Post || mongoose.model("posts", postSchema);
 

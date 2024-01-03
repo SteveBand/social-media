@@ -1,4 +1,7 @@
-const { userPostsAggregation } = require("../lib/aggregations/userAgg");
+const {
+  userPostsAggregation,
+  userAllLiked,
+} = require("../lib/aggregations/userAgg");
 const { catchCookies } = require("../middlewares/catchCookies");
 const {
   UserModel,
@@ -33,6 +36,13 @@ module.exports = (app) => {
   });
 
   app.get("/:user/likes", catchCookies, async (req, res) => {
-    
+    const userId = req.params.user;
+    const loggedUserId = req.userData.email;
+    if (!userId) {
+      return res.send({ message: "User not Found!" }).status(404);
+    }
+    const obj = await LikesModel.aggregate(userAllLiked(userId, loggedUserId));
+    console.log(obj);
+    return res.send(obj);
   });
 };
