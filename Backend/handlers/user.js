@@ -74,6 +74,7 @@ module.exports = (app) => {
   app.get("/:user/followers", catchCookies, async (req, res) => {
     const userId = req.params.user;
     const loggedUserId = req.userData.email;
+    console.log(loggedUserId);
     if (!userId) {
       return res.send({ message: "User not Found!" });
     }
@@ -90,20 +91,41 @@ module.exports = (app) => {
         },
         { $unwind: "$user_info" },
         {
+          $lookup: {
+            from: "followers",
+            let: { userId: "$user_info.email", parentId: loggedUserId },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$parentId", "$$parentId"] },
+                      { $eq: ["$follows", "$$userId"] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "following",
+          },
+        },
+        {
           $addFields: {
             "user_info.isFollowing": {
-              $and: [
-                { $eq: ["$parentId", loggedUserId] },
-                { $eq: ["$follows", "$user_info.email"] },
-              ],
+              $cond: {
+                if: { $gt: [{ $size: "$following" }, 0] },
+                then: true,
+                else: false,
+              },
             },
           },
         },
         {
           $project: {
             _id: 0,
-            parnetId: 0,
+            parentId: 0,
             follows: 0,
+            following: 0,
           },
         },
         {
@@ -163,7 +185,7 @@ module.exports = (app) => {
           },
         },
       ]);
-      console.log(obj);
+
       return res.send(obj).status(200);
     } catch (err) {
       console.log("An error has occured at /:user/followes", err);
