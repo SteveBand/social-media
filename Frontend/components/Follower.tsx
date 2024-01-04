@@ -1,6 +1,7 @@
 import "@/styles/follower/follower-style.scss";
 import Link from "next/link";
 import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
+import { useSession } from "next-auth/react";
 
 export function Follower({
   content,
@@ -9,8 +10,29 @@ export function Follower({
   content: any;
   loading: boolean;
 }) {
+  const { data: session } = useSession();
+  const parentId = session?.user?.email;
+
   if (loading) {
     return <FollowerSkeleton />;
+  }
+
+  async function handleFollow(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    const res = await fetch(
+      `http://localhost:4000/new/follow?parentId=${parentId}&follows=${content.email}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await res.json();
+    console.log(data);
   }
   return (
     <Link href={`/profile/${content.email}`} className="follower-wrapper">
@@ -20,7 +42,8 @@ export function Follower({
           <h5>{content.name}</h5>
           <p>{content.bio}</p>
         </div>
-        <button>Follow</button>
+        {!content.isFollowing && <button onClick={handleFollow}>Follow</button>}
+        {content.isFollowing && <button>Unfollow</button>}
       </div>
     </Link>
   );

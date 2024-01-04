@@ -73,8 +73,8 @@ const CommentModel =
 
 const followersScehma = new mongoose.Schema(
   {
-    parnetId: String,
-    following: String,
+    parentId: String,
+    follows: String,
   },
   { timestamps: true }
 );

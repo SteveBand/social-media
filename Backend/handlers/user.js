@@ -73,6 +73,7 @@ module.exports = (app) => {
 
   app.get("/:user/followers", catchCookies, async (req, res) => {
     const userId = req.params.user;
+    const loggedUserId = req.userData.email;
     if (!userId) {
       return res.send({ message: "User not Found!" });
     }
@@ -88,6 +89,16 @@ module.exports = (app) => {
           },
         },
         { $unwind: "$user_info" },
+        {
+          $addFields: {
+            "user_info.isFollowing": {
+              $and: [
+                { $eq: ["$parentId", loggedUserId] },
+                { $eq: ["$follows", "$user_info.email"] },
+              ],
+            },
+          },
+        },
         {
           $project: {
             _id: 0,
@@ -111,6 +122,7 @@ module.exports = (app) => {
 
   app.get("/:user/following", catchCookies, async (req, res) => {
     const userId = req.params.user;
+    const loggedUserId = req.userData.email;
     if (!userId) {
       return res.send({ message: "User not found!" });
     }
@@ -129,6 +141,16 @@ module.exports = (app) => {
         },
         { $unwind: "$user_info" },
         {
+          $addFields: {
+            "user_info.isFollowing": {
+              $and: [
+                { $eq: ["$parentId", loggedUserId] },
+                { $eq: ["$follows", "$user_info.email"] },
+              ],
+            },
+          },
+        },
+        {
           $project: {
             _id: 0,
             parentId: 0,
@@ -141,6 +163,7 @@ module.exports = (app) => {
           },
         },
       ]);
+      console.log(obj);
       return res.send(obj).status(200);
     } catch (err) {
       console.log("An error has occured at /:user/followes", err);

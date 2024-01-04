@@ -33,3 +33,4 @@ require("./handlers/post")(app);
 require("./handlers/like")(app);
 require("./handlers/comment")(app);
 require("./handlers/user")(app);
+require("./handlers/follow")(app);
