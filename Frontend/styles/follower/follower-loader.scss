@@ -1,0 +1,40 @@
+@import "../loaders/infinity-line.scss";
+@import "../loaders/water-filling-loader.scss";
+@import "../mixin.scss";
+article.follower-loader-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(212, 212, 212);
+  cursor: pointer;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 20px;
+  .img-loader {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  .content {
+    width: 40%;
+    .name {
+      width: 100px;
+      height: 10px;
+      background-color: gray;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+    .bio {
+      width: 200px;
+      height: 10px;
+      background-color: black;
+      border-radius: 10px;
+    }
+  }
+
+  button {
+    margin-left: auto;
+    @include darkButtons;
+  }
+}

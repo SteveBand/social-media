@@ -1,7 +1,17 @@
 import "@/styles/follower/follower-style.scss";
 import Link from "next/link";
+import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
 
-export function Follower({ content }: { content: any }) {
+export function Follower({
+  content,
+  loading,
+}: {
+  content: any;
+  loading: boolean;
+}) {
+  if (loading) {
+    return <FollowerSkeleton />;
+  }
   return (
     <Link href={`/profile/${content.email}`} className="follower-wrapper">
       <div className="upper">

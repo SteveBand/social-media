@@ -71,7 +71,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/:user/followers", async (req, res) => {
+  app.get("/:user/followers", catchCookies, async (req, res) => {
     const userId = req.params.user;
     if (!userId) {
       return res.send({ message: "User not Found!" });
@@ -91,7 +91,7 @@ module.exports = (app) => {
         {
           $project: {
             _id: 0,
-            _parnetId: 0,
+            parnetId: 0,
             follows: 0,
           },
         },
@@ -106,6 +106,45 @@ module.exports = (app) => {
     } catch (err) {
       console.log("An error occured at /:user/followers", err.name);
       return res.send({ message: "An error has Occured" }).status(400);
+    }
+  });
+
+  app.get("/:user/following", catchCookies, async (req, res) => {
+    const userId = req.params.user;
+    if (!userId) {
+      return res.send({ message: "User not found!" });
+    }
+    try {
+      const obj = await FollowersModel.aggregate([
+        {
+          $match: { parentId: userId },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "follows",
+            foreignField: "email",
+            as: "user_info",
+          },
+        },
+        { $unwind: "$user_info" },
+        {
+          $project: {
+            _id: 0,
+            parentId: 0,
+            follows: 0,
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: "$user_info",
+          },
+        },
+      ]);
+      return res.send(obj).status(200);
+    } catch (err) {
+      console.log("An error has occured at /:user/followes", err);
+      return res.send({ message: "something went wrong" });
     }
   });
 };

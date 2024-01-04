@@ -1,0 +1,16 @@
+.inifinty-line-loader {
+  width: calc(80px / cos(45deg));
+  height: 14px;
+  background: repeating-linear-gradient(
+      -45deg,
+      #d5d5d5 0 15px,
+      #10111364 0 20px
+    )
+    left/200% 100%;
+  animation: l3 4s infinite linear;
+}
+@keyframes l3 {
+  100% {
+    background-position: right;
+  }
+}
