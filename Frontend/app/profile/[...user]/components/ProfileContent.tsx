@@ -62,19 +62,39 @@ export function ProfileContent({ user }: { user: User }) {
       </article>
       <div className="profile-navbar-container">
         <ul className="profile-page-navbar">
-          <li data-fetch="posts" onClick={handleButtons}>
+          <li
+            data-fetch="posts"
+            onClick={handleButtons}
+            className={`${action === "posts" && "active"}`}
+          >
             Posts
           </li>
-          <li data-fetch="likes" onClick={handleButtons}>
+          <li
+            data-fetch="likes"
+            onClick={handleButtons}
+            className={`${action === "likes" && "active"}`}
+          >
             Likes
           </li>
-          <li data-fetch="comments" onClick={handleButtons}>
+          <li
+            data-fetch="comments"
+            onClick={handleButtons}
+            className={`${action === "comments" && "active"}`}
+          >
             Replies
           </li>
-          <li data-fetch="following" onClick={handleButtons}>
+          <li
+            data-fetch="following"
+            onClick={handleButtons}
+            className={`${action === "following" && "active"}`}
+          >
             Following
           </li>
-          <li data-fetch="followers" onClick={handleButtons}>
+          <li
+            data-fetch="followers"
+            onClick={handleButtons}
+            className={`${action === "followers" && "active"}`}
+          >
             Followers
           </li>
         </ul>

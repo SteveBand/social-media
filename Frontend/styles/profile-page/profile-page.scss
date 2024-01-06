@@ -101,6 +101,12 @@ section.profile-page-wrapper {
             background-color: rgb(208, 208, 208);
           }
         }
+        li.active {
+          text-decoration-line: underline;
+          text-underline-offset: 6px;
+          text-decoration-thickness: 3px;
+          text-decoration-color: rgb(93, 164, 239);
+        }
       }
     }
   }
