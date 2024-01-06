@@ -21,7 +21,7 @@ module.exports = (app) => {
     const follows = req.query.follows;
     try {
       await FollowersModel.deleteOne({ parentId, follows });
-      return res.status(200);
+      return res.send().status(200);
     } catch (err) {
       console.log("An error has occured at '/delete/follow':  ", err);
       return res

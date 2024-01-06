@@ -83,11 +83,13 @@ module.exports = (app) => {
         const obj = await CommentModel.aggregate(
           fetchCommentPost(postId, req.userData.email)
         );
+        console.log(obj);
         return res.send(obj.pop()).status(200);
       } else if (!userId) {
         const obj = await CommentModel.aggregate(
           fetchCommentPost(postId, req.userData.email)
         );
+        console.log(obj);
         return res.send(obj.pop()).status(200);
       }
     } catch (err) {

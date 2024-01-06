@@ -5,6 +5,7 @@ import { PostType, User } from "../../../../../types";
 import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
 import { Follower } from "@/components/Follower";
+import { Comment } from "@/app/post/[...postId]/components/Comment";
 
 export function ProfileContent({ user }: { user: User }) {
   const [action, setAction] = useState("posts");
@@ -82,7 +83,11 @@ export function ProfileContent({ user }: { user: User }) {
         {action !== "followers" && action !== "following"
           ? data.map((post: PostType) => {
               !post.user_info ? (post.user_info = user) : null;
-              return <Post post={post} key={post._id} />;
+              return post.isComment ? (
+                <Comment comment={post} />
+              ) : (
+                <Post post={post} key={post._id} />
+              );
             })
           : null}
 

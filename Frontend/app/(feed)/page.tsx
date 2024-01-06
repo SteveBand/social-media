@@ -7,7 +7,6 @@ import { createPortal } from "react-dom";
 import { useAppSelector } from "@/hooks";
 import { PostsFeed } from "./components/PostsFeed";
 import { Suspense } from "react";
-import { CommentModal } from "@/components/commentModal/CommentModal";
 export default function Page() {
   const modal = useAppSelector((state) => state.postReducer.isModal);
 

@@ -3,20 +3,19 @@
 import { FaArrowLeft } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
-import { CommentType, PostType } from "../../../../types";
+import { PostType } from "../../../../types";
 import { MainPost } from "./components/MainPost";
 import { Comment } from "./components/Comment";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Post } from "@/components/Post";
 
 export default function PostPage({
   params,
   target,
 }: {
   params: { postId: any };
-  target: string;
+  target: any;
 }) {
   const [content, setContent] = useState<PostType | null>();
   const [comments, setComments] = useState<PostType[] | null>([]);
@@ -28,7 +27,6 @@ export default function PostPage({
   async function fetchPostData() {
     try {
       const postId = params?.postId?.[0];
-      console.log(postId);
       await fetch(`http://localhost:4000/post/${postId}`, {
         credentials: "include",
         method: "GET",
