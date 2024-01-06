@@ -15,4 +15,20 @@ module.exports = (app) => {
     }).save();
     return res.send(newFollow).status(200);
   });
+
+  app.post("/delete/follow", authGuard, async (req, res) => {
+    const parentId = req.query.parentId;
+    const follows = req.query.follows;
+    try {
+      await FollowersModel.deleteOne({ parentId, follows });
+      return res.status(200);
+    } catch (err) {
+      console.log("An error has occured at '/delete/follow':  ", err);
+      return res
+        .send({
+          message: "An error has Occured please try again later",
+        })
+        .status(500);
+    }
+  });
 };

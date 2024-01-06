@@ -31,8 +31,22 @@ export function Follower({
         },
       }
     );
-    const data = await res.json();
-    console.log(data);
+  }
+
+  async function handleUnfollow(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    const res = await fetch(
+      `http://localhost:4000/delete/follow?parentId=${parentId}&follows=${content.email}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
   return (
     <Link href={`/profile/${content.email}`} className="follower-wrapper">
@@ -43,7 +57,9 @@ export function Follower({
           <p>{content.bio}</p>
         </div>
         {!content.isFollowing && <button onClick={handleFollow}>Follow</button>}
-        {content.isFollowing && <button>Unfollow</button>}
+        {content.isFollowing && (
+          <button onClick={handleUnfollow}>Unfollow</button>
+        )}
       </div>
     </Link>
   );

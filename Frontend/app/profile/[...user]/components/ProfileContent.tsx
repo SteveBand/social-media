@@ -61,7 +61,7 @@ export function ProfileContent({ user }: { user: User }) {
       </article>
       <div className="profile-navbar-container">
         <ul className="profile-page-navbar">
-          <li data-fetch="posts active" onClick={handleButtons}>
+          <li data-fetch="posts" onClick={handleButtons}>
             Posts
           </li>
           <li data-fetch="likes" onClick={handleButtons}>
