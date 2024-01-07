@@ -3,14 +3,12 @@ section.profile-page-wrapper {
   min-height: 100vh;
   display: flex;
   gap: 100px;
-  overflow-x: hidden;
 
   .profile-content {
     width: 570px;
     min-width: 300px;
     min-height: 100vh;
     border: 1px solid gray;
-    overflow-x: hidden;
     header {
       display: flex;
       align-items: center;

@@ -1,5 +1,6 @@
 import { User } from "../../types";
 import { useRouter } from "next/navigation";
+import "@/styles/components/profileImage.scss";
 type Props = {
   userInfo: User;
 };

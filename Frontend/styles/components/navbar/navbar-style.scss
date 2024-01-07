@@ -4,6 +4,10 @@
   padding: 20px;
   display: flex;
   justify-content: flex-end;
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
   .navbar-links-wrapper {
     display: flex;
     flex-direction: column;

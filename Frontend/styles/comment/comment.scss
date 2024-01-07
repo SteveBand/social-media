@@ -5,6 +5,7 @@
   border-bottom: 1px solid gray;
   cursor: pointer;
   transition: 200ms ease;
+
   &:hover {
     background-color: rgb(214, 211, 211);
   }
@@ -15,6 +16,7 @@
     width: 95%;
     margin: 0 auto;
     gap: 10px;
+    position: relative;
     img {
       width: 50px;
       height: 50px;

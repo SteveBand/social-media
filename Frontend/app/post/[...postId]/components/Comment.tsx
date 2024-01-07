@@ -7,6 +7,7 @@ import { SlOptions } from "react-icons/sl";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PostLike } from "@/components/action-buttons/PostLike";
+import { ProfileImage } from "@/components/ProfileImage";
 
 type Props = {
   comment: PostType;
@@ -49,7 +50,7 @@ export function Comment({ comment }: Props) {
         className="comment-container"
         data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
       >
-        <img src={comment.user_info.avatar_url} />
+        <ProfileImage userInfo={comment.user_info} />
         <div
           className="content"
           data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
