@@ -62,7 +62,7 @@ export function Comment({ comment }: Props) {
             {comment.content}
           </p>
         </div>
-        <SlOptions />
+        <SlOptions className="options-btn" />
       </div>
       <footer
         data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}

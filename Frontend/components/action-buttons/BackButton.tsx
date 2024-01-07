@@ -3,5 +3,5 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 export function BackButton() {
   const router = useRouter();
-  return <FaArrowLeft onClick={() => router.back()} />;
+  return <FaArrowLeft onClick={() => router.back()} className="back-button" />;
 }
