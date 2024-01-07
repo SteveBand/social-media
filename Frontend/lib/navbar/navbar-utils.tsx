@@ -22,7 +22,4 @@ export const navLinks = [
     name: "Post",
     icon: <RiImageAddLine className="navbar-link-icon" />,
   },
-  {
-    path: "/",
-  },
 ];

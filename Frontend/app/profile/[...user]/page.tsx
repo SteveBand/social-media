@@ -1,5 +1,4 @@
 import Navbar from "@/components/navbar/Navbar";
-import { FaArrowLeft } from "react-icons/fa6";
 import { ProfileContent } from "./components/ProfileContent";
 
 export default async function ProfilePage({

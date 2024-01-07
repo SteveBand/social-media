@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
 import { Follower } from "@/components/Follower";
 import { Comment } from "@/app/post/[...postId]/components/Comment";
+import { BackButton } from "@/components/action-buttons/BackButton";
 
 export function ProfileContent({ user }: { user: User }) {
   const [action, setAction] = useState("posts");
@@ -45,7 +46,7 @@ export function ProfileContent({ user }: { user: User }) {
   return (
     <section className="profile-content">
       <header>
-        <FaArrowLeft className="icon" />
+        <BackButton />
         <h4>{user.name}</h4>
       </header>
       <article className="user-content">

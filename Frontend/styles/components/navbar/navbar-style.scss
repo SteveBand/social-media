@@ -21,6 +21,11 @@
         font-size: 1.2rem;
       }
 
+      img {
+        width: 21px;
+        height: 21px;
+      }
+
       &:hover {
         background-color: #ced5ea;
       }
@@ -39,12 +44,63 @@
     }
   }
 
-  .navbar-logout-button {
-    .navbar-logout-button-container {
-      cursor: pointer;
-      .navbar-logout-icon {
+  .logged-user {
+    width: 100%;
+    margin-top: auto;
+    padding: 5px 15px;
+    border-radius: 15px;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    cursor: pointer;
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+    p {
+      margin: 0;
+    }
+
+    .logged-user-modal {
+      position: absolute;
+      width: 250px;
+      top: -210%;
+      left: 0;
+      border-radius: 15px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      letter-spacing: 1px;
+      transition: 300ms ease;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.435);
+      -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.435);
+      -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.435);
+      a {
+        text-decoration: none;
+        padding: 10px 0;
+        transition: 200ms ease;
+
+        &:hover {
+          background-color: rgb(206, 205, 205);
+        }
+      }
+
+      .signout {
+        padding: 10px 0;
+        transition: 200ms ease;
+        &:hover {
+          background-color: rgb(206, 205, 205);
+        }
       }
     }
+  }
+
+  .active {
+    background-color: #ced5ea;
   }
 }
 
@@ -53,6 +109,15 @@
     width: 60px;
     display: flex;
     padding: 20px 0;
+
+    .logged-user {
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      p {
+        display: none;
+      }
+    }
   }
 
   .navbar-link {

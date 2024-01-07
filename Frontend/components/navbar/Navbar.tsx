@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { CiLogout } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
 import { navLinks } from "@/lib/navbar/navbar-utils";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 type Props = {};
 
 export default function Navbar({}: Props) {
   const pathname = usePathname();
-
+  const { data: session } = useSession();
+  const [modal, setModal] = useState(false);
   return (
     <nav className="navbar-wrapper">
       <div className="navbar-links-wrapper">
@@ -26,13 +29,30 @@ export default function Navbar({}: Props) {
             </Link>
           );
         })}
-      </div>
-      {/* <div className="navbar-logout-button">
-        <div className="navbar-logout-button-container">
-          <CiLogout className="navbar-logout-icon" />
-          Logout
+        <div
+          className={`${
+            pathname === `/profile/${session?.user?.email}`
+              ? "logged-user active"
+              : "logged-user"
+          }`}
+          onClick={() => setModal((prev) => !prev)}
+        >
+          {session?.user?.image ? (
+            <img src={session.user.image} />
+          ) : (
+            <CgProfile />
+          )}
+          <p>{session?.user?.name}</p>
+          {modal && (
+            <div className="logged-user-modal">
+              <Link href={`/profile/${session?.user?.email}`}>Profile</Link>
+              <div className="signout" onClick={() => signOut()}>
+                Logout
+              </div>
+            </div>
+          )}
         </div>
-      </div> */}
+      </div>
     </nav>
   );
 }
