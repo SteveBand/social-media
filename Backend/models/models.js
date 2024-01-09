@@ -3,8 +3,16 @@ const mongoose = require("mongoose");
 /// Likes Model + Schema
 
 const likesSchema = new mongoose.Schema({
-  parentId: String,
-  userId: String,
+  parentId: {
+    type: String,
+    lowercase: true,
+    index: true,
+  },
+  userId: {
+    type: String,
+    lowercase: true,
+    index: true,
+  },
 });
 const LikesModel =
   mongoose.models.LikesModel || mongoose.model("likes", likesSchema);
@@ -13,12 +21,23 @@ const LikesModel =
 
 const userSchema = new mongoose.Schema(
   {
-    email: String,
+    email: {
+      type: String,
+      index: { unique: true, text: true },
+      lowercase: true,
+    },
     password: String,
-    name: String,
+    name: {
+      type: String,
+      index: { text: true },
+      lowercase: true,
+    },
     phoneNumber: String,
     gender: String,
-    bio: String,
+    bio: {
+      type: String,
+      index: { text: true },
+    },
     avatar_url: String,
     followers: Number,
     following: Number,
@@ -34,8 +53,17 @@ const UserModel = mongoose.models.users || mongoose.model("users", userSchema);
 
 const postSchema = new mongoose.Schema(
   {
-    content: String,
-    parentId: String,
+    content: {
+      type: String,
+      index: {
+        text: true,
+      },
+    },
+    parentId: {
+      type: String,
+      index: true,
+      lowercase: true,
+    },
     date: String,
     likesCount: Number,
     commentsCount: Number,
@@ -54,9 +82,21 @@ const Post = mongoose.models.Post || mongoose.model("posts", postSchema);
 
 const commentSchema = new mongoose.Schema(
   {
-    content: String,
-    parentId: String,
-    userId: String,
+    content: {
+      type: String,
+      index: {
+        text: true,
+      },
+    },
+    parentId: {
+      type: String,
+      index: true,
+      lowercase: true,
+    },
+    userId: {
+      type: String,
+      lowercase: true,
+    },
     likesCount: Number,
     commentsCount: Number,
     sharesCount: Number,
@@ -73,8 +113,16 @@ const CommentModel =
 
 const followersScehma = new mongoose.Schema(
   {
-    parentId: String,
-    follows: String,
+    parentId: {
+      type: String,
+      index: true,
+      lowercase: true,
+    },
+    follows: {
+      type: String,
+      index: true,
+      lowercase: true,
+    },
   },
   { timestamps: true }
 );
@@ -82,6 +130,36 @@ const followersScehma = new mongoose.Schema(
 const FollowersModel =
   mongoose.models.FollowersModel ||
   mongoose.model("followers", followersScehma);
+
+///Community Model///
+const communityModel = new mongoose.Schema({
+  image: String,
+  membersCount: Number,
+  postsCount: 0,
+  about: String,
+  title: {
+    type: String,
+    index: {
+      text: true,
+      unique: true,
+    },
+  },
+  rules: {
+    type: [
+      {
+        id: Number,
+        description: String,
+        lowercase: true,
+      },
+    ],
+    required: false,
+  },
+  topics: Array,
+  moderatores: {
+    type: [],
+    lowercase: true,
+  },
+});
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
