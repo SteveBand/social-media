@@ -132,10 +132,10 @@ const FollowersModel =
   mongoose.model("followers", followersScehma);
 
 ///Community Model///
-const communityModel = new mongoose.Schema({
+const communitySchema = new mongoose.Schema({
   image: String,
   membersCount: Number,
-  postsCount: 0,
+  postsCount: Number,
   about: String,
   title: {
     type: String,
@@ -148,21 +148,29 @@ const communityModel = new mongoose.Schema({
     type: [
       {
         id: Number,
-        description: String,
-        lowercase: true,
+        description: {
+          type: String,
+          lowercase: true,
+        },
       },
     ],
     required: false,
   },
   topics: Array,
-  moderatores: {
-    type: [],
-    lowercase: true,
-  },
+  moderatores: [
+    {
+      type: String,
+      lowercase: true,
+    },
+  ],
 });
+
+const Community =
+  mongoose.models.Community || mongoose.model("communities", communitySchema);
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
 exports.Post = Post;
 exports.CommentModel = CommentModel;
 exports.FollowersModel = FollowersModel;
+exports.Community = Community;

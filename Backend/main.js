@@ -35,3 +35,4 @@ require("./handlers/comment")(app);
 require("./handlers/user")(app);
 require("./handlers/follow")(app);
 require("./handlers/search")(app);
+require("./handlers/community")(app);
