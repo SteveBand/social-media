@@ -4,12 +4,11 @@ import { BackButton } from "@/components/action-buttons/BackButton";
 import { Community } from "../../../../../types";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { CgProfile } from "react-icons/cg";
 import { CommunityForm } from "./communityForm";
 
 export function CommunityContent({ data }: { data: Community }) {
   const [action, setAction] = useState<string>("top");
-  const [content, setContent] = useState();
+  const [isMember, setIsMember] = useState(data.isMember || false);
   const { data: session } = useSession();
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
     const target = e.target as HTMLElement;
@@ -17,35 +16,35 @@ export function CommunityContent({ data }: { data: Community }) {
     action && setAction(action);
   }
 
-  async function handleFetch() {
-    const res = await fetch(
-      `http://localhost:4000/community/${data._id}/${action}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      setContent(data);
-    }
-  }
+  // async function handleFetch() {
+  //   const res = await fetch(
+  //     `http://localhost:4000/community/${data._id}/${action}`,
+  //     {
+  //       method: "GET",
+  //       credentials: "include",
+  //     }
+  //   );
+  //   if (res.ok) {
+  //     const data = await res.json();
+  //     setContent(data);
+  //   }
+  // }
 
-  async function handlePost(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    e.preventDefault();
+  async function handleJoin() {
     try {
       const res = await fetch(
-        `http://localhost:4000/community/${data._id}/new/post?content=`
+        `http://localhost:4000/community/${data._id}/new/member`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
       );
-    } catch (err) {
-      console.log(
-        "An error has Occured at CommunityContent.tsx Component at handleFetch Function",
-        err
-      );
-    }
+      if (res.ok) {
+        const data = await res.json();
+      }
+    } catch (error) {}
   }
+
   return (
     <section className="community-page-container">
       <header>
@@ -84,7 +83,7 @@ export function CommunityContent({ data }: { data: Community }) {
           Members
         </li>
       </ul>
-      {session?.user && <CommunityForm />}
+      {session?.user && <CommunityForm data={data} />}
     </section>
   );
 }

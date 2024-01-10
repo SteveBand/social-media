@@ -13,12 +13,14 @@ async function communityGuard(req, res, next) {
       return res.send({ message: "Invalid Token" }).status(401);
     }
     req.userData = data;
-    const follow = CommunityMember.findOne({
+    const follow = await CommunityMember.findOne({
       parentId: req.userData.email,
       communityId: req.params.id,
     });
     if (!follow) {
-      return res.send({ message: "User is not member of this community" });
+      return res
+        .send({ message: "User is not member of this community" })
+        .status(403);
     }
     next();
   } catch (err) {
