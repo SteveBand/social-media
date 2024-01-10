@@ -6,7 +6,7 @@
   .community-page-container {
     width: 33%;
     max-width: 570px;
-    min-height: 280px;
+    min-width: 300px;
     border: 1px solid gray;
     header {
       display: flex;
@@ -49,6 +49,53 @@
 
       p {
         margin: 0;
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+          @include darkButtons;
+        }
+      }
+    }
+
+    form {
+      box-sizing: border-box;
+      padding: 10px;
+      border-bottom: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      .upper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        letter-spacing: 0.5px;
+        img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+        }
+
+        .upper-content {
+          flex: 10;
+
+          textarea {
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            outline: none;
+            resize: none;
+            margin-top: 5px;
+            font-size: 0.85rem;
+          }
+        }
+      }
+
+      button {
+        @include darkButtons;
+        margin-left: auto;
       }
     }
   }

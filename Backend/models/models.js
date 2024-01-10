@@ -168,9 +168,47 @@ const communitySchema = new mongoose.Schema({
 const Community =
   mongoose.models.Community || mongoose.model("communities", communitySchema);
 
+const CommunityPostSchema = new mongoose.Schema(
+  {
+    content: {
+      type: String,
+      index: { text: true },
+      lowercase: true,
+    },
+    parentId: {
+      type: String,
+      index: { text: true },
+    },
+    likesCount: Number,
+    commentsCount: Number,
+    sharesCount: Number,
+  },
+  { timestamps: true }
+);
+
+const CommunityPost =
+  mongoose.models.CommunityPost ||
+  mongoose.model("communityPosts", CommunityPostSchema);
+
+const communityMemberSchema = new mongoose.Schema(
+  {
+    parentId: String,
+    communityId: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const CommunityMember =
+  mongoose.models.CommunityFollower ||
+  mongoose.model("communityFollowers", communityMemberSchema);
+
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
 exports.Post = Post;
 exports.CommentModel = CommentModel;
 exports.FollowersModel = FollowersModel;
 exports.Community = Community;
+exports.CommunityPost = CommunityPost;
+exports.CommunityMember = CommunityMember;
