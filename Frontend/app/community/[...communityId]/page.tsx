@@ -1,26 +1,41 @@
-import Navbar from "@/components/navbar/Navbar";
-import { CommunityContent } from "./components/CommnityContent";
-import { Community } from "../../../../types";
+"use client";
 
-export default async function Community({
+import Navbar from "@/components/navbar/Navbar";
+import { useEffect, useState } from "react";
+import { CommunityContent } from "./components/CommnityContent";
+import { CommunityType } from "../../../../types";
+
+export default function CommunityPage({
   params,
 }: {
-  params: { communityId: string };
+  params: { communityId: [string] };
 }) {
-  const communityId = params.communityId[0];
-
-  async function fetchData() {
-    const res = await fetch(`http://localhost:4000/community/${communityId}`, {
-      credentials: "include",
-    });
-
+  const [data, setData] = useState<CommunityType>();
+  const id = params.communityId[0];
+  async function handleFetch() {
+    const res = await fetch(
+      `http://localhost:4000/community/${id}
+`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     if (res.ok) {
-      const data = await res.json();
-      return data;
+      const content = await res.json();
+      setData(content);
     }
   }
 
-  const data: any = await fetchData();
+  useEffect(() => {
+    handleFetch();
+  }, []);
+
+  if (!data) {
+    return <div>No Community</div>;
+  }
+
+  console.log(data);
 
   return (
     <section className="community-page-wrapper">

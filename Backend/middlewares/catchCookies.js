@@ -1,5 +1,7 @@
 const { JWT_SECRET } = require("../config");
+
 const jwt = require("jsonwebtoken");
+
 function catchCookies(req, res, next) {
   const token = req.cookies.access_token;
   if (token) {
@@ -12,6 +14,7 @@ function catchCookies(req, res, next) {
       }
     });
   }
+
   next();
 }
 

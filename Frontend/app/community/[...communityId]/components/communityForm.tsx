@@ -1,9 +1,9 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { CgProfile } from "react-icons/cg";
-import { Community } from "../../../../../types";
+import { CommunityType } from "../../../../../types";
 
-export function CommunityForm({ data }: { data: Community }) {
+export function CommunityForm({ data }: { data: CommunityType }) {
   const { data: session } = useSession();
   const [content, setContent] = useState("");
   async function handlePost(

@@ -1,15 +1,16 @@
 "use client";
 
 import { BackButton } from "@/components/action-buttons/BackButton";
-import { Community } from "../../../../../types";
+import { CommunityType } from "../../../../../types";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./communityForm";
 
-export function CommunityContent({ data }: { data: Community }) {
+export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("top");
   const [isMember, setIsMember] = useState(data.isMember || false);
   const { data: session } = useSession();
+
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
     const target = e.target as HTMLElement;
     const action = target.getAttribute("data-fetch");
@@ -30,7 +31,10 @@ export function CommunityContent({ data }: { data: Community }) {
   //   }
   // }
 
-  async function handleJoin() {
+  async function handleJoin(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
     try {
       const res = await fetch(
         `http://localhost:4000/community/${data._id}/new/member`,
@@ -41,8 +45,11 @@ export function CommunityContent({ data }: { data: Community }) {
       );
       if (res.ok) {
         const data = await res.json();
+        console.log(data);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -57,7 +64,7 @@ export function CommunityContent({ data }: { data: Community }) {
         <p>{data.about}</p>
         <footer>
           <p>{data.membersCount} Members</p>
-          <button>Join</button>
+          <button onClick={handleJoin}>Join</button>
         </footer>
       </div>
       <ul className="actions">

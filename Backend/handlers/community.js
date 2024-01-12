@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { communityGuard } = require("../middlewares/communityGuard");
@@ -6,19 +7,46 @@ const {
   CommunityPost,
   CommunityMember,
 } = require("../models/models");
+
 module.exports = (app) => {
   app.get("/community/:id", catchCookies, async (req, res) => {
     const id = req.params.id;
+    const userId = req.userData.email;
     if (!id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
-    const community = await Community.findById(id);
-    if (!community) {
-      return res.send({ message: "Bad Request" }).status(400);
+    try {
+      // const community = await Community.findById(id);
+      const community = await Community.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(id) } },
+        {
+          $lookup: {
+            from: "communitymembers",
+            let: { parentId: userId, communityId: id },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$communityId", "$$communityId"] },
+                      { $eq: ["$parentId", "$$parentId"] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "members",
+          },
+        },
+      ]);
+      console.log(community);
+      if (!community) {
+        return res.send({ message: "Bad Request" }).status(400);
+      }
+      return res.send(community.pop()).status(200);
+    } catch (error) {
+      console.log(error, "An error has occured at /community/:id");
     }
-
-    console.log(community);
-    return res.send(community).status(200);
   });
 
   app.get("/community/:id/posts", async (req, res) => {
@@ -34,11 +62,18 @@ module.exports = (app) => {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      const newMember = new CommunityMember({
+      const newMember = await new CommunityMember({
         parentId: req.userData.email,
         communityId: id,
       });
-    } catch (error) {}
+      await newMember.save();
+      return res.send({ message: "Success" }).status(200);
+    } catch (error) {
+      console.log(
+        "An error has Occured at /community/:id/new/member",
+        error.name
+      );
+    }
   });
 
   app.post("/community/:id/new/post", communityGuard, async (req, res) => {

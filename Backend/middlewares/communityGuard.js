@@ -4,6 +4,7 @@ const { CommunityMember } = require("../models/models");
 
 async function communityGuard(req, res, next) {
   const token = req.cookies.access_token;
+  console.log(token);
   if (!token) {
     return res.send({ message: "Unauthorized" }).status(401);
   }

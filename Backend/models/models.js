@@ -166,7 +166,7 @@ const communitySchema = new mongoose.Schema({
 });
 
 const Community =
-  mongoose.models.Community || mongoose.model("communities", communitySchema);
+  mongoose.models.communities || mongoose.model("communities", communitySchema);
 
 const CommunityPostSchema = new mongoose.Schema(
   {
@@ -196,7 +196,7 @@ const CommunityPostSchema = new mongoose.Schema(
 );
 
 const CommunityPost =
-  mongoose.models.CommunityPost ||
+  mongoose.models.CommunityPosts ||
   mongoose.model("communityPosts", CommunityPostSchema);
 
 const communityMemberSchema = new mongoose.Schema(
@@ -210,8 +210,8 @@ const communityMemberSchema = new mongoose.Schema(
 );
 
 const CommunityMember =
-  mongoose.models.CommunityFollower ||
-  mongoose.model("communityFollowers", communityMemberSchema);
+  mongoose.models.communityMembers ||
+  mongoose.model("communityMembers", communityMemberSchema);
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;

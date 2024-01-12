@@ -12,11 +12,10 @@ const {
   CommentModel,
 } = require("../models/models");
 
-UserModel;
-
 module.exports = (app) => {
   app.get("/profile/:userId", async (req, res) => {
     const userId = req.params.userId;
+    console.log(req.cookies);
     const user = await UserModel.findOne({ email: userId });
     if (!user) {
       return res.send({ message: "User not Found" }).status(404);
@@ -27,12 +26,12 @@ module.exports = (app) => {
 
   app.get("/:user/posts", catchCookies, async (req, res) => {
     const userId = req.params.user;
+
     if (!userId) {
       return res.send({ message: "User not Found!" }).status(404);
     }
 
     const postArr = await Post.aggregate(userPostsAggregation(userId));
-    console.log(postArr);
     return res.send(postArr).status(200);
   });
 
