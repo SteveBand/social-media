@@ -179,6 +179,10 @@ const CommunityPostSchema = new mongoose.Schema(
       type: String,
       index: { text: true },
     },
+    communityId: {
+      type: String,
+      index: true,
+    },
     likesCount: {
       type: Number,
       default: 0,

@@ -44,12 +44,29 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         }
       );
       if (res.ok) {
-        const data = await res.json();
-        console.log(data);
+        setIsMember(true);
       }
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async function handleLeave(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        `http://localhost:4000/community/${data._id}/delete/member`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        setIsMember(false);
+      }
+    } catch (error) {}
   }
 
   return (
@@ -64,7 +81,13 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         <p>{data.about}</p>
         <footer>
           <p>{data.membersCount} Members</p>
-          <button onClick={handleJoin}>Join</button>
+          {!isMember && <button onClick={handleJoin}>Join</button>}
+          {isMember && (
+            <button onClick={handleLeave} className="is-member">
+              <span className="joined">Joined</span>
+              <span className="leave">Leave</span>
+            </button>
+          )}
         </footer>
       </div>
       <ul className="actions">

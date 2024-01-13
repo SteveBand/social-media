@@ -7,38 +7,17 @@ const {
   CommunityPost,
   CommunityMember,
 } = require("../models/models");
+const { fetchCommunity } = require("../lib/aggregations/communityAgg");
 
 module.exports = (app) => {
   app.get("/community/:id", catchCookies, async (req, res) => {
     const id = req.params.id;
-    const userId = req.userData.email;
+    const userId = req.userData.email || null;
     if (!id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      // const community = await Community.findById(id);
-      const community = await Community.aggregate([
-        { $match: { _id: new mongoose.Types.ObjectId(id) } },
-        {
-          $lookup: {
-            from: "communitymembers",
-            let: { parentId: userId, communityId: id },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$communityId", "$$communityId"] },
-                      { $eq: ["$parentId", "$$parentId"] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: "members",
-          },
-        },
-      ]);
+      const community = await Community.aggregate(fetchCommunity(id, userId));
       console.log(community);
       if (!community) {
         return res.send({ message: "Bad Request" }).status(400);
@@ -73,6 +52,30 @@ module.exports = (app) => {
         "An error has Occured at /community/:id/new/member",
         error.name
       );
+    }
+  });
+
+  app.post("/community/:id/delete/member", authGuard, async (req, res) => {
+    const id = req.params.id;
+    const userData = req.userData;
+    if (!id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    if (!userData || userData === undefined) {
+      return res.send({ message: "Unauthorized" }).status(401);
+    }
+    try {
+      await CommunityMember.findOneAndDelete({
+        parentId: userData.email,
+        communityId: id,
+      });
+      return res.send().status(200);
+    } catch (error) {
+      console.log(
+        "An error has Occured at /community/:id/delete/member",
+        err.name
+      );
+      return res.status(500);
     }
   });
 
