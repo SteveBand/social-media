@@ -50,7 +50,7 @@ module.exports = (app) => {
         { _id: new mongoose.Types.ObjectId(id) },
         { $inc: { membersCount: 1 } }
       );
-      return res.send({ message: "Success" }).status(200);
+      return res.send({ newMember: true }).status(200);
     } catch (error) {
       console.log(
         "An error has Occured at /community/:id/new/member",
@@ -78,7 +78,7 @@ module.exports = (app) => {
         { _id: new mongoose.Types.ObjectId(id) },
         { $inc: { membersCount: -1 } }
       );
-      return res.send().status(200);
+      return res.send({ newMember: false }).status(200);
     } catch (error) {
       console.log(
         "An error has Occured at /community/:id/delete/member",

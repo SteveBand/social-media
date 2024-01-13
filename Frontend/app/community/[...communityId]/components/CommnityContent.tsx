@@ -5,6 +5,7 @@ import { CommunityType } from "../../../../../types";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./communityForm";
+import { CommunityAbout } from "./communityAbout";
 
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("top");
@@ -32,44 +33,6 @@ export function CommunityContent({ data }: { data: CommunityType }) {
   //   }
   // }
 
-  async function handleJoin(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/new/member`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-      if (res.ok) {
-        setIsMember(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function handleLeave(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/delete/member`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-      if (res.ok) {
-        setIsMember(false);
-      }
-    } catch (error) {}
-  }
-
   return (
     <section className="community-page-container">
       <header>
@@ -77,20 +40,7 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         <h5>{data.title}</h5>
       </header>
       <img src={data.image} />
-      <div className="about">
-        <h2>{data.title}</h2>
-        <p>{data.about}</p>
-        <footer>
-          <p>{data.membersCount} Members</p>
-          {!isMember && <button onClick={handleJoin}>Join</button>}
-          {isMember && (
-            <button onClick={handleLeave} className="is-member">
-              <span className="joined">Joined</span>
-              <span className="leave">Leave</span>
-            </button>
-          )}
-        </footer>
-      </div>
+      <CommunityAbout data={data} />
       <ul className="actions">
         <li
           data-fetch="top"
@@ -115,6 +65,9 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         </li>
       </ul>
       {session?.user && <CommunityForm data={data} />}
+      <section className="posts-container">
+        
+      </section>
     </section>
   );
 }
