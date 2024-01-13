@@ -46,6 +46,10 @@ module.exports = (app) => {
         communityId: id,
       });
       await newMember.save();
+      await Community.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(id) },
+        { $inc: { membersCount: 1 } }
+      );
       return res.send({ message: "Success" }).status(200);
     } catch (error) {
       console.log(
@@ -69,11 +73,16 @@ module.exports = (app) => {
         parentId: userData.email,
         communityId: id,
       });
+
+      await Community.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(id) },
+        { $inc: { membersCount: -1 } }
+      );
       return res.send().status(200);
     } catch (error) {
       console.log(
         "An error has Occured at /community/:id/delete/member",
-        err.name
+        error
       );
       return res.status(500);
     }

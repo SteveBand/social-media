@@ -9,6 +9,7 @@ import { CommunityForm } from "./communityForm";
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("top");
   const [isMember, setIsMember] = useState(data.isMember || false);
+  const [posts, setPosts] = useState();
   const { data: session } = useSession();
 
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
