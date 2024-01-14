@@ -6,6 +6,7 @@ const {
   Community,
   CommunityPost,
   CommunityMember,
+  CommunityLike,
 } = require("../models/models");
 const { fetchCommunity } = require("../lib/aggregations/communityAgg");
 
@@ -18,7 +19,6 @@ module.exports = (app) => {
     }
     try {
       const community = await Community.aggregate(fetchCommunity(id, userId));
-      console.log(community);
       if (!community) {
         return res.send({ message: "Bad Request" }).status(400);
       }
@@ -28,10 +28,29 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/community/:id/posts", async (req, res) => {
+  app.get("/community/:id/posts", catchCookies, async (req, res) => {
     const id = req.params.id;
+    const userData = req.userData || null;
     if (!id) {
       return res.send({ message: "Bad Request" }).status(400);
+    }
+    try {
+      const postsArr = await CommunityPost.aggregate([
+        { $match: { communityId: id } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "parentId",
+            foreignField: "email",
+            as: "user_info",
+          },
+        },
+        { $unwind: "$user_info" },
+      ]);
+      console.log(postsArr);
+      return res.send(postsArr).status(200);
+    } catch (err) {
+      console.log("An error has occured at /community/:id/posts", err);
     }
   });
 
@@ -97,7 +116,11 @@ module.exports = (app) => {
     }
 
     try {
-      const newPost = await new CommunityPost({ parentId, content });
+      const newPost = await new CommunityPost({
+        parentId,
+        content,
+        communityId: id,
+      });
       await newPost.save();
       return res.send(newPost).status(200);
     } catch (error) {
@@ -106,6 +129,33 @@ module.exports = (app) => {
         err.name
       );
       return res.send({ message: "Server Error" }).status(500);
+    }
+  });
+
+  app.post("/community/post/:id/new/like", authGuard, async (req, res) => {
+    const postId = req.params.id;
+    const userData = req.userData;
+    const communityId = req.query.communityId;
+    if (!postId || !communityId) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    const existingLike = await CommunityLike.findOne({
+      parentId: userData.email,
+      postId: postId,
+    });
+    if (existingLike) {
+      return res.send({ message: "User already liked this post" }).status(400);
+    }
+    try {
+      const newLike = await new CommunityLike({
+        parentId: userData.email,
+        communityId,
+        postId,
+      });
+      await newLike.save();
+      return res.send({ message: "new Like Generated" }).status(200);
+    } catch (error) {
+      console.log("An error has occured at /community/post/:id/new/like", err);
     }
   });
 };

@@ -11,9 +11,9 @@ export function CommunityAbout({ data }: { data: CommunityType }) {
     e.preventDefault();
     try {
       const res = await fetch(
-        !isMember
-          ? `http://localhost:4000/community/${data._id}/new/member`
-          : `http://localhost:4000/community/${data._id}/delete/member`,
+        `http://localhost:4000/community/${data._id}/${
+          !isMember ? "new" : "delete"
+        }/member`,
         {
           method: "POST",
           credentials: "include",
@@ -22,9 +22,7 @@ export function CommunityAbout({ data }: { data: CommunityType }) {
       if (res.ok) {
         const data = await res.json();
         setIsMember((prev) => !prev);
-        data.newMember === true
-          ? setMembersCount((prev) => prev + 1)
-          : setMembersCount((prev) => prev - 1);
+        setMembersCount((prev) => (data.newMember ? prev + 1 : prev - 1));
       }
     } catch (error) {
       console.log(error);

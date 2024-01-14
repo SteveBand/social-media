@@ -217,6 +217,16 @@ const CommunityMember =
   mongoose.models.communityMembers ||
   mongoose.model("communityMembers", communityMemberSchema);
 
+const communityLikesSchema = {
+  parentId: String,
+  communityId: String,
+  postId: String,
+};
+
+const CommunityLike =
+  mongoose.models.communityLikes ||
+  mongoose.model("communityLikes", communityLikesSchema);
+
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
 exports.Post = Post;
@@ -225,3 +235,4 @@ exports.FollowersModel = FollowersModel;
 exports.Community = Community;
 exports.CommunityPost = CommunityPost;
 exports.CommunityMember = CommunityMember;
+exports.CommunityLike = CommunityLike;
