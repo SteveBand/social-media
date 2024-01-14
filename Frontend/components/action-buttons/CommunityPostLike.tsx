@@ -5,18 +5,30 @@ import { CommunityPostType } from "../../../types";
 export function CommunityPostLike({ post }: { post: CommunityPostType }) {
   const [isLiked, setIsLiked] = useState({
     liked: post.isLiked,
-    likesCount: 0,
+    likesCount: post.likesCount,
   });
 
   async function handleLike(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     const res = await fetch(
-      `http://localhost:4000/community/post/${post._id}/new/like?communityId=${post.communityId}`,
+      `http://localhost:4000/community/post/${post._id}/${
+        isLiked.liked ? "remove" : "new"
+      }/like?communityId=${post.communityId}`,
       {
         method: "POST",
         credentials: "include",
       }
     );
+    if (res.ok) {
+      setIsLiked((prev) => {
+        return {
+          liked: !prev.liked,
+          likesCount: !isLiked.liked
+            ? prev.likesCount + 1
+            : prev.likesCount - 1,
+        };
+      });
+    }
   }
 
   return (

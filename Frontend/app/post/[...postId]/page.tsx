@@ -4,26 +4,18 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { PostType } from "../../../../types";
-import { MainPost } from "./components/MainPost";
-import { Comment } from "./components/Comment";
+import { MainPost } from "../../community/post/[...post]/components/MainPost";
+import { Comment } from "../../community/post/[...post]/components/Comment";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-export default function PostPage({
-  params,
-  target,
-}: {
-  params: { postId: any };
-  target: any;
-}) {
+export default function PostPage({ params }: { params: { postId: any } }) {
   const [content, setContent] = useState<PostType | null>();
   const [comments, setComments] = useState<PostType[] | null>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const { data: session } = useSession();
   const user = session?.user;
   const router = useRouter();
-
   async function fetchPostData() {
     try {
       const postId = params?.postId?.[0];
@@ -63,7 +55,7 @@ export default function PostPage({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ params: textAreaValue, target: "post" }),
+      body: JSON.stringify({ params: textAreaValue }),
     });
     if (res.ok) {
       const data = await res.json();

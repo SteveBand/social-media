@@ -2,10 +2,10 @@ import { PostLike } from "@/components/action-buttons/PostLike";
 import { IoIosShareAlt } from "react-icons/io";
 import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
-import { PostType } from "../../../../../types";
+import { CommunityPostType, PostType } from "../../../../../../types";
 import { Date } from "@/components/Date";
 type Props = {
-  content: PostType | null;
+  content: CommunityPostType;
 };
 
 export function MainPost({ content }: Props) {
@@ -30,7 +30,7 @@ export function MainPost({ content }: Props) {
       </div>
       <footer>
         <div className="post-details">
-          <Date date={content.date} />
+          <Date date={""} />
         </div>
         <div className="post-action-buttons">
           <PostLike post={content} />

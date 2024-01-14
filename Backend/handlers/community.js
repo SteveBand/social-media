@@ -7,8 +7,12 @@ const {
   CommunityPost,
   CommunityMember,
   CommunityLike,
+  CommunityComment,
 } = require("../models/models");
-const { fetchCommunity } = require("../lib/aggregations/communityAgg");
+const {
+  fetchCommunity,
+  fetchCommunityPosts,
+} = require("../lib/aggregations/communityAgg");
 
 module.exports = (app) => {
   app.get("/community/:id", catchCookies, async (req, res) => {
@@ -35,22 +39,43 @@ module.exports = (app) => {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      const postsArr = await CommunityPost.aggregate([
-        { $match: { communityId: id } },
-        {
-          $lookup: {
-            from: "users",
-            localField: "parentId",
-            foreignField: "email",
-            as: "user_info",
-          },
-        },
-        { $unwind: "$user_info" },
-      ]);
+      const postsArr = await CommunityPost.aggregate(
+        fetchCommunityPosts(userData, id)
+      );
       console.log(postsArr);
       return res.send(postsArr).status(200);
     } catch (err) {
       console.log("An error has occured at /community/:id/posts", err);
+    }
+  });
+
+  app.get("/community/post/:id", catchCookies, async (req, res) => {
+    const id = req.params.id;
+    const userData = req.userData || null;
+    if (!id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    try {
+      const post = await CommunityPost.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(id) } },
+        {
+          $lookup: {
+            from: "communitycomments",
+            localField: "_id",
+            foreignField: "parentId",
+            as: "comments",
+          },
+        },
+        { $unwind: "$comments" },
+      ]);
+      if (!post) {
+        return res.send({ message: "Post not found" }).status(404);
+      }
+      console.log(post);
+      return res.send(post.pop()).status(200);
+    } catch (error) {
+      console.log("An error has occured at /community/post/:id", error);
+      return res.send({ message: "An server error has occured" }).status(500);
     }
   });
 
@@ -163,6 +188,32 @@ module.exports = (app) => {
     } catch (error) {
       console.log("An error has occured at /community/post/:id/new/like", err);
       return res.send({ message: "Server error" }).status(500);
+    }
+  });
+
+  app.post("/community/post/:id/remove/like", authGuard, async (req, res) => {
+    const postId = req.params.id;
+    const communityId = req.query.communityId;
+    if (!postId) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    try {
+      await CommunityLike.findOneAndDelete({
+        postId: postId,
+      });
+      await CommunityPost.findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(postId),
+        },
+        { $inc: { likesCount: -1 } }
+      );
+      return res.send({ message: "Disliked successfully" }).status(200);
+    } catch (error) {
+      console.log(
+        "An error has occured at /community/post/:id/remove/like",
+        error
+      );
+      return res.send({ message: "A server error has occured" }).status(500);
     }
   });
 };

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { CommunityPostType } from "../../types";
 import { ProfileImage } from "./ProfileImage";
@@ -18,7 +20,11 @@ export function CommunityPost({ content }: { content: CommunityPostType }) {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) {
     e.preventDefault();
-    
+    const target = e.target as HTMLElement;
+    const attribute = target.getAttribute("data-navigate-to");
+    if (attribute) {
+      router.push(attribute);
+    }
   }
 
   return (
@@ -33,13 +39,16 @@ export function CommunityPost({ content }: { content: CommunityPostType }) {
         <ProfileImage userInfo={content.user_info} />
         <div className="post-content">
           <p className="username">{content.user_info.name}</p>
-          <p data-navigate-to={`/post/${content._id}`}> {content.content}</p>
+          <p data-navigate-to={`/community/post/${content._id}`}>
+            {" "}
+            {content.content}
+          </p>
         </div>
         <SlOptions className="post-options-button" />
       </div>
       <div
         className="footer-container"
-        data-navigate-to={`/post/${content._id}`}
+        data-navigate-to={`/community/post/${content._id}`}
       >
         {<CommunityPostLike post={content} />}
         <div className="button-container">

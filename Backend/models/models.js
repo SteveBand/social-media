@@ -227,6 +227,43 @@ const CommunityLike =
   mongoose.models.communityLikes ||
   mongoose.model("communityLikes", communityLikesSchema);
 
+const CommunityCommentSchema = new mongoose.Schema(
+  {
+    content: {
+      type: String,
+      index: { text: true },
+    },
+    parentId: {
+      type: String,
+      index: true,
+    },
+    userId: {
+      type: String,
+      index: true,
+    },
+    communityId: String,
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
+    commentsCount: {
+      type: Number,
+      default: 0,
+    },
+    sharesCount: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const CommunityComment =
+  mongoose.models.CommunityComment ||
+  mongoose.model("communityComments", CommunityCommentSchema);
+
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
 exports.Post = Post;
@@ -236,3 +273,4 @@ exports.Community = Community;
 exports.CommunityPost = CommunityPost;
 exports.CommunityMember = CommunityMember;
 exports.CommunityLike = CommunityLike;
+exports.CommunityComment = CommunityComment;

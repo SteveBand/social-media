@@ -34,4 +34,53 @@ function fetchCommunity(id, userId) {
   ];
 }
 
+function fetchCommunityPosts(userData, id) {
+  return [
+    { $match: { communityId: id } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "parentId",
+        foreignField: "email",
+        as: "user_info",
+      },
+    },
+    { $unwind: "$user_info" },
+    {
+      $lookup: {
+        from: "communitylikes",
+        let: { parentId: userData.email, postId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [{ $toString: "$postId" }, { $toString: "$$postId" }],
+                  },
+                  {
+                    $eq: ["$$parentId", "$parentId"],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        isLiked: { $gt: [{ $size: "$likes" }, 0] },
+      },
+    },
+    {
+      $project: {
+        likes: 0,
+      },
+    },
+  ];
+}
+
 exports.fetchCommunity = fetchCommunity;
+exports.fetchCommunityPosts = fetchCommunityPosts;

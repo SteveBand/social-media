@@ -1,5 +1,5 @@
 import { IoIosShareAlt } from "react-icons/io";
-import { PostType } from "../../../../../types";
+import { CommunityPostType, PostType } from "../../../../../../types";
 import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { IoChatboxOutline } from "react-icons/io5";
@@ -10,7 +10,7 @@ import { PostLike } from "@/components/action-buttons/PostLike";
 import { ProfileImage } from "@/components/ProfileImage";
 
 type Props = {
-  comment: PostType;
+  comment: PostType | CommunityPostType;
 };
 
 export function Comment({ comment }: Props) {
