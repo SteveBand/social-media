@@ -7,15 +7,27 @@ import { IoIosShareAlt } from "react-icons/io";
 import { createPortal } from "react-dom";
 import "@/styles/components/post/post.scss";
 import { CommunityPostLike } from "./action-buttons/CommunityPostLike";
+import { useState } from "react";
+import { CommentModal } from "./commentModal/CommentModal";
+import { useRouter } from "next/navigation";
 
 export function CommunityPost({ content }: { content: CommunityPostType }) {
+  const [showComment, setShowComment] = useState(false);
+  const router = useRouter();
+  function handleNavigation(
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    
+  }
+
   return (
     <Link
       key={content._id}
       className="post-wrapper"
       href={`/community/post/${content._id}`}
       prefetch={true}
-      //   onClick={handleNavigation}
+      onClick={handleNavigation}
     >
       <div className="post-container">
         <ProfileImage userInfo={content.user_info} />
@@ -33,14 +45,14 @@ export function CommunityPost({ content }: { content: CommunityPostType }) {
         <div className="button-container">
           <IoChatboxOutline
             className="action-button-icon"
-            // onClick={() => setShowComment((prev) => !prev)}
+            onClick={() => setShowComment((prev) => !prev)}
           />
           <p>{content.commentsCount > 0 && content.commentsCount}</p>
-          {/* {showComment &&
+          {showComment &&
             createPortal(
-              <CommentModal post={post} setShowComment={setShowComment} />,
+              <CommentModal post={content} setShowComment={setShowComment} />,
               document.body
-            )} */}
+            )}
         </div>
         <div className="button-container">
           <IoIosShareAlt className="action-button-icon" />

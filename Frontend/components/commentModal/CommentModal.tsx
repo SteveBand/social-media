@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
-import { CommentType, PostType } from "../../../types";
+import { CommentType, CommunityPostType, PostType } from "../../../types";
 import { IoIosClose } from "react-icons/io";
 import { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
-  post: PostType | CommentType;
+  post: PostType | CommentType | CommunityPostType;
   setShowComment: Dispatch<SetStateAction<boolean>>;
 };
 

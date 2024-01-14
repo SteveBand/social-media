@@ -35,8 +35,6 @@ export default function CommunityPage({
     return <div>No Community</div>;
   }
 
-  console.log(data);
-
   return (
     <section className="community-page-wrapper">
       <Navbar />

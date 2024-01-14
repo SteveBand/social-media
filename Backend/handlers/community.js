@@ -153,9 +153,16 @@ module.exports = (app) => {
         postId,
       });
       await newLike.save();
+      await CommunityPost.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(postId) },
+        {
+          $inc: { likesCount: 1 },
+        }
+      );
       return res.send({ message: "new Like Generated" }).status(200);
     } catch (error) {
       console.log("An error has occured at /community/post/:id/new/like", err);
+      return res.send({ message: "Server error" }).status(500);
     }
   });
 };
