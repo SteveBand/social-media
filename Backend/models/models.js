@@ -166,7 +166,6 @@ const communitySchema = new mongoose.Schema({
   rules: {
     type: [
       {
-        id: Number,
         description: {
           type: String,
           lowercase: true,
@@ -176,12 +175,6 @@ const communitySchema = new mongoose.Schema({
     required: false,
   },
   topics: Array,
-  moderatores: [
-    {
-      type: String,
-      lowercase: true,
-    },
-  ],
 });
 
 const Community =
@@ -201,87 +194,14 @@ const CommunityMember =
   mongoose.models.communityMembers ||
   mongoose.model("communityMembers", communityMemberSchema);
 
-// const CommunityPostSchema = new mongoose.Schema(
-//   {
-//     content: {
-//       type: String,
-//       index: { text: true },
-//       lowercase: true,
-//     },
-//     parentId: {
-//       type: String,
-//       index: { text: true },
-//     },
-//     communityId: {
-//       type: String,
-//       index: true,
-//     },
-//     likesCount: {
-//       type: Number,
-//       default: 0,
-//     },
-//     commentsCount: {
-//       type: Number,
-//       default: 0,
-//     },
-//     sharesCount: {
-//       type: Number,
-//       default: 0,
-//     },
-//   },
-//   { timestamps: true }
-// );
+const communityModeratorSchema = new mongoose.Schema({
+  communityId: String,
+  parentId: mongoose.Types.ObjectId,
+});
 
-// const CommunityPost =
-//   mongoose.models.CommunityPosts ||
-//   mongoose.model("communityPosts", CommunityPostSchema);
-
-// const communityLikesSchema = {
-//   parentId: String,
-//   communityId: String,
-//   postId: String,
-// };
-
-// const CommunityLike =
-//   mongoose.models.communityLikes ||
-//   mongoose.model("communityLikes", communityLikesSchema);
-
-// const CommunityCommentSchema = new mongoose.Schema(
-//   {
-//     content: {
-//       type: String,
-//       index: { text: true },
-//     },
-//     parentId: {
-//       type: String,
-//       index: true,
-//     },
-//     userId: {
-//       type: String,
-//       index: true,
-//     },
-//     communityId: String,
-//     likesCount: {
-//       type: Number,
-//       default: 0,
-//     },
-//     commentsCount: {
-//       type: Number,
-//       default: 0,
-//     },
-//     sharesCount: {
-//       type: Number,
-//       default: 0,
-//     },
-//   },
-//   {
-//     timestamps: true,
-//   }
-// );
-
-// const CommunityComment =
-//   mongoose.models.CommunityComment ||
-//   mongoose.model("communityComments", CommunityCommentSchema);
+const CommunityModerator =
+  mongoose.models.CommunityModerator ||
+  mongoose.model("CommunityModerator", communityModeratorSchema);
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
@@ -289,7 +209,5 @@ exports.Post = Post;
 exports.CommentModel = CommentModel;
 exports.FollowersModel = FollowersModel;
 exports.Community = Community;
-// exports.CommunityPost = CommunityPost;
+exports.CommunityModerator = CommunityModerator;
 exports.CommunityMember = CommunityMember;
-// exports.CommunityLike = CommunityLike;
-// exports.CommunityComment = CommunityComment;

@@ -22,13 +22,39 @@ function fetchCommunity(id, userId) {
       },
     },
     {
+      $lookup: {
+        from: "communitymoderators",
+        let: { communityId: id },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [
+                      { $toString: "$$communityId" },
+                      { $toString: "$communityId" },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "moderatorsInfo",
+      },
+    },
+
+    {
       $addFields: {
         isMember: { $gt: [{ $size: "$members" }, 0] },
       },
     },
+
     {
       $project: {
         members: 0,
+        moderatorsInfo: 0,
       },
     },
   ];
@@ -84,11 +110,11 @@ function fetchCommunityPosts(userData, id) {
         },
       },
     },
-    // {
-    //   $project: {
-    //     likes: 0,
-    //   },
-    // },
+    {
+      $project: {
+        likes: 0,
+      },
+    },
   ];
 }
 

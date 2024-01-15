@@ -1,7 +1,7 @@
 "use client";
 
 import { BsHeartFill } from "react-icons/bs";
-import { CommunityPostType, PostType } from "../../../types";
+import { PostType } from "../../../types";
 import { useState } from "react";
 
 type Props = {

@@ -5,8 +5,9 @@ import { CommunityType } from "../../../../../types";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./communityForm";
-import { CommunityAbout } from "./communityAbout";
+import { CommunitySummary } from "./communitySummary";
 import { CommunityPosts } from "./CommunityPosts";
+import { CommunityAbout } from "./communityAbout";
 
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("posts");
@@ -60,7 +61,7 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         <h5>{data.title}</h5>
       </header>
       <img className="community-logo" src={data.image} />
-      <CommunityAbout data={data} />
+      <CommunitySummary data={data} />
       <ul className="actions">
         <li
           data-fetch="posts"
@@ -84,9 +85,10 @@ export function CommunityContent({ data }: { data: CommunityType }) {
           Members
         </li>
       </ul>
-      {session?.user && <CommunityForm data={data} />}
+      {session?.user && action === "posts" && <CommunityForm data={data} />}
       <section className="community-content">
         {action === "posts" && <CommunityPosts posts={posts} />}
+        {action === "about" && <CommunityAbout data={data} />}
       </section>
     </section>
   );

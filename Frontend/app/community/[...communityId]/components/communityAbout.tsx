@@ -1,48 +1,25 @@
-import { useState } from "react";
 import { CommunityType } from "../../../../../types";
-
+import moment from "moment";
 export function CommunityAbout({ data }: { data: CommunityType }) {
-  const [isMember, setIsMember] = useState(data.isMember || false);
-  const [membersCount, setMembersCount] = useState(data.membersCount);
-
-  async function handleJoin(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/${
-          !isMember ? "new" : "delete"
-        }/member`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setIsMember((prev) => !prev);
-        setMembersCount((prev) => (data.newMember ? prev + 1 : prev - 1));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   return (
-    <div className="about">
-      <h2>{data.title}</h2>
-      <p>{data.about}</p>
-      <footer>
-        <p>{membersCount} Members</p>
-        {!isMember && <button onClick={handleJoin}>Join</button>}
-        {isMember && (
-          <button onClick={handleJoin} className="is-member">
-            <span className="joined">Joined</span>
-            <span className="leave">Leave</span>
-          </button>
-        )}
-      </footer>
-    </div>
+    <section className="about">
+      <article className="community-info">
+        <h4>Community Info</h4>
+        <p>{data.about}</p>
+      </article>
+      <article className="rules">
+        <h4>Rules</h4>
+        <p>These are set and enforced by Community admins </p>
+        {data.rules.map((rule: { description: string }, i: number) => {
+          return (
+            <div className="rule-wrapper">
+              <div className="order-number">{i + 1}</div>
+              <h5>{rule.description}</h5>
+            </div>
+          );
+        })}
+        {}
+      </article>
+    </section>
   );
 }

@@ -4,13 +4,12 @@ const { catchCookies } = require("../middlewares/catchCookies");
 const { communityGuard } = require("../middlewares/communityGuard");
 const {
   Community,
-  // CommunityPost,
   CommunityMember,
   Post,
   CommentModel,
   LikesModel,
-  // CommunityLike,
-  // CommunityComment,
+  CommunityModerator,
+  UserModel,
 } = require("../models/models");
 const {
   fetchCommunity,
@@ -29,6 +28,7 @@ module.exports = (app) => {
       if (!community) {
         return res.send({ message: "Bad Request" }).status(400);
       }
+      console.log(community);
       return res.send(community.pop()).status(200);
     } catch (error) {
       console.log(error, "An error has occured at /community/:id");
@@ -43,40 +43,10 @@ module.exports = (app) => {
     }
     try {
       const postsArr = await Post.aggregate(fetchCommunityPosts(userData, id));
-      console.log(postsArr);
       return res.send(postsArr).status(200);
     } catch (err) {
       console.log("An error has occured at /community/:id/posts", err);
-    }
-  });
-
-  app.get("/community/post/:id", catchCookies, async (req, res) => {
-    const id = req.params.id;
-    const userData = req.userData || null;
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
-    try {
-      const post = await Post.aggregate([
-        { $match: { _id: new mongoose.Types.ObjectId(id) } },
-        // {
-        //   $lookup: {
-        //     from: "communitycomments",
-        //     localField: "_id",
-        //     foreignField: "parentId",
-        //     as: "comments",
-        //   },
-        // },
-        // { $unwind: "$comments" },
-      ]);
-      if (!post) {
-        return res.send({ message: "Post not found" }).status(404);
-      }
-      console.log(post);
-      return res.send(post.pop()).status(200);
-    } catch (error) {
-      console.log("An error has occured at /community/post/:id", error);
-      return res.send({ message: "An server error has occured" }).status(500);
+      return res.send({ message: "An error has occured" }).status(500);
     }
   });
 
@@ -219,4 +189,39 @@ module.exports = (app) => {
       return res.send({ message: "A server error has occured" }).status(500);
     }
   });
+
+  app.post("/community/:id/new/moderator", async (req, res) => {
+    const id = req.params.id;
+    const userData = req.userData;
+    const applicableUser = req.query.user;
+    if (!id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+
+    const user = await UserModel.findById(applicableUser);
+
+    if (!user) {
+      return res.send({ message: "User not found" }).status(404);
+    }
+
+    const newModerator = {
+      parentId: new mongoose.Types.ObjectId(applicableUser),
+      communityId: id,
+    };
+    try {
+      const moderator = await new CommunityModerator(newModerator);
+      await moderator.save();
+      return res.send(moderator).status(200);
+    } catch (error) {
+      console.log(
+        "An error has occured at /community/:id/new/moderator",
+        error
+      );
+      return res.send({ message: "An error has occured" }).status(500);
+    }
+  });
+
+  app.get('/community/:id/moderators', catchCookies, (req, res) => {
+    
+  })
 };

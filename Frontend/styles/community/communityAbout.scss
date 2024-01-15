@@ -1,0 +1,39 @@
+.community-page-container {
+  .community-content {
+    .about {
+      box-sizing: border-box;
+      padding: 0 20px;
+
+      article {
+        border-bottom: 1px solid rgb(218, 218, 218);
+      }
+
+      .community-info {
+        h4 {
+          letter-spacing: 1px;
+        }
+      }
+
+      .rules {
+        .rule-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          div.order-number {
+            padding: 1px 10px;
+            background-color: #0e1419;
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+          }
+
+          h5 {
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
