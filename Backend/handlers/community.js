@@ -4,7 +4,7 @@ const { catchCookies } = require("../middlewares/catchCookies");
 const { communityGuard } = require("../middlewares/communityGuard");
 const {
   Community,
-  CommunityPost,
+  // CommunityPost,
   CommunityMember,
   CommunityLike,
   CommunityComment,

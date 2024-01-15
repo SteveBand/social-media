@@ -5,7 +5,7 @@ import { SlOptions } from "react-icons/sl";
 import { CommunityPostType, PostType } from "../../../../../../types";
 import { Date } from "@/components/Date";
 type Props = {
-  content: CommunityPostType;
+  content: PostType;
 };
 
 export function MainPost({ content }: Props) {

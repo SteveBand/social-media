@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
-import { CommunityPostType } from "../../../../../types";
+import { CommunityPostType, PostType } from "../../../../../types";
 import { useSession } from "next-auth/react";
 import { Comment } from "./components/Comment";
 import { MainPost } from "./components/MainPost";
@@ -18,8 +17,8 @@ export default function CommunityPostPage({
 }) {
   const router = useRouter();
   const [textAreaValue, setTextAreaValue] = useState("");
-  const [content, setContent] = useState<CommunityPostType | null>();
-  const [comments, setComments] = useState<CommunityPostType[] | null>([]);
+  const [content, setContent] = useState<PostType | null>();
+  const [comments, setComments] = useState<PostType[] | null>([]);
   const { data: session } = useSession();
   const user = session?.user;
   const postId = params.post[0];

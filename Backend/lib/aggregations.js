@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
-function postsIfUserLogged(userId) {
+function fetchDashboardPosts(userId) {
   return [
+    { $match: { communityId: { $exists: false } } },
     {
       $lookup: {
         from: "users",
@@ -284,8 +285,7 @@ function fetchCommentsLogged(postId, userId) {
   ];
 }
 
-exports.postsIfNoUser = postsIfNoUser;
-exports.postsIfUserLogged = postsIfUserLogged;
+exports.fetchDashboardPosts = fetchDashboardPosts;
 exports.fetchPost = fetchPost;
 exports.fetchComments = fetchComments;
 exports.fetchCommentsLogged = fetchCommentsLogged;
