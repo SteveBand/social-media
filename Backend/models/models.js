@@ -13,6 +13,9 @@ const likesSchema = new mongoose.Schema({
     lowercase: true,
     index: true,
   },
+  communityId: {
+    type: String,
+  },
 });
 const LikesModel =
   mongoose.models.LikesModel || mongoose.model("likes", likesSchema);

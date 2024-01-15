@@ -24,6 +24,8 @@ export function Post({ post }: { post: PostType }) {
     }
   }
 
+  console.log(post);
+
   return (
     <Link
       key={post._id}

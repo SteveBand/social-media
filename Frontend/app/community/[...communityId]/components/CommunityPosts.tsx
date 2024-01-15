@@ -1,11 +1,12 @@
 import { CommunityPost } from "@/components/CommunityPost";
-import { CommunityPostType } from "../../../../../types";
+import { CommunityPostType, PostType } from "../../../../../types";
+import { Post } from "@/components/Post";
 
-export function CommunityPosts({ posts }: { posts: Array<CommunityPostType> }) {
+export function CommunityPosts({ posts }: { posts: Array<PostType> }) {
   return (
     <>
       {posts.map((post) => {
-        return <CommunityPost content={post} key={post._id} />;
+        return <Post post={post} key={post._id} />;
       })}
     </>
   );

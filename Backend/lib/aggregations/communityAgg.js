@@ -48,7 +48,7 @@ function fetchCommunityPosts(userData, id) {
     { $unwind: "$user_info" },
     {
       $lookup: {
-        from: "communitylikes",
+        from: "likes",
         let: { parentId: userData.email, postId: "$_id" },
         pipeline: [
           {
@@ -56,10 +56,13 @@ function fetchCommunityPosts(userData, id) {
               $expr: {
                 $and: [
                   {
-                    $eq: [{ $toString: "$postId" }, { $toString: "$$postId" }],
+                    $eq: [
+                      { $toString: "$parentId" },
+                      { $toString: "$$postId" },
+                    ],
                   },
                   {
-                    $eq: ["$$parentId", "$parentId"],
+                    $eq: ["$$parentId", "$userId"],
                   },
                 ],
               },
@@ -71,14 +74,21 @@ function fetchCommunityPosts(userData, id) {
     },
     {
       $addFields: {
-        isLiked: { $gt: [{ $size: "$likes" }, 0] },
+        liked: { $gt: [{ $size: "$likes" }, 0] },
+        isAuthor: {
+          $cond: {
+            if: { $eq: [userData.email, "$parentId"] },
+            then: true,
+            else: "$$REMOVE",
+          },
+        },
       },
     },
-    {
-      $project: {
-        likes: 0,
-      },
-    },
+    // {
+    //   $project: {
+    //     likes: 0,
+    //   },
+    // },
   ];
 }
 

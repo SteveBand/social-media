@@ -8,6 +8,7 @@ const {
   CommunityMember,
   Post,
   CommentModel,
+  LikesModel,
   // CommunityLike,
   // CommunityComment,
 } = require("../models/models");
@@ -56,17 +57,17 @@ module.exports = (app) => {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      const post = await CommunityPost.aggregate([
-        { $match: { _id: mongoose.Types.ObjectId(id) } },
-        {
-          $lookup: {
-            from: "communitycomments",
-            localField: "_id",
-            foreignField: "parentId",
-            as: "comments",
-          },
-        },
-        { $unwind: "$comments" },
+      const post = await Post.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(id) } },
+        // {
+        //   $lookup: {
+        //     from: "communitycomments",
+        //     localField: "_id",
+        //     foreignField: "parentId",
+        //     as: "comments",
+        //   },
+        // },
+        // { $unwind: "$comments" },
       ]);
       if (!post) {
         return res.send({ message: "Post not found" }).status(404);
@@ -163,7 +164,7 @@ module.exports = (app) => {
     if (!postId || !communityId) {
       return res.send({ message: "Bad Request" }).status(400);
     }
-    const existingLike = await CommunityLike.findOne({
+    const existingLike = await LikesModel.findOne({
       parentId: userData.email,
       postId: postId,
     });
@@ -171,13 +172,13 @@ module.exports = (app) => {
       return res.send({ message: "User already liked this post" }).status(400);
     }
     try {
-      const newLike = await new CommunityLike({
+      const newLike = await new LikesModel({
         parentId: userData.email,
         communityId,
         postId,
       });
       await newLike.save();
-      await CommunityPost.findOneAndUpdate(
+      await Post.findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(postId) },
         {
           $inc: { likesCount: 1 },
@@ -185,7 +186,10 @@ module.exports = (app) => {
       );
       return res.send({ message: "new Like Generated" }).status(200);
     } catch (error) {
-      console.log("An error has occured at /community/post/:id/new/like", err);
+      console.log(
+        "An error has occured at /community/post/:id/new/like",
+        error
+      );
       return res.send({ message: "Server error" }).status(500);
     }
   });
@@ -197,10 +201,10 @@ module.exports = (app) => {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      await CommunityLike.findOneAndDelete({
+      await LikesModel.findOneAndDelete({
         postId: postId,
       });
-      await CommunityPost.findOneAndUpdate(
+      await Post.findOneAndUpdate(
         {
           _id: new mongoose.Types.ObjectId(postId),
         },
