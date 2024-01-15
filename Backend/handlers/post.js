@@ -37,6 +37,7 @@ module.exports = (app) => {
     try {
       const userData = req.userData;
       const posts = await Post.aggregate(fetchDashboardPosts(userData.email));
+      console.log(posts);
       return res.send(posts).status(200);
     } catch (error) {
       console.log("An error has occured at /posts", error);

@@ -58,16 +58,26 @@ const postSchema = new mongoose.Schema(
       index: {
         text: true,
       },
+      required: true,
     },
     parentId: {
       type: String,
       index: true,
       lowercase: true,
+      required: true,
     },
-    date: String,
-    likesCount: Number,
-    commentsCount: Number,
-    sharesCount: Number,
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
+    commentsCount: {
+      type: Number,
+      default: 0,
+    },
+    sharesCount: {
+      type: Number,
+      default: 0,
+    },
     isPost: {
       type: Boolean,
       default: true,

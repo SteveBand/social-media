@@ -41,6 +41,13 @@ function fetchDashboardPosts(userId) {
     {
       $addFields: {
         liked: { $ne: [{ $size: "$likes" }, 0] },
+        isAuthor: {
+          $cond: {
+            if: { $eq: [userId, "$parentId"] },
+            then: true,
+            else: "$$REMOVE",
+          },
+        },
       },
     },
     {
@@ -50,65 +57,6 @@ function fetchDashboardPosts(userId) {
     },
   ];
 }
-
-const postsIfNoUser = [
-  {
-    $lookup: {
-      from: "users",
-      localField: "parentId",
-      foreignField: "email",
-      as: "user_info",
-    },
-  },
-  {
-    $unwind: "$user_info",
-  },
-  {
-    $lookup: {
-      from: "likes",
-      let: { postId: "$_id" },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $and: [
-                {
-                  $eq: [{ $toString: "$parentId" }, { $toString: "$$postId" }],
-                },
-              ],
-            },
-          },
-        },
-      ],
-      as: "likes",
-    },
-  },
-  {
-    $lookup: {
-      from: "comments",
-      let: { postId: "$_id" },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $and: {
-                $eq: [{ $toString: "$parentId" }, { $toString: "$postId" }],
-              },
-            },
-          },
-        },
-      ],
-      as: "comments",
-    },
-  },
-
-  {
-    $project: {
-      likes: 0,
-      comments: 0,
-    },
-  },
-];
 
 const fetchPost = (id) => {
   return [

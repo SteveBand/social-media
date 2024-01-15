@@ -6,8 +6,10 @@ const {
   Community,
   // CommunityPost,
   CommunityMember,
-  CommunityLike,
-  CommunityComment,
+  Post,
+  CommentModel,
+  // CommunityLike,
+  // CommunityComment,
 } = require("../models/models");
 const {
   fetchCommunity,
@@ -39,9 +41,7 @@ module.exports = (app) => {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      const postsArr = await CommunityPost.aggregate(
-        fetchCommunityPosts(userData, id)
-      );
+      const postsArr = await Post.aggregate(fetchCommunityPosts(userData, id));
       console.log(postsArr);
       return res.send(postsArr).status(200);
     } catch (err) {
@@ -139,9 +139,8 @@ module.exports = (app) => {
     if (!id || !content || !parentId) {
       return res.send({ message: "Bad Requst" }).status(404);
     }
-
     try {
-      const newPost = await new CommunityPost({
+      const newPost = await new Post({
         parentId,
         content,
         communityId: id,
