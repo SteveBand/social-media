@@ -1,14 +1,14 @@
 "use client";
 
 import { FaArrowLeft } from "react-icons/fa";
-import { PostType, User } from "../../../../../types";
+import { PostType, UserType } from "../../../../../types";
 import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
-import { Follower } from "@/components/Follower";
+import { User } from "@/components/User";
 import { Comment } from "@/app/post/[...postId]/components/Comment";
 import { BackButton } from "@/components/action-buttons/BackButton";
 
-export function ProfileContent({ user }: { user: User }) {
+export function ProfileContent({ user }: { user: UserType }) {
   const [action, setAction] = useState("posts");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -114,7 +114,7 @@ export function ProfileContent({ user }: { user: User }) {
 
         {action === "followers" || action === "following"
           ? data.map((content) => {
-              return <Follower content={content} loading={loading} />;
+              return <User content={content} loading={loading} />;
             })
           : null}
       </section>

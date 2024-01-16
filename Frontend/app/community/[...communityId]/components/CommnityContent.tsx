@@ -1,7 +1,11 @@
 "use client";
 
 import { BackButton } from "@/components/action-buttons/BackButton";
-import { CommunityType, User } from "../../../../../types";
+import {
+  CommunityModerator,
+  CommunityType,
+  UserType,
+} from "../../../../../types";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./communityForm";
@@ -12,8 +16,8 @@ import { CommunityAbout } from "./communityAbout";
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("posts");
   const [posts, setPosts] = useState([]);
-  const [members, setMembers] = useState<User[]>([]);
-  const [moderators, setModerators] = useState<User[]>([]);
+  const [members, setMembers] = useState<UserType[]>([]);
+  const [moderators, setModerators] = useState<CommunityModerator[]>([]);
   const { data: session } = useSession();
 
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
@@ -59,7 +63,7 @@ export function CommunityContent({ data }: { data: CommunityType }) {
       );
       if (res.ok) {
         const data = await res.json();
-        setMembers(data);
+        setModerators(data);
       }
     } catch (error) {
       console.log(error);
@@ -110,7 +114,9 @@ export function CommunityContent({ data }: { data: CommunityType }) {
       {session?.user && action === "posts" && <CommunityForm data={data} />}
       <section className="community-content">
         {action === "posts" && <CommunityPosts posts={posts} />}
-        {action === "about" && <CommunityAbout data={data} />}
+        {action === "about" && (
+          <CommunityAbout data={data} moderators={moderators} />
+        )}
       </section>
     </section>
   );

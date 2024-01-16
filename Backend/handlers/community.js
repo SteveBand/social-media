@@ -225,14 +225,18 @@ module.exports = (app) => {
   app.get("/community/:id/moderators", catchCookies, async (req, res) => {
     const id = req.params.id;
     const loggedUserId = req.userData.email;
-    console.log(loggedUserId);
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
+    try {
+      if (!id) {
+        return res.send({ message: "Bad Request" }).status(400);
+      }
+      const moderators = await CommunityModerator.aggregate(
+        fetchModerators(loggedUserId, id)
+      );
+      console.log(moderators);
+      return res.send(moderators).status(200);
+    } catch (error) {
+      console.log('An error has occured at "/community/:id/moderators"', error);
+      return res.send({ message: "An error has occured" }).status(500);
     }
-    const moderators = await CommunityModerator.aggregate(
-      fetchModerators(loggedUserId, id)
-    );
-    console.log(moderators);
-    return res.send(moderators.pop()).status(200);
   });
 };

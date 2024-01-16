@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
-import { CommunityType, User } from "../../../../../types";
+import { CommunityModerator, CommunityType } from "../../../../../types";
 import moment from "moment";
-export function CommunityAbout({ data }: { data: CommunityType }) {
-  // const [moderators, setModerators] = useState<User[]>([]);
+import { User } from "@/components/User";
+export function CommunityAbout({
+  data,
+  moderators,
+}: {
+  data: CommunityType;
+  moderators: CommunityModerator[];
+}) {
+  console.log(moderators);
   return (
     <section className="about">
       <article className="community-info">
@@ -20,7 +27,12 @@ export function CommunityAbout({ data }: { data: CommunityType }) {
             </div>
           );
         })}
-        {}
+      </article>
+      <article className="moderators">
+        <h4>Moderators</h4>
+        {moderators.map((user) => {
+          return <User content={user} loading={false} />;
+        })}
       </article>
     </section>
   );
