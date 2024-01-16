@@ -1,7 +1,7 @@
 "use client";
 
 import { BackButton } from "@/components/action-buttons/BackButton";
-import { CommunityType } from "../../../../../types";
+import { CommunityType, User } from "../../../../../types";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./communityForm";
@@ -12,8 +12,8 @@ import { CommunityAbout } from "./communityAbout";
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("posts");
   const [posts, setPosts] = useState([]);
-  const [members, setMembers] = useState();
-  const [moderators, setModerators] = useState();
+  const [members, setMembers] = useState<User[]>([]);
+  const [moderators, setModerators] = useState<User[]>([]);
   const { data: session } = useSession();
 
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
@@ -48,11 +48,33 @@ export function CommunityContent({ data }: { data: CommunityType }) {
     }
   }
 
+  async function fetchModerators() {
+    try {
+      const res = await fetch(
+        `http://localhost:4000/community/${data._id}/moderators`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setMembers(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if (posts.length === 0) {
       fetchPosts();
     }
-  }, []);
+
+    if (action === "about" && moderators.length <= 0) {
+      fetchModerators();
+    }
+  }, [action]);
 
   return (
     <section className="community-page-container">

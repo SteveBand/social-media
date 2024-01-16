@@ -221,7 +221,73 @@ module.exports = (app) => {
     }
   });
 
-  app.get('/community/:id/moderators', catchCookies, (req, res) => {
-    
-  })
+  app.get("/community/:id/moderators", catchCookies, async (req, res) => {
+    const id = req.params.id;
+    const loggedUserId = req.userData.email;
+    console.log(loggedUserId);
+    if (!id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    const moderators = await CommunityModerator.aggregate([
+      { $match: { communityId: id } },
+      {
+        $lookup: {
+          from: "users",
+          let: { parentId: "$parentId" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$parentId"],
+                },
+              },
+            },
+          ],
+          as: "moderators",
+        },
+      },
+      { $unwind: "$moderators" },
+      {
+        $lookup: {
+          from: "followers",
+          let: { loggedUserId: loggedUserId, userId: "$moderators.email" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: [
+                        { $toString: "$parentId" },
+                        { $toString: "$$loggedUserId" },
+                      ],
+                    },
+                    {
+                      $eq: [
+                        { $toString: "$follows" },
+                        { $toString: "$$userId" },
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "followers",
+        },
+      },
+      {
+        $addFields: {
+          isFollowing: { $gt: [{ $size: "$followers" }, 0] },
+        },
+      },
+      {
+        $project: {
+          followers: 0,
+        },
+      },
+    ]);
+    console.log(moderators);
+    return res.send(moderators.pop()).status(200);
+  });
 };

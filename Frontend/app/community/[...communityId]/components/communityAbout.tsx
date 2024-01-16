@@ -1,6 +1,8 @@
-import { CommunityType } from "../../../../../types";
+import { useEffect, useState } from "react";
+import { CommunityType, User } from "../../../../../types";
 import moment from "moment";
 export function CommunityAbout({ data }: { data: CommunityType }) {
+  // const [moderators, setModerators] = useState<User[]>([]);
   return (
     <section className="about">
       <article className="community-info">

@@ -5,7 +5,7 @@ import { PostType, User } from "../../../../../types";
 import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
 import { Follower } from "@/components/Follower";
-import { Comment } from "@/app/community/post/[...post]/components/Comment";
+import { Comment } from "@/app/post/[...postId]/components/Comment";
 import { BackButton } from "@/components/action-buttons/BackButton";
 
 export function ProfileContent({ user }: { user: User }) {
