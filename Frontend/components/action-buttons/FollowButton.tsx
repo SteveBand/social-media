@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CommunityModerator } from "../../../types";
 
 export function FollowButton({ user }: { user: CommunityModerator }) {

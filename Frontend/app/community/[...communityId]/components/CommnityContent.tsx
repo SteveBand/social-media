@@ -12,6 +12,7 @@ import { CommunityForm } from "./communityForm";
 import { CommunitySummary } from "./communitySummary";
 import { CommunityPosts } from "./CommunityPosts";
 import { CommunityAbout } from "./communityAbout";
+import { CommunityMembers } from "./CommunityMembers";
 
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("posts");
@@ -36,19 +37,7 @@ export function CommunityContent({ data }: { data: CommunityType }) {
     );
     if (res.ok) {
       const data = await res.json();
-      switch (action) {
-        case "posts":
-          setPosts(data);
-          break;
-
-        case "members":
-          setMembers(data);
-          break;
-
-        case "moderators":
-          setModerators(data);
-          break;
-      }
+      setPosts(data);
     }
   }
 
@@ -70,13 +59,35 @@ export function CommunityContent({ data }: { data: CommunityType }) {
     }
   }
 
+  async function fetchMembers() {
+    try {
+      const res = await fetch(
+        `http://localhost:4000/community/${data._id}/members`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setMembers(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
-    if (posts.length === 0) {
+    if (action === "posts") {
       fetchPosts();
     }
 
-    if (action === "about" && moderators.length <= 0) {
+    if (action === "about") {
       fetchModerators();
+    }
+
+    if (action === "members") {
+      fetchMembers();
     }
   }, [action]);
 
@@ -117,6 +128,7 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         {action === "about" && (
           <CommunityAbout data={data} moderators={moderators} />
         )}
+        {action === "members" && <CommunityMembers members={members} />}
       </section>
     </section>
   );

@@ -225,17 +225,71 @@ module.exports = (app) => {
   app.get("/community/:id/moderators", catchCookies, async (req, res) => {
     const id = req.params.id;
     const loggedUserId = req.userData.email;
+    if (!id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
     try {
-      if (!id) {
-        return res.send({ message: "Bad Request" }).status(400);
-      }
       const moderators = await CommunityModerator.aggregate(
         fetchModerators(loggedUserId, id)
       );
-      console.log(moderators);
       return res.send(moderators).status(200);
     } catch (error) {
-      console.log('An error has occured at "/community/:id/moderators"', error);
+      console.log("An error has occured at /community/:id/moderators", error);
+      return res.send({ message: "An error has occured" }).status(500);
+    }
+  });
+
+  app.get("/community/:id/members", catchCookies, async (req, res) => {
+    const id = req.params.id;
+    const loggedUserId = req.userData.email;
+    if (!id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    try {
+      const members = await CommunityMember.aggregate([
+        { $match: { communityId: id } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "parentId",
+            foreignField: "email",
+            as: "users",
+          },
+        },
+        { $unwind: "$users" },
+        {
+          $lookup: {
+            from: "followers",
+            let: { loggedUserId: loggedUserId, userId: "$users.email" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$parentId", "$$loggedUserId"] },
+                      { $eq: ["$follows", "$$userId"] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "followers",
+          },
+        },
+        {
+          $addFields: {
+            "users.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: "$users",
+          },
+        },
+      ]);
+      return res.send(members).status(200);
+    } catch (error) {
+      console.log("An error has occured at /community/:id/members", error);
       return res.send({ message: "An error has occured" }).status(500);
     }
   });
