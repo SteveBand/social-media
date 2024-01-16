@@ -50,13 +50,6 @@ function fetchCommunity(id, userId) {
         isMember: { $gt: [{ $size: "$members" }, 0] },
       },
     },
-
-    {
-      $project: {
-        members: 0,
-        moderatorsInfo: 0,
-      },
-    },
   ];
 }
 
@@ -118,5 +111,77 @@ function fetchCommunityPosts(userData, id) {
   ];
 }
 
+function fetchModerators(loggedUserId, id) {
+  return [
+    { $match: { communityId: id } },
+    {
+      $lookup: {
+        from: "users",
+        let: { parentId: "$parentId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_id", "$$parentId"],
+              },
+            },
+          },
+        ],
+        as: "moderators",
+      },
+    },
+    { $unwind: "$moderators" },
+    {
+      $lookup: {
+        from: "followers",
+        let: { loggedUserId: loggedUserId, userId: "$moderators.email" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [
+                      { $toString: "$parentId" },
+                      { $toString: "$$loggedUserId" },
+                    ],
+                  },
+                  {
+                    $eq: [{ $toString: "$follows" }, { $toString: "$$userId" }],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "followers",
+      },
+    },
+    {
+      $addFields: {
+        "moderators.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
+      },
+    },
+    {
+      $project: {
+        followers: 0,
+        members: 0,
+        moderatorsInfo: 0,
+        _id: 0,
+        communityId: 0,
+        __v: 0,
+        parentId: 0,
+      },
+    },
+
+    {
+      $replaceRoot: {
+        newRoot: "$moderators",
+      },
+    },
+  ];
+}
+
 exports.fetchCommunity = fetchCommunity;
 exports.fetchCommunityPosts = fetchCommunityPosts;
+exports.fetchModerators = fetchModerators;
