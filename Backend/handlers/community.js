@@ -29,7 +29,6 @@ module.exports = (app) => {
       if (!community) {
         return res.send({ message: "Bad Request" }).status(400);
       }
-      console.log(community);
       return res.send(community.pop()).status(200);
     } catch (error) {
       console.log(error, "An error has occured at /community/:id");
@@ -57,11 +56,17 @@ module.exports = (app) => {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
+      const loggedUser = await UserModel.findOne({ email: req.userData.email });
+      if (!loggedUser) {
+        return res.send({ message: "User not found" }).status(404);
+      }
       const newMember = await new CommunityMember({
-        parentId: req.userData.email,
-        communityId: id,
+        parentId: new mongoose.Types.ObjectId(loggedUser._id),
+        communityId: new mongoose.Types.ObjectId(id),
       });
+
       await newMember.save();
+
       await Community.findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(id) },
         { $inc: { membersCount: 1 } }
@@ -85,9 +90,15 @@ module.exports = (app) => {
       return res.send({ message: "Unauthorized" }).status(401);
     }
     try {
+      const loggedUser = await UserModel.findOne({ email: userData.email });
+
+      if (!loggedUser) {
+        return res.send({ message: "User not found!" }).status(404);
+      }
+
       await CommunityMember.findOneAndDelete({
-        parentId: userData.email,
-        communityId: id,
+        parentId: loggedUser._id,
+        communityId: new mongoose.Types.ObjectId(id),
       });
 
       await Community.findOneAndUpdate(
@@ -240,8 +251,9 @@ module.exports = (app) => {
   });
 
   app.get("/community/:id/members", catchCookies, async (req, res) => {
-    const id = req.params.id;
-    const loggedUserId = req.userData.email;
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const loggedUserId = req.userData === undefined ? null : req.userData.email;
+    console.log("TESTING!!!");
     if (!id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
@@ -252,11 +264,30 @@ module.exports = (app) => {
           $lookup: {
             from: "users",
             localField: "parentId",
-            foreignField: "email",
+            foreignField: "_id",
             as: "users",
           },
         },
         { $unwind: "$users" },
+        {
+          $lookup: {
+            from: "communitymoderators",
+            let: { parentId: "$users._id", communityId: "$communityId" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$communityId", "$$communityId"] },
+                      { $eq: ["$parentId", "$$parentId"] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "moderator",
+          },
+        },
         {
           $lookup: {
             from: "followers",
@@ -279,6 +310,7 @@ module.exports = (app) => {
         {
           $addFields: {
             "users.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
+            "users.IsModerator": { $gt: [{ $size: "$moderator" }, 0] },
           },
         },
         {

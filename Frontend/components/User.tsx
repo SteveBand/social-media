@@ -2,9 +2,16 @@ import "@/styles/follower/follower-style.scss";
 import Link from "next/link";
 import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
 import { FollowButton } from "./action-buttons/FollowButton";
-import { useMemo } from "react";
 
-export function User({ content, loading }: { content: any; loading: boolean }) {
+export function User({
+  content,
+  loading,
+  members,
+}: {
+  content: any;
+  loading: boolean;
+  members?: any;
+}) {
   if (loading) {
     return <FollowerSkeleton />;
   }

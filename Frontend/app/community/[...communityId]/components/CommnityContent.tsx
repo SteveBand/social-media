@@ -1,25 +1,25 @@
 "use client";
 
 import { BackButton } from "@/components/action-buttons/BackButton";
-import {
-  CommunityModerator,
-  CommunityType,
-  UserType,
-} from "../../../../../types";
-import { useEffect, useState } from "react";
+import { CommunityType, UserType } from "../../../../../types";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./communityForm";
 import { CommunitySummary } from "./communitySummary";
 import { CommunityPosts } from "./CommunityPosts";
 import { CommunityAbout } from "./communityAbout";
 import { CommunityMembers } from "./CommunityMembers";
+import { fetchMembers } from "@/redux/features/communityMembers-slice";
+import { useAppSelector, useAppDispatch } from "@/hooks";
 
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("posts");
   const [posts, setPosts] = useState([]);
-  const [members, setMembers] = useState<UserType[]>([]);
-  const [moderators, setModerators] = useState<CommunityModerator[]>([]);
   const { data: session } = useSession();
+  const members = useAppSelector(
+    (state) => state.communityMembersReducer.communityMembers
+  );
+  const dispatch = useAppDispatch();
 
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
     const target = e.target as HTMLElement;
@@ -41,53 +41,13 @@ export function CommunityContent({ data }: { data: CommunityType }) {
     }
   }
 
-  async function fetchModerators() {
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/moderators`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setModerators(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function fetchMembers() {
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/members`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setMembers(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
-    if (action === "posts") {
+    if (action === "posts" && posts.length <= 0) {
       fetchPosts();
     }
 
-    if (action === "about") {
-      fetchModerators();
-    }
-
-    if (action === "members") {
-      fetchMembers();
+    if (action === "members" || action === "about") {
+      dispatch(fetchMembers(data._id));
     }
   }, [action]);
 
@@ -125,11 +85,16 @@ export function CommunityContent({ data }: { data: CommunityType }) {
       {session?.user && action === "posts" && <CommunityForm data={data} />}
       <section className="community-content">
         {action === "posts" && <CommunityPosts posts={posts} />}
-        {action === "about" && (
-          <CommunityAbout data={data} moderators={moderators} />
-        )}
+        {action === "about" && <CommunityAbout data={data} members={members} />}
         {action === "members" && <CommunityMembers members={members} />}
       </section>
     </section>
   );
 }
+
+export interface CommunityMember extends UserType {
+  isFollowing: boolean;
+  IsModerator: boolean;
+}
+
+

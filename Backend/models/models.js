@@ -182,20 +182,26 @@ const Community =
 
 const communityMemberSchema = new mongoose.Schema(
   {
-    parentId: String,
-    communityId: String,
+    parentId: {
+      type: mongoose.Types.ObjectId,
+    },
+    communityId: {
+      type: mongoose.Types.ObjectId,
+    },
   },
   {
     timestamps: true,
   }
 );
 
+communityMemberSchema.index({ parentId: 1, communityId: 1 });
+
 const CommunityMember =
   mongoose.models.communityMembers ||
   mongoose.model("communityMembers", communityMemberSchema);
 
 const communityModeratorSchema = new mongoose.Schema({
-  communityId: String,
+  communityId: mongoose.Types.ObjectId,
   parentId: mongoose.Types.ObjectId,
 });
 

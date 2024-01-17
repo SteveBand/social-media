@@ -1,9 +1,12 @@
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { CommunityModerator } from "../../../types";
+import { useAppDispatch } from "@/hooks";
+import { follow, unfollow } from "@/redux/features/communityMembers-slice";
 
 export function FollowButton({ user }: { user: CommunityModerator }) {
   const [following, setFollowing] = useState<boolean>(user.isFollowing);
+  const dispatch = useAppDispatch();
   const { data: session } = useSession();
   const parentId = session?.user?.email;
   async function handleFollow(
@@ -25,6 +28,7 @@ export function FollowButton({ user }: { user: CommunityModerator }) {
       );
       if (res.ok) {
         setFollowing((prev) => !prev);
+        !following ? dispatch(follow(user.id)) : dispatch(unfollow(user.id));
       }
     } catch (err) {
       console.log(err);
