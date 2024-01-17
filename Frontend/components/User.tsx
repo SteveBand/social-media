@@ -2,19 +2,15 @@ import "@/styles/follower/follower-style.scss";
 import Link from "next/link";
 import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
 import { FollowButton } from "./action-buttons/FollowButton";
+import { useSession } from "next-auth/react";
 
-export function User({
-  content,
-  loading,
-  members,
-}: {
-  content: any;
-  loading: boolean;
-  members?: any;
-}) {
+export function User({ content, loading }: { content: any; loading: boolean }) {
   if (loading) {
     return <FollowerSkeleton />;
   }
+
+  const { data: session } = useSession();
+  const user = session?.user;
 
   function navigation(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     const target = e.target as HTMLAnchorElement;
@@ -36,7 +32,9 @@ export function User({
           <h5 data-navigate={true}>{content.name}</h5>
           <p data-navigate={true}>{content.bio}</p>
         </div>
-        <FollowButton user={content} />
+        {user && user.email !== content.email && (
+          <FollowButton user={content} />
+        )}
       </div>
     </Link>
   );
