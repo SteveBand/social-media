@@ -14,7 +14,6 @@ export default async function ProfilePage({
 
   return (
     <section className="profile-page-wrapper">
-      <Navbar />
       <ProfileContent user={user} />
     </section>
   );

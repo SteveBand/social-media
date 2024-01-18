@@ -3,9 +3,9 @@
 import { FaArrowLeft } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useMemo, useState } from "react";
-import { CommentType, PostType } from "../../../../types";
+import { PostType } from "../../../../types";
 import { MainComment } from "./components/MainComment";
-import { Comment } from "@/app/community/post/[...post]/components/Comment";
+import { Comment } from "@/app/post/[...postId]/components/Comment";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

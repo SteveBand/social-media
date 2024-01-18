@@ -34,7 +34,7 @@ export function CommunityAbout({
       <article className="moderators">
         <h4>Moderators</h4>
         {moderators.map((user) => {
-          return <User content={user} loading={false} key={user.id} members={members}/>;
+          return <User content={user} loading={false} key={user.id} />;
         })}
       </article>
     </section>

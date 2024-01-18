@@ -5,7 +5,6 @@ import { FilterSection } from "./components/FilterSection";
 export default function Page() {
   return (
     <section className="search-page-wrapper">
-      <Navbar />
       <SearchSection />
       {/* <FilterSection /> */}
     </section>

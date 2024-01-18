@@ -96,5 +96,3 @@ export interface CommunityMember extends UserType {
   isFollowing: boolean;
   IsModerator: boolean;
 }
-
-

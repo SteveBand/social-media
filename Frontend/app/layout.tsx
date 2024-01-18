@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar/Navbar";
 import AuthProvider from "@/lib/AuthProvider";
 import { ReduxProvider } from "@/redux/Provider";
 import "@/styles/main.scss";
@@ -15,7 +16,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ReduxProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>

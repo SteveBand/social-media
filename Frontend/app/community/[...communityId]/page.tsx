@@ -37,7 +37,6 @@ export default function CommunityPage({
 
   return (
     <section className="community-page-wrapper">
-      <Navbar />
       <CommunityContent data={data} />
     </section>
   );
