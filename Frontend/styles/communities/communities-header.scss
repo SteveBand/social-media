@@ -1,0 +1,44 @@
+header {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  left: 0;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    letter-spacing: 0.5px;
+
+    .back-button {
+      cursor: pointer;
+    }
+  }
+
+  .action-buttons {
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+    width: min-content;
+    button {
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 50%;
+      padding: 5px;
+      cursor: pointer;
+      transition: 300ms ease;
+      .icon {
+        font-size: 1.2rem;
+      }
+      &:hover {
+        background-color: #d0dfeb;
+      }
+    }
+  }
+}

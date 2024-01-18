@@ -1,0 +1,16 @@
+.communities-page-container {
+  border: 1px solid rgb(204, 204, 204);
+  max-width: 570px;
+  min-width: 300px;
+  width: 90%;
+  min-height: 100vh;
+
+  @import "./communities-header.scss"; ///Header Container SCSS///
+}
+
+@media screen and (max-width: 475px) {
+  .communities-page-container {
+    max-width: 100%;
+    width: 100%;
+  }
+}
