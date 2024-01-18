@@ -3,8 +3,10 @@
 .community-page-wrapper {
   display: flex;
   gap: 100px;
+  width: 100%;
+  max-width: 570px;
   .community-page-container {
-    width: 33%;
+    width: 100%;
     max-width: 570px;
     min-width: 300px;
     min-height: 100vh;
@@ -144,6 +146,7 @@
     }
   }
 }
+
 
 @media screen and (max-width: 475px) {
   .community-page-wrapper {

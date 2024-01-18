@@ -6,6 +6,28 @@
   min-height: 100vh;
 
   @import "./communities-header.scss"; ///Header Container SCSS///
+
+  .communities-list {
+    box-sizing: border-box;
+    padding: 0 10px;
+    a {
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid rgb(204, 204, 204);
+      padding: 5px 0;
+      img {
+        height: 100px;
+        width: 100px;
+        border-radius: 10px;
+      }
+
+      .details {
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 475px) {
