@@ -15,6 +15,7 @@ const {
   fetchCommunity,
   fetchCommunityPosts,
   fetchModerators,
+  fetchCommunityMembers,
 } = require("../lib/aggregations/communityAgg");
 
 module.exports = (app) => {
@@ -253,76 +254,27 @@ module.exports = (app) => {
   app.get("/community/:id/members", catchCookies, async (req, res) => {
     const id = new mongoose.Types.ObjectId(req.params.id);
     const loggedUserId = req.userData === undefined ? null : req.userData.email;
-    console.log("TESTING!!!");
     if (!id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
     try {
-      const members = await CommunityMember.aggregate([
-        { $match: { communityId: id } },
-        {
-          $lookup: {
-            from: "users",
-            localField: "parentId",
-            foreignField: "_id",
-            as: "users",
-          },
-        },
-        { $unwind: "$users" },
-        {
-          $lookup: {
-            from: "communitymoderators",
-            let: { parentId: "$users._id", communityId: "$communityId" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$communityId", "$$communityId"] },
-                      { $eq: ["$parentId", "$$parentId"] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: "moderator",
-          },
-        },
-        {
-          $lookup: {
-            from: "followers",
-            let: { loggedUserId: loggedUserId, userId: "$users.email" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$parentId", "$$loggedUserId"] },
-                      { $eq: ["$follows", "$$userId"] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: "followers",
-          },
-        },
-        {
-          $addFields: {
-            "users.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
-            "users.IsModerator": { $gt: [{ $size: "$moderator" }, 0] },
-          },
-        },
-        {
-          $replaceRoot: {
-            newRoot: "$users",
-          },
-        },
-      ]);
+      const members = await CommunityMember.aggregate(
+        fetchCommunityMembers(id, loggedUserId)
+      );
       return res.send(members).status(200);
     } catch (error) {
       console.log("An error has occured at /community/:id/members", error);
       return res.send({ message: "An error has occured" }).status(500);
+    }
+  });
+
+  app.get("/communities", catchCookies, async (req, res) => {
+    try {
+      const communities = await Community.find().limit(10);
+      return res.send(communities).status(200);
+    } catch (error) {
+      console.log("An error has occured at /communities", error);
+      return res.send({ message: "An error has occured at " }).status(500);
     }
   });
 };
