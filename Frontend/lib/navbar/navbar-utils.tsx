@@ -1,5 +1,6 @@
 import { BsHouse, BsHeart, BsSearch } from "react-icons/bs";
 import { RiImageAddLine } from "react-icons/ri";
+import { GrGroup } from "react-icons/gr";
 
 export const navLinks = [
   {
@@ -21,5 +22,10 @@ export const navLinks = [
     path: "/post/new",
     name: "Post",
     icon: <RiImageAddLine className="navbar-link-icon" />,
+  },
+  {
+    path: "/communities",
+    name: "Communities",
+    icon: <GrGroup className="navbar-link-icon" />,
   },
 ];
