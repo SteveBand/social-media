@@ -44,7 +44,6 @@ export const authOptions: AuthOptions = {
         const { email, password } = req.body;
         const user = await fetchUser(email);
         const isPasswordValid = await compare(password, user.password);
-        console.log(isPasswordValid);
         if (!isPasswordValid) return null;
         const userObj = {
           email: user.email,
@@ -63,6 +62,10 @@ export const authOptions: AuthOptions = {
   jwt: {
     secret: process.env.JWT_SECRET,
     maxAge: 60 * 60 * 24,
+  },
+
+  pages: {
+    signIn: "localhost:3000/login",
   },
 
   callbacks: {

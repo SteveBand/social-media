@@ -52,8 +52,8 @@ export default function LoginForm({ providers }: Props) {
       const value = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
-        redirect: false,
+        callbackUrl: "localhost:3000",
+        // redirect: false,
       });
       console.log(value);
     } catch (err) {
