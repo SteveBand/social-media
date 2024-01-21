@@ -15,41 +15,18 @@ const initialState: InitialState = {
   token: "",
 };
 
-export const login = createAsyncThunk(
-  "auth/login",
-  async (params: Partial<LoginParams>, router) => {
-    const res = await fetch("http://localhost:3000/api/auth/login", {
-      cache: "no-store",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
-    });
-
-    const value = await res.json();
-
-    return value;
-  }
-);
-
-export const auth = createSlice({
-  name: "auth",
+export const user = createSlice({
+  name: "user",
   initialState,
   reducers: {
+    logIn: (state, action) => {
+      return action.payload;
+    },
     logOut: () => {
       return initialState;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(login.fulfilled, (state, action: PayloadAction<any>) => {
-      return {
-        ...state,
-        ...action.payload,
-      };
-    });
-  },
 });
 
-export const { logOut } = auth.actions;
-export default auth.reducer;
+export const { logOut, logIn } = user.actions;
+export default user.reducer;

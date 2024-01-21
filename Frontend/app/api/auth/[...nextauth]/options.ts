@@ -43,7 +43,8 @@ export const authOptions: AuthOptions = {
         if (!isValid) return null;
         const { email, password } = req.body;
         const user = await fetchUser(email);
-        const isPasswordValid = compare(password, user.password);
+        const isPasswordValid = await compare(password, user.password);
+        console.log(isPasswordValid);
         if (!isPasswordValid) return null;
         const userObj = {
           email: user.email,

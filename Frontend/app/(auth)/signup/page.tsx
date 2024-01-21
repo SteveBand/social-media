@@ -6,13 +6,16 @@ import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import { SignupParams } from "@/lib/auth-utilis/authTypes";
 import { signupSchema } from "@/lib/auth-utilis/authSchemas";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [params, setParams] = useState<Partial<SignupParams>>({
     gender: "male",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
+
+  const router = useRouter();
+
   function handleInputs(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { id, value } = e.target;
     const obj = {
@@ -41,7 +44,7 @@ export default function Page() {
       body: JSON.stringify(params),
     });
     if (res.status === 200) {
-      redirect("/login");
+      router.push("/login");
     }
   }
   return (

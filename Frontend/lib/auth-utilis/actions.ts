@@ -2,9 +2,9 @@ import { redirect } from "next/navigation";
 import { loginSchema } from "./authSchemas";
 import { Profile, RequestInternal } from "next-auth";
 import { connectToDB } from "../dbConnect";
-
 import { CredentialInput } from "next-auth/providers/credentials";
 import UserModel from "@/models/user";
+import { logIn } from "@/redux/features/auth-slice";
 
 async function profileSignIn(profile: any) {
   try {
@@ -21,8 +21,7 @@ async function profileSignIn(profile: any) {
       bio: profile.bio || "",
     });
 
-    console.log("New user Object: ", newUser);
-    await newUser.save();
+    const createdUser = await newUser.save();
     return true;
   } catch (error) {
     console.log(error);
@@ -41,7 +40,6 @@ async function credentialsSignIn(credentials: CredentialInput | undefined) {
         isSignIn = true;
       } else {
         isSignIn = false;
-        redirect("/auth/signup");
       }
     }
     return isSignIn;
@@ -67,13 +65,15 @@ export async function signInFunc(
 export async function validateCredentials(
   req: Pick<RequestInternal, "method" | "headers" | "body" | "query">
 ) {
-  const userObj = req.body;
+  const body = req.body;
+  const userObj = { email: body?.email, password: body?.password };
   const validation = loginSchema.validate(userObj, { abortEarly: true });
+  console.log(validation.error);
   if (validation.error === undefined) {
-    return null;
+    return true;
   }
   if (validation.error !== undefined) {
-    return true;
+    return false;
   }
 }
 

@@ -48,11 +48,17 @@ export default function LoginForm({ providers }: Props) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const { email, password } = loginParams;
-    await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/",
-    });
+    try {
+      const value = await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/",
+        redirect: false,
+      });
+      console.log(value);
+    } catch (err) {
+      console.log("An error occured while trying to login", err);
+    }
   }
 
   return (
