@@ -3,20 +3,22 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InitialState = {
   user_info: {
-    firstName: string;
-    lastName: string;
+    name: string;
     id: string;
     token: string;
+    email: string;
+    image: string;
   };
   status: "authenticated" | "unauthenticated";
 };
 
 const initialState: InitialState = {
   user_info: {
-    firstName: "",
-    lastName: "",
+    name: "",
     id: "",
     token: "",
+    email: "",
+    image: "",
   },
   status: "unauthenticated",
 };

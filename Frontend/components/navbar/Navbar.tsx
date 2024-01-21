@@ -6,12 +6,14 @@ import { navLinks } from "@/lib/navbar/navbar-utils";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
+import { useAppSelector } from "@/hooks";
 type Props = {};
 
 export default function Navbar({}: Props) {
   const pathname = usePathname();
-  const { data: session } = useSession();
   const [modal, setModal] = useState(false);
+  const user = useAppSelector((state) => state.userReducer);
+
   return (
     <nav className="navbar-wrapper">
       <div className="navbar-links-wrapper">
@@ -31,21 +33,21 @@ export default function Navbar({}: Props) {
         })}
         <div
           className={`${
-            pathname === `/profile/${session?.user?.email}`
+            pathname === `/profile/${user?.user_info?.email}`
               ? "logged-user active"
               : "logged-user"
           }`}
           onClick={() => setModal((prev) => !prev)}
         >
-          {session?.user?.image ? (
-            <img src={session.user.image} />
+          {user?.user_info?.image ? (
+            <img src={user.user_info.image} />
           ) : (
             <CgProfile />
           )}
-          <p>{session?.user?.name}</p>
+          <p>{user?.user_info?.name}</p>
           {modal && (
             <div className="logged-user-modal">
-              <Link href={`/profile/${session?.user?.email}`}>Profile</Link>
+              <Link href={`/profile/${user.user_info.email}`}>Profile</Link>
               <div className="signout" onClick={() => signOut()}>
                 Logout
               </div>
