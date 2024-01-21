@@ -1,0 +1,32 @@
+.membership {
+  h3 {
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: 1.25rem;
+  }
+  .cards-container {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    .box {
+      border-radius: 5px;
+      border: 2px solid #7ac6e0;
+      position: relative;
+      cursor: pointer;
+      transition: 200ms ease;
+      padding: 10px;
+      width: 45%;
+
+      h4 {
+        margin: 0;
+      }
+    }
+
+    input[type="radio"] {
+      &:checked + .box {
+        background-color: #64acd4;
+        color: rgb(222, 220, 220);
+      }
+    }
+  }
+}

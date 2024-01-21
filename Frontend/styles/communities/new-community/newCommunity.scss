@@ -1,0 +1,23 @@
+@import "../../mixin.scss";
+
+.new-community-page-container {
+  @include ContentContainer;
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    box-sizing: border-box;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    left: 0;
+
+    h4 {
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+  }
+
+  @import "./newCommunity-form.scss";
+}

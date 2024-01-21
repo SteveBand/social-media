@@ -1,0 +1,67 @@
+form {
+  box-sizing: border-box;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+
+  .article-container {
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+    }
+    .container {
+      border-radius: 2px;
+      box-sizing: border-box;
+      padding: 5px 10px;
+      box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.14);
+      -webkit-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.14);
+      -moz-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.14);
+      .upper {
+        display: flex;
+        justify-content: space-between;
+        color: transparent;
+
+        p.title {
+          color: transparent;
+        }
+      }
+
+      input,
+      textarea {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        max-width: 100%;
+        min-width: 100%;
+        max-height: 150px;
+        min-height: 30px;
+
+        &::placeholder {
+          font-size: 1rem;
+        }
+      }
+
+      &:focus-within {
+        outline: 2px solid #7ac6e0;
+
+        .upper {
+          color: black;
+
+          p.title {
+            color: #7ac6e0;
+          }
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: transparent;
+        }
+      }
+    }
+  }
+
+  .back-button {
+    cursor: pointer;
+  }
+}
