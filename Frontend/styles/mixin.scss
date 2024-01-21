@@ -12,3 +12,18 @@
     background-color: rgb(107, 106, 106);
   }
 }
+
+@mixin ContentContainer {
+  width: 100%;
+  max-width: 570px;
+  min-width: 300px;
+  min-height: 100vh;
+  border: 1px solid rgb(218, 218, 218);
+
+  @media screen and (max-width: 475px) {
+    .communities-page-container {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+}

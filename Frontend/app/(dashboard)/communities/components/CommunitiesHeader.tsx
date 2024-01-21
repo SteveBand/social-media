@@ -1,11 +1,14 @@
 "use client";
 
 import { BackButton } from "@/components/action-buttons/BackButton";
-import { getSession } from "next-auth/react";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { HiMagnifyingGlass } from "react-icons/hi2";
+import { useAppSelector } from "@/hooks";
+import Link from "next/link";
 
 export function CommunitiesPageHeader() {
+  const user = useAppSelector((state) => state.userReducer);
+
   return (
     <>
       <header>
@@ -17,9 +20,14 @@ export function CommunitiesPageHeader() {
           <button>
             <HiMagnifyingGlass className="icon" />
           </button>
-          <button>
+          <Link
+            href={"/communities/new"}
+            onClick={(e) => {
+              user.status === "unauthenticated" ? e.preventDefault() : null;
+            }}
+          >
             <AiOutlineUsergroupAdd className="icon" />
-          </button>
+          </Link>
         </div>
       </header>
     </>

@@ -24,7 +24,8 @@ header {
     display: flex;
     gap: 5px;
     width: min-content;
-    button {
+    button,
+    a {
       background-color: transparent;
       display: flex;
       align-items: center;
