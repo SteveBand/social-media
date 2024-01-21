@@ -2,17 +2,23 @@ import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InitialState = {
-  firstName: string;
-  lastName: string;
-  id: string;
-  token: string;
+  user_info: {
+    firstName: string;
+    lastName: string;
+    id: string;
+    token: string;
+  };
+  status: "authenticated" | "unauthenticated";
 };
 
 const initialState: InitialState = {
-  firstName: "",
-  lastName: "",
-  id: "",
-  token: "",
+  user_info: {
+    firstName: "",
+    lastName: "",
+    id: "",
+    token: "",
+  },
+  status: "unauthenticated",
 };
 
 export const user = createSlice({
