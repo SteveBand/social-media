@@ -1,0 +1,39 @@
+.community-admin-panel {
+  @import "../communities/new-community/newCommunity-form.scss";
+  box-sizing: border-box;
+  padding: 0 10px;
+  ul {
+    list-style: none;
+    display: flex;
+
+    li {
+      cursor: pointer;
+      transition: 200ms ease;
+      flex: 1;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 5px;
+      &:hover {
+        background-color: rgb(212, 212, 212);
+      }
+    }
+  }
+
+  .admin-panel-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .rules-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    input {
+      padding: 5px;
+      outline: none;
+    }
+  }
+}

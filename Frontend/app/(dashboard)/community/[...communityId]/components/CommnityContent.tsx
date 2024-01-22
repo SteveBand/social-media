@@ -4,13 +4,14 @@ import { BackButton } from "@/components/action-buttons/BackButton";
 import { CommunityType, UserType } from "../../../../../../types";
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { CommunityForm } from "./communityForm";
+import { CommunityForm } from "./CommunityForm";
 import { CommunitySummary } from "./communitySummary";
 import { CommunityPosts } from "./CommunityPosts";
-import { CommunityAbout } from "./communityAbout";
+import { CommunityAbout } from "./CommunityAbout";
 import { CommunityMembers } from "./CommunityMembers";
 import { fetchMembers } from "@/redux/features/communityMembers-slice";
 import { useAppSelector, useAppDispatch } from "@/hooks";
+import { CommunityAdminPanel } from "./CommunityAdminPanel/CommunityAdminPanel";
 
 export function CommunityContent({ data }: { data: CommunityType }) {
   const [action, setAction] = useState<string>("posts");
@@ -65,7 +66,7 @@ export function CommunityContent({ data }: { data: CommunityType }) {
           className={action === "posts" ? "active" : ""}
           onClick={handleAction}
         >
-          Top
+          Posts
         </li>
         <li
           data-fetch="about"
@@ -81,12 +82,24 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         >
           Members
         </li>
+        {data.isAdmin && (
+          <li
+            data-fetch="admin-panel"
+            className={action === "admin-panel" ? "active" : ""}
+            onClick={handleAction}
+          >
+            AdminPanel
+          </li>
+        )}
       </ul>
       {session?.user && action === "posts" && <CommunityForm data={data} />}
       <section className="community-content">
         {action === "posts" && <CommunityPosts posts={posts} />}
         {action === "about" && <CommunityAbout data={data} members={members} />}
         {action === "members" && <CommunityMembers members={members} />}
+        {action === "admin-panel" && (
+          <CommunityAdminPanel members={members} data={data} />
+        )}
       </section>
     </section>
   );

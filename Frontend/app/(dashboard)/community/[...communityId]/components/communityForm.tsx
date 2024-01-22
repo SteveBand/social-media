@@ -49,7 +49,9 @@ export function CommunityForm({ data }: { data: CommunityType }) {
           />
         </div>
       </div>
-      <button onClick={handlePost}>Post</button>
+      <button onClick={handlePost} className="post-button">
+        Post
+      </button>
     </form>
   );
 }

@@ -3,8 +3,11 @@ import Link from "next/link";
 import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
 import { FollowButton } from "./action-buttons/FollowButton";
 import { useSession } from "next-auth/react";
+import { SlOptions } from "react-icons/sl";
+import { useState } from "react";
 
-export function User({ content, loading }: { content: any; loading: boolean }) {
+export function User({ content, loading }: Props) {
+  const [isOptions, setIsOptions] = useState(true);
   if (loading) {
     return <FollowerSkeleton />;
   }
@@ -39,3 +42,8 @@ export function User({ content, loading }: { content: any; loading: boolean }) {
     </Link>
   );
 }
+
+type Props = {
+  content: any;
+  loading?: boolean;
+};

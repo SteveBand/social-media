@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
 html,
 body {
   width: 100%;
@@ -9,7 +10,7 @@ body {
   background-color: rgb(235, 233, 233);
   display: flex;
   gap: 100px;
-
+  font-family: "Roboto", sans-serif;
   @media screen and (max-width: 475px) {
     gap: 0;
   }
