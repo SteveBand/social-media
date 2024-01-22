@@ -4,6 +4,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 50px;
+  position: relative;
 
   .article-container {
     p {
@@ -61,7 +62,44 @@ form {
     }
   }
 
+  .logo-container {
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 50%;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid gray;
+      outline: none;
+    }
+
+    img {
+      max-width: 568px;
+      max-height: 300px;
+      margin: 0 auto;
+    }
+  }
+
   .back-button {
     cursor: pointer;
+  }
+
+  .create-button {
+    width: 50%;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid gray;
+    transition: 200ms ease;
+    &:hover {
+      border: 2px solid #7ac6e0;
+      background-color: #7ac6e0;
+      color: white;
+    }
   }
 }

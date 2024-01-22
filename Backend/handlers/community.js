@@ -277,4 +277,29 @@ module.exports = (app) => {
       return res.send({ message: "An error has occured at " }).status(500);
     }
   });
+
+  app.post("/community/new", authGuard, async (req, res) => {
+    const { membership, title, about, image, rules } = req.body;
+    if (!membership || !title || !about) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    try {
+      const admin = await UserModel.findOne({ email: req.userData.email });
+      const obj = {
+        membership,
+        title,
+        about,
+        image: image || "",
+        admin: new mongoose.Types.ObjectId(admin._id),
+        rules: rules || [{}],
+      };
+      console.log(obj);
+      const newCommunity = await new Community(obj);
+      newCommunity.save();
+      return res.send({ id: newCommunity._id }).status(200);
+    } catch (error) {
+      console.log("An error has occured at /community/new", error);
+      return res.send({ message: "An error has occured" }).status(500);
+    }
+  });
 };

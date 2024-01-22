@@ -1,13 +1,48 @@
 import { useState } from "react";
 import { NewCommunityCheckBox } from "./NewCommunityCheckBox";
+import { CommunityType } from "../../../../../../types";
 
 export function NewCommunityForm() {
   const [numOfLetters, setNumOfLetters] = useState({
     title: 0,
     purpose: 0,
   });
+  const [logo, setLogo] = useState("");
+  const [formData, setFormData] = useState<Partial<CommunityType>>({
+    membership: "open",
+  });
+
+  function handleForm(e: React.FormEvent<HTMLFormElement>) {
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
+    const { name, value } = target;
+    setFormData((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  }
+
+  async function handleSubmit(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:4000/community/new", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+    } catch (error) {
+      console.log("An error occured at Creating community ");
+    }
+  }
+
   return (
-    <form>
+    <form onChange={handleForm}>
       <article className="title article-container">
         <div className="container">
           <div className="upper">
@@ -18,6 +53,8 @@ export function NewCommunityForm() {
             name="title"
             id="title"
             placeholder="Community Name"
+            minLength={3}
+            maxLength={30}
             onChange={(e) =>
               setNumOfLetters((prev) => ({
                 ...prev,
@@ -37,8 +74,10 @@ export function NewCommunityForm() {
             <p>{numOfLetters.purpose} / 150</p>
           </div>
           <textarea
-            name="purpose"
-            id="purpose"
+            name="about"
+            id="about"
+            minLength={3}
+            maxLength={150}
             placeholder="Community Purpose"
             onChange={(e) =>
               setNumOfLetters((prev) => ({
@@ -53,7 +92,22 @@ export function NewCommunityForm() {
           or bad purposes
         </p>
       </article>
+      <article className="logo-container">
+        <input
+          type="text"
+          name="image"
+          id="image"
+          placeholder="Image Url "
+          defaultValue={""}
+          onChange={(e) => setLogo(e.target.value)}
+        />
+        <label htmlFor="image">Choose the logo of your Community</label>
+        <img src={logo} />
+      </article>
       <NewCommunityCheckBox />
+      <button className="create-button" onClick={handleSubmit}>
+        Create
+      </button>
     </form>
   );
 }

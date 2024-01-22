@@ -151,31 +151,47 @@ const FollowersModel =
   mongoose.model("followers", followersScehma);
 
 ///Community Model///
-const communitySchema = new mongoose.Schema({
-  image: String,
-  membersCount: Number,
-  postsCount: Number,
-  about: String,
-  title: {
-    type: String,
-    index: {
-      text: true,
-      unique: true,
+const communitySchema = new mongoose.Schema(
+  {
+    image: {
+      type: String,
+      defaultValue: "",
     },
-  },
-  rules: {
-    type: [
-      {
-        description: {
-          type: String,
-          lowercase: true,
-        },
+    membersCount: {
+      type: Number,
+      defaultValue: 1,
+    },
+    postsCount: {
+      type: Number,
+      defaultValue: 1,
+    },
+    about: String,
+    title: {
+      type: String,
+      index: {
+        text: true,
+        unique: true,
       },
-    ],
-    required: false,
+    },
+    rules: {
+      type: [
+        {
+          description: {
+            type: String,
+            lowercase: true,
+          },
+        },
+      ],
+      required: false,
+      defaultValue: [{}],
+    },
+    admin: mongoose.Types.ObjectId,
+    membership: String,
   },
-  topics: Array,
-});
+  {
+    timestamps: true,
+  }
+);
 
 const Community =
   mongoose.models.communities || mongoose.model("communities", communitySchema);

@@ -5,7 +5,14 @@ export function NewCommunityCheckBox() {
     <article className="membership">
       <h3>Membership</h3>
       <div className="cards-container">
-        <input type="radio" id="open" value="open" name="membership" hidden />
+        <input
+          type="radio"
+          id="open"
+          value="open"
+          name="membership"
+          hidden
+          defaultChecked
+        />
         <label className="box" htmlFor="open">
           <h4>Open</h4>
           <p>
