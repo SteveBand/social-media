@@ -6,7 +6,6 @@ const {
   Community,
   CommunityMember,
   Post,
-  CommentModel,
   LikesModel,
   CommunityModerator,
   UserModel,
@@ -20,8 +19,9 @@ const {
 
 module.exports = (app) => {
   app.get("/community/:id", catchCookies, async (req, res) => {
-    const id = req.params.id;
-    const userId = req.userData.email || null;
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const user = await UserModel.findOne({ email: req.userData.email });
+    const userId = new mongoose.Types.ObjectId(user._id);
     if (!id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
@@ -30,6 +30,7 @@ module.exports = (app) => {
       if (!community) {
         return res.send({ message: "Bad Request" }).status(400);
       }
+      console.log(community);
       return res.send(community.pop()).status(200);
     } catch (error) {
       console.log(error, "An error has occured at /community/:id");

@@ -28,7 +28,7 @@ export function CommunitySummary({ data }: { data: CommunityType }) {
       console.log(error);
     }
   }
-
+  console.log(data);
   return (
     <div className="summary">
       <h2>{data.title}</h2>
@@ -36,7 +36,7 @@ export function CommunitySummary({ data }: { data: CommunityType }) {
       <footer>
         <p>{membersCount} Members</p>
         {!isMember && <button onClick={handleJoin}>Join</button>}
-        {isMember && (
+        {isMember && !data.isAdmin && (
           <button onClick={handleJoin} className="is-member">
             <span className="joined">Joined</span>
             <span className="leave">Leave</span>

@@ -31,10 +31,7 @@ function fetchCommunity(id, userId) {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$$communityId" },
-                      { $toString: "$communityId" },
-                    ],
+                    $eq: ["$$communityId", "$communityId"],
                   },
                 ],
               },
@@ -44,10 +41,10 @@ function fetchCommunity(id, userId) {
         as: "moderatorsInfo",
       },
     },
-
     {
       $addFields: {
         isMember: { $gt: [{ $size: "$members" }, 0] },
+        isAdmin: { $eq: ["$admin", userId] },
       },
     },
   ];
