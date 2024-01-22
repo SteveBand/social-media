@@ -159,19 +159,17 @@ const communitySchema = new mongoose.Schema(
     },
     membersCount: {
       type: Number,
-      defaultValue: 1,
+      default: 1,
     },
     postsCount: {
       type: Number,
-      defaultValue: 1,
+      default: 0,
     },
     about: String,
     title: {
       type: String,
-      index: {
-        text: true,
-        unique: true,
-      },
+      lowercase: true,
+      index: true,
     },
     rules: {
       type: [
@@ -183,7 +181,7 @@ const communitySchema = new mongoose.Schema(
         },
       ],
       required: false,
-      defaultValue: [{}],
+      default: [],
     },
     admin: mongoose.Types.ObjectId,
     membership: String,

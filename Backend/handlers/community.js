@@ -283,7 +283,17 @@ module.exports = (app) => {
     if (!membership || !title || !about) {
       return res.send({ message: "Bad Request" }).status(400);
     }
+
     try {
+      const exisitingTitle = await Community.findOne({ title });
+      if (exisitingTitle) {
+        return res
+          .send({
+            message:
+              "Community with the same name already exists , pick another ",
+          })
+          .status(400);
+      }
       const admin = await UserModel.findOne({ email: req.userData.email });
       const obj = {
         membership,
@@ -291,11 +301,20 @@ module.exports = (app) => {
         about,
         image: image || "",
         admin: new mongoose.Types.ObjectId(admin._id),
-        rules: rules || [{}],
+        rules: rules || [],
       };
-      console.log(obj);
       const newCommunity = await new Community(obj);
       newCommunity.save();
+      const newMember = await new CommunityMember({
+        parentId: new mongoose.Types.ObjectId(admin._id),
+        communityId: new mongoose.Types.ObjectId(newCommunity._id),
+      });
+      newMember.save();
+      const newModerator = await new CommunityModerator({
+        parentId: new mongoose.Types.ObjectId(admin._id),
+        communityId: new mongoose.Types.ObjectId(newCommunity._id),
+      });
+      newModerator.save();
       return res.send({ id: newCommunity._id }).status(200);
     } catch (error) {
       console.log("An error has occured at /community/new", error);

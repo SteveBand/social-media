@@ -1,7 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import { NewCommunityCheckBox } from "./NewCommunityCheckBox";
 import { CommunityType } from "../../../../../../types";
-
+import { useRouter } from "next/navigation";
 export function NewCommunityForm() {
   const [numOfLetters, setNumOfLetters] = useState({
     title: 0,
@@ -11,6 +13,7 @@ export function NewCommunityForm() {
   const [formData, setFormData] = useState<Partial<CommunityType>>({
     membership: "open",
   });
+  const router = useRouter();
 
   function handleForm(e: React.FormEvent<HTMLFormElement>) {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -36,6 +39,10 @@ export function NewCommunityForm() {
         },
         body: JSON.stringify(formData),
       });
+      if (res.status === 200) {
+        const data = await res.json();
+        data.id && router.push(`/community/${data.id}`);
+      }
     } catch (error) {
       console.log("An error occured at Creating community ");
     }
