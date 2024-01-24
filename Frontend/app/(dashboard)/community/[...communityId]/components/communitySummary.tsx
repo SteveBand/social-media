@@ -28,7 +28,6 @@ export function CommunitySummary({ data }: { data: CommunityType }) {
       console.log(error);
     }
   }
-  console.log(data);
   return (
     <div className="summary">
       <h2>{data.title}</h2>

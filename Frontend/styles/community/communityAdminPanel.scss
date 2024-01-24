@@ -28,12 +28,46 @@
   .rules-container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 20px;
     width: 100%;
     box-sizing: border-box;
-    input {
-      padding: 5px;
-      outline: none;
+
+    .rule-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      input {
+        padding: 5px;
+        outline: none;
+        flex: 2;
+      }
+      label {
+        padding: 1px 10px;
+        background-color: #0e1419;
+        color: white;
+        border-radius: 50%;
+        font-weight: 700;
+      }
+
+      .close-icon {
+        font-size: 2rem;
+        cursor: pointer;
+        color: rgb(163, 0, 0);
+      }
+    }
+
+    button {
+      margin: 0 auto;
+      width: 20%;
+      min-width: 100px;
+      padding: 5px 10px;
+      border: 1px solid #64acd4;
+      transition: 200ms ease;
+      cursor: pointer;
+      border-radius: 10px;
+      &:hover {
+        background-color: #64acd4;
+      }
     }
   }
 }

@@ -33,7 +33,7 @@ export function CommunityAdminPanel({
           Moderators
         </li>
       </ul>
-      {section === "edit" && <CommunityEditForm />}
+      {section === "edit" && <CommunityEditForm data={data} />}
     </section>
   );
 }

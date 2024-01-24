@@ -1,35 +1,65 @@
 import { NewCommunityCheckBox } from "@/app/(dashboard)/communities/new/components/NewCommunityCheckBox";
+import { IoIosClose } from "react-icons/io";
 import { useState } from "react";
 import { CommunityType } from "../../../../../../../types";
-
-export function CommunityEditForm() {
+import { v4 as uuidv } from "uuid";
+export function CommunityEditForm({ data }: { data: CommunityType }) {
   const [numOfLetters, setNumOfLetters] = useState({
     purpose: 0,
     title: 0,
   });
   const [logo, setLogo] = useState("");
-  const [rules, setRules] = useState<{}[]>([]);
-  const [formData, setFormData] = useState<Partial<CommunityType>>({ rules });
+  // const [rulesInputs, setRulesInputs] = useState<Array<{}>>([]);
+  const [formData, setFormData] = useState<Partial<CommunityType>>({
+    rules: data.rules,
+  });
 
   function handleInputs(e: React.FormEvent<HTMLFormElement>) {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement;
-    const { name, value } = target;
-    setFormData((prev) => {
-      return { ...prev, [name]: value };
-    });
+    const { name, value, id } = target;
+    if (name === "rule") {
+      return setFormData((prev) => {
+        const updatedRules = prev.rules.map((rule: {}, index: number) => {
+          if (index.toString() === id) {
+            return { ...rule, description: value };
+          }
+          return rule;
+        });
+        return { ...prev, rules: updatedRules };
+      });
+    } else {
+      setFormData((prev) => {
+        return { ...prev, [name]: value };
+      });
+    }
+
+    console.log(formData);
   }
 
   async function handleSubmit() {}
 
-  const newRule = {};
-
   function addRule(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    if (rules.length < 5) {
-      setRules((prev) => {
-        return [...prev, {}];
+    if (formData.rules.length < 5) {
+      const newRule = {
+        description: "",
+        ruleId: uuidv(),
+      };
+      setFormData((prev) => {
+        const rules = [...prev.rules, newRule];
+        return {
+          ...prev,
+          rules,
+        };
       });
     }
+    console.log(formData);
+  }
+
+  function handleRemoveRules(ruleIndex: number) {
+    // setRulesInputs((prev) => {
+    // return prev.filter((index) => index !== ruleIndex);
+    // });
   }
 
   return (
@@ -86,13 +116,23 @@ export function CommunityEditForm() {
           </p>
         </article>
         <article className="rules-container">
-          {rules.map((content, i) => {
+          <h3>Rules</h3>
+          {formData.rules.map((content: any, i: number) => {
             return (
-              <input
-                type="text"
-                id={`${i}`}
-                placeholder="Write the rule here"
-              />
+              <div className="rule-wrapper" id={`${content.ruleId}`}>
+                <label>{i + 1}</label>
+                <input
+                  type="text"
+                  name="rule"
+                  placeholder="Write the rule here"
+                  id={`${i}`}
+                  defaultValue={content.description}
+                />
+                <IoIosClose
+                  className="close-icon"
+                  onClick={() => handleRemoveRules(i)}
+                />
+              </div>
             );
           })}
           <button onClick={addRule}>Add a rule</button>
