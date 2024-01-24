@@ -35,7 +35,28 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
     console.log(formData);
   }
 
-  async function handleSubmit() {}
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        `http://localhost:4000/community/${data._id}/edit`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   function addRule(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -90,6 +111,7 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
                   title: e.target.value.length,
                 }))
               }
+              defaultValue={data.title}
             />
           </div>
           <p>
@@ -114,6 +136,7 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
                   purpose: e.target.value.length,
                 }))
               }
+              defaultValue={data.about}
             />
           </div>
           <p>
@@ -156,7 +179,9 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
           <img src={logo} />
         </article>
         <NewCommunityCheckBox />
-        <button className="create-button">Edit</button>
+        <button className="create-button" onClick={handleSubmit}>
+          Edit
+        </button>
       </article>
     </form>
   );

@@ -322,4 +322,29 @@ module.exports = (app) => {
       return res.send({ message: "An error has occured" }).status(500);
     }
   });
+
+  app.put("/community/:id/edit", authGuard, async (req, res) => {
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const body = req.body;
+    if (!body || !id) {
+      return res.send({ message: "Bad Request" }).status(400);
+    }
+    const user = await UserModel.findOne({ email: req.userData.email });
+    if (!user) {
+      return res.send({ message: "Unauthorized" }).status(401);
+    }
+    try {
+      const updatedCommunity = await Community.findOneAndUpdate(
+        { _id: id },
+        body,
+        {
+          new: true,
+        }
+      );
+      return res.send(updatedCommunity.pop());
+    } catch (error) {
+      console.log("An error has occured at /community/:id/edit", error);
+      return res.send({ message: "An error has Occured" }).status(500);
+    }
+  });
 };
