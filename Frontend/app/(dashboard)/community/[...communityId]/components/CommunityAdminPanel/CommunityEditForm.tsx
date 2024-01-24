@@ -8,8 +8,7 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
     purpose: 0,
     title: 0,
   });
-  const [logo, setLogo] = useState("");
-  // const [rulesInputs, setRulesInputs] = useState<Array<{}>>([]);
+  const [logo, setLogo] = useState(data.image || "");
   const [formData, setFormData] = useState<Partial<CommunityType>>({
     rules: data.rules,
   });
@@ -56,10 +55,17 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
     console.log(formData);
   }
 
-  function handleRemoveRules(ruleIndex: number) {
-    // setRulesInputs((prev) => {
-    // return prev.filter((index) => index !== ruleIndex);
-    // });
+  function handleRemoveRules(id: any) {
+    const updatedRules = formData.rules.filter(
+      (rule: any) => rule.ruleId !== id
+    );
+    setFormData((prev) => {
+      return {
+        ...prev,
+        rules: updatedRules,
+      };
+    });
+    console.log(formData.rules);
   }
 
   return (
@@ -119,7 +125,7 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
           <h3>Rules</h3>
           {formData.rules.map((content: any, i: number) => {
             return (
-              <div className="rule-wrapper" id={`${content.ruleId}`}>
+              <div className="rule-wrapper" key={`${content.ruleId}`}>
                 <label>{i + 1}</label>
                 <input
                   type="text"
@@ -130,7 +136,7 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
                 />
                 <IoIosClose
                   className="close-icon"
-                  onClick={() => handleRemoveRules(i)}
+                  onClick={() => handleRemoveRules(content.ruleId)}
                 />
               </div>
             );
@@ -143,7 +149,7 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
             name="image"
             id="image"
             placeholder="Image Url "
-            defaultValue={""}
+            defaultValue={data.image}
             onChange={(e) => setLogo(e.target.value)}
           />
           <label htmlFor="image">Choose the logo of your Community</label>
