@@ -65,9 +65,11 @@ const postSchema = new mongoose.Schema(
     },
     parentId: {
       type: String,
-      index: true,
-      lowercase: true,
+      index: {
+        unique: true,
+      },
       required: true,
+      lowercase: true,
     },
     likesCount: {
       type: Number,

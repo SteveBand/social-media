@@ -2,8 +2,14 @@ const mongoose = require("mongoose");
 const { authGuard } = require("../middlewares/authGuard");
 const { catchCookies } = require("../middlewares/catchCookies");
 const { postSchema } = require("../schemas");
+const {
+  fetchDashboardPostsLogged,
+} = require("../lib/aggregations/posts/logged");
+const {
+  fetchDashboardPostsUnLogged,
+} = require("../lib/aggregations/posts/unlogged");
 const { Post, UserModel, CommentModel } = require("../models/models");
-const { fetchPost, fetchDashboardPosts } = require("../lib/aggregations");
+const { fetchPost } = require("../lib/aggregations");
 module.exports = (app) => {
   const db = mongoose.connection.getClient();
 
@@ -34,11 +40,17 @@ module.exports = (app) => {
   });
 
   app.get("/posts", catchCookies, async (req, res) => {
+    const userData = req.userData || null;
     try {
-      const userData = req.userData;
-      const posts = await Post.aggregate(fetchDashboardPosts(userData.email));
-      console.log(posts);
-      return res.send(posts).status(200);
+      if (userData) {
+        const posts = await Post.aggregate(
+          fetchDashboardPostsLogged(userData.email)
+        );
+        return res.send(posts).status(200);
+      } else {
+        const posts = await Post.aggregate(fetchDashboardPostsUnLogged());
+        return res.status(200).send(posts);
+      }
     } catch (error) {
       console.log("An error has occured at /posts", error);
       return res.send({ message: "An error has occured", error }).status(500);
