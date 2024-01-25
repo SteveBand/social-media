@@ -51,6 +51,7 @@ function fetchCommunity(id, userId) {
 }
 
 function fetchCommunityPosts(userData, id) {
+  const email = userData.email || "";
   return [
     { $match: { communityId: id } },
     {
@@ -65,7 +66,7 @@ function fetchCommunityPosts(userData, id) {
     {
       $lookup: {
         from: "likes",
-        let: { parentId: userData.email, postId: "$_id" },
+        let: { parentId: email, postId: "$_id" },
         pipeline: [
           {
             $match: {
@@ -93,7 +94,7 @@ function fetchCommunityPosts(userData, id) {
         liked: { $gt: [{ $size: "$likes" }, 0] },
         isAuthor: {
           $cond: {
-            if: { $eq: [userData.email, "$parentId"] },
+            if: { $eq: [email, "$parentId"] },
             then: true,
             else: "$$REMOVE",
           },

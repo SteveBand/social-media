@@ -1,3 +1,7 @@
+const { getUserFollowingLogged } = require("../lib/aggregations/user/logged");
+const {
+  getUserFollowingUnlogged,
+} = require("../lib/aggregations/user/unLogged");
 const {
   userPostsAggregation,
   userAllLiked,
@@ -37,7 +41,7 @@ module.exports = (app) => {
 
   app.get("/:user/likes", catchCookies, async (req, res) => {
     const userId = req.params.user;
-    const loggedUserId = req.userData.email;
+    const loggedUserId = req?.userData?.email || "";
     if (!userId) {
       return res.send({ message: "User not Found!" }).status(404);
     }
@@ -143,49 +147,22 @@ module.exports = (app) => {
 
   app.get("/:user/following", catchCookies, async (req, res) => {
     const userId = req.params.user;
-    const loggedUserId = req.userData.email;
+    const loggedUserId = req.userData?.email || "";
     if (!userId) {
       return res.send({ message: "User not found!" });
     }
     try {
-      const obj = await FollowersModel.aggregate([
-        {
-          $match: { parentId: userId },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "follows",
-            foreignField: "email",
-            as: "user_info",
-          },
-        },
-        { $unwind: "$user_info" },
-        {
-          $addFields: {
-            "user_info.isFollowing": {
-              $and: [
-                { $eq: ["$parentId", loggedUserId] },
-                { $eq: ["$follows", "$user_info.email"] },
-              ],
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            parentId: 0,
-            follows: 0,
-          },
-        },
-        {
-          $replaceRoot: {
-            newRoot: "$user_info",
-          },
-        },
-      ]);
-
-      return res.send(obj).status(200);
+      if (loggedUserId !== "") {
+        const obj = await FollowersModel.aggregate(
+          getUserFollowingLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(obj);
+      } else {
+        const obj = await FollowersModel.aggregate(
+          getUserFollowingUnlogged(userId)
+        );
+        return res.status(200).send(obj);
+      }
     } catch (err) {
       console.log("An error has occured at /:user/followes", err);
       return res.send({ message: "something went wrong" });
