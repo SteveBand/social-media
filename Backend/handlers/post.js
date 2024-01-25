@@ -4,9 +4,11 @@ const { catchCookies } = require("../middlewares/catchCookies");
 const { postSchema } = require("../schemas");
 const {
   fetchDashboardPostsLogged,
+  fetchPostLogged,
 } = require("../lib/aggregations/posts/logged");
 const {
   fetchDashboardPostsUnLogged,
+  fetchPostUnLogged,
 } = require("../lib/aggregations/posts/unlogged");
 const { Post, UserModel, CommentModel } = require("../models/models");
 const { fetchPost } = require("../lib/aggregations");
@@ -57,15 +59,24 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/post/:postId", async (req, res) => {
-    const params = req.params.postId;
-    if (!params) {
+  app.get("/post/:postId", catchCookies, async (req, res) => {
+    const postId = req.params.postId;
+    const userData = req.userData || null;
+    if (!postId) {
       return res.send("Bad Request").status(400);
     }
     try {
-      const obj = await Post.aggregate(fetchPost(params));
-      console.log(obj);
-      return res.send(obj.pop()).status(200);
+      if (userData) {
+        const obj = await Post.aggregate(
+          fetchPostLogged(postId, userData.email)
+        );
+        console.log(obj);
+        return res.send(obj.pop()).status(200);
+      } else {
+        const obj = await Post.aggregate(fetchPostUnLogged(postId));
+        console.log(obj);
+        res.status(200).send(obj.pop());
+      }
     } catch (err) {
       console.log("Post not Found: ");
       return res.send({ message: "Error 404, Page not found!" }).status(404);

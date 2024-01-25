@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 function fetchDashboardPostsUnLogged() {
   return [
     { $match: { communityId: { $exists: false } } },
@@ -17,4 +19,20 @@ function fetchDashboardPostsUnLogged() {
   ];
 }
 
+function fetchPostUnLogged(postId) {
+  return [
+    { $match: { _id: new mongoose.Types.ObjectId(postId) } },
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$parentId" },
+        pipeline: [{ $match: { $expr: { $eq: ["$email", "$$userId"] } } }],
+        as: "user_info",
+      },
+    },
+    { $unwind: "$user_info" },
+  ];
+}
+
 exports.fetchDashboardPostsUnLogged = fetchDashboardPostsUnLogged;
+exports.fetchPostUnLogged = fetchPostUnLogged;
