@@ -37,22 +37,16 @@ export default function PostModal({}: Props) {
 
   async function handleSubmit(e: React.MouseEvent) {
     e.preventDefault();
-    const formattedDate = moment().format("MMMM Do YYYY, h:mm:ss a");
-    const newObj = {
-      ...params,
-      date: formattedDate,
-    };
-
     const res = await fetch("http://localhost:4000/new/post", {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newObj),
+      body: JSON.stringify(params),
     });
 
-    if (res.status) {
+    if (res.ok) {
       dispatch(disable());
     }
   }

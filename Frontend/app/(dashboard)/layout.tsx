@@ -1,5 +1,6 @@
 "use client";
 
+import { Footer } from "@/components/footer";
 import Navbar from "@/components/navbar/Navbar";
 import { useAppDispatch } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body>
         {<Navbar />}
         {children}
+        {<Footer />}
       </body>
     </html>
   );

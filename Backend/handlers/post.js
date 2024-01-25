@@ -10,11 +10,8 @@ const {
   fetchDashboardPostsUnLogged,
   fetchPostUnLogged,
 } = require("../lib/aggregations/posts/unlogged");
-const { Post, UserModel, CommentModel } = require("../models/models");
-const { fetchPost } = require("../lib/aggregations");
+const { Post } = require("../models/models");
 module.exports = (app) => {
-  const db = mongoose.connection.getClient();
-
   app.post("/new/post", authGuard, async (req, res) => {
     if (!req.userData) {
       return res
@@ -26,9 +23,6 @@ module.exports = (app) => {
     const obj = {
       ...postBody,
       parentId: userData.email,
-      likesCount: 0,
-      commentsCount: 0,
-      sharesCount: 0,
     };
     const validation = postSchema.validate(postBody, { abortEarly: true });
 

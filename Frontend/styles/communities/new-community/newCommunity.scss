@@ -1,7 +1,7 @@
 @import "../../mixin.scss";
 
 .new-community-page-container {
-  @include ContentContainer;
+  @include PageContainer;
 
   header {
     display: flex;

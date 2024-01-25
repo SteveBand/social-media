@@ -1,7 +1,7 @@
 @import "../mixin.scss";
 
 .communities-page-container {
-  @include ContentContainer;
+  @include PageContainer;
   @import "./communities-header.scss"; ///Header Container SCSS///
 
   .communities-list {

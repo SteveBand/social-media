@@ -1,58 +1,51 @@
-.homepage-container {
+@import "../mixin.scss";
+
+.feed-wrapper {
   display: flex;
-  gap: 100px;
+  flex-direction: column;
+  align-items: center;
+  @include PageContainer;
+  // PostInput component Styles //
 
-  .feed-wrapper {
-    min-height: 100vh;
+  .feed-post-input-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    border: 1px solid rgb(210, 209, 209);
-    width: 570px;
-    min-width: 350px;
-
-    // PostInput component Styles //
-
-    .feed-post-input-container {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      min-width: 250px;
-      padding: 0 0 5px 0;
-      border-bottom: 1px solid rgb(217, 215, 215);
-      gap: 5px;
-      .feed-post-input-icon {
-        font-size: 2.2rem;
-        flex: 1;
-      }
-
-      .feed-post-input {
-        border: none;
-        outline: none;
-        background-color: transparent;
-        flex: 10;
-        cursor: text;
-        color: rgb(147, 146, 146);
-      }
-
-      .feed-post-input-button {
-        border: none;
-        background-color: rgb(163, 161, 161);
-        padding: 10px 15px;
-        border-radius: 30px;
-        cursor: not-allowed;
-        color: white;
-        letter-spacing: 1px;
-        font-size: 0.75rem;
-        flex: 1;
-      }
+    width: 100%;
+    min-width: 250px;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid rgb(217, 215, 215);
+    gap: 5px;
+    .feed-post-input-icon {
+      font-size: 2.2rem;
+      flex: 1;
     }
-    /////////
-    .feed-container {
-      max-width: 570px;
-      width: 100%;
-      min-width: 300px;
+
+    .feed-post-input {
+      border: none;
+      outline: none;
+      background-color: transparent;
+      flex: 10;
+      cursor: text;
+      color: rgb(147, 146, 146);
     }
+
+    .feed-post-input-button {
+      border: none;
+      background-color: rgb(163, 161, 161);
+      padding: 10px 15px;
+      border-radius: 30px;
+      cursor: not-allowed;
+      color: white;
+      letter-spacing: 1px;
+      font-size: 0.75rem;
+      flex: 1;
+    }
+  }
+  /////////
+  .feed-container {
+    max-width: 570px;
+    width: 100%;
+    min-width: 300px;
   }
 }
 

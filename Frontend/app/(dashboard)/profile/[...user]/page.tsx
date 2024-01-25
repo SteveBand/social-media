@@ -12,11 +12,7 @@ export default async function ProfilePage({
     credentials: "include",
   }).then((data) => data.json());
 
-  return (
-    <section className="profile-page-wrapper">
-      <ProfileContent user={user} />
-    </section>
-  );
+  return <ProfileContent user={user} />;
 }
 
 type User = {
