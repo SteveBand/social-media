@@ -30,7 +30,6 @@ module.exports = (app) => {
       if (!community) {
         return res.send({ message: "Bad Request" }).status(400);
       }
-      console.log(community);
       return res.send(community.pop()).status(200);
     } catch (error) {
       console.log(error, "An error has occured at /community/:id");
@@ -333,6 +332,10 @@ module.exports = (app) => {
     if (!user) {
       return res.send({ message: "Unauthorized" }).status(401);
     }
+    const community = await Community.findById(id);
+    if (!community.admin.equals(user._id)) {
+      return res.send({ message: "Unauthorized" }).status(401);
+    }
     try {
       const updatedCommunity = await Community.findOneAndUpdate(
         { _id: id },
@@ -341,7 +344,10 @@ module.exports = (app) => {
           new: true,
         }
       );
-      return res.send(updatedCommunity.pop());
+      const newObj = updatedCommunity.toObject();
+      newObj.isAdmin = true;
+      newObj.isMember = true;
+      return res.send(newObj);
     } catch (error) {
       console.log("An error has occured at /community/:id/edit", error);
       return res.send({ message: "An error has Occured" }).status(500);

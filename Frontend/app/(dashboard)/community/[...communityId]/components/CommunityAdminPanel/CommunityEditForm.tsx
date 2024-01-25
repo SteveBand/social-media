@@ -1,9 +1,14 @@
 import { NewCommunityCheckBox } from "@/app/(dashboard)/communities/new/components/NewCommunityCheckBox";
 import { IoIosClose } from "react-icons/io";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { CommunityType } from "../../../../../../../types";
-import { v4 as uuidv } from "uuid";
-export function CommunityEditForm({ data }: { data: CommunityType }) {
+import {
+  addRule,
+  handleInputs,
+  handleRemoveRules,
+  handleSubmit,
+} from "@/lib/community/adminPanel";
+export function CommunityEditForm({ data, setData }: Props) {
   const [numOfLetters, setNumOfLetters] = useState({
     purpose: 0,
     title: 0,
@@ -12,85 +17,8 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
   const [formData, setFormData] = useState<Partial<CommunityType>>({
     rules: data.rules,
   });
-
-  function handleInputs(e: React.FormEvent<HTMLFormElement>) {
-    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
-    const { name, value, id } = target;
-    if (name === "rule") {
-      return setFormData((prev) => {
-        const updatedRules = prev.rules.map((rule: {}, index: number) => {
-          if (index.toString() === id) {
-            return { ...rule, description: value };
-          }
-          return rule;
-        });
-        return { ...prev, rules: updatedRules };
-      });
-    } else {
-      setFormData((prev) => {
-        return { ...prev, [name]: value };
-      });
-    }
-
-    console.log(formData);
-  }
-
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/edit`,
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        console.log(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function addRule(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    if (formData.rules.length < 5) {
-      const newRule = {
-        description: "",
-        ruleId: uuidv(),
-      };
-      setFormData((prev) => {
-        const rules = [...prev.rules, newRule];
-        return {
-          ...prev,
-          rules,
-        };
-      });
-    }
-    console.log(formData);
-  }
-
-  function handleRemoveRules(id: any) {
-    const updatedRules = formData.rules.filter(
-      (rule: any) => rule.ruleId !== id
-    );
-    setFormData((prev) => {
-      return {
-        ...prev,
-        rules: updatedRules,
-      };
-    });
-    console.log(formData.rules);
-  }
-
   return (
-    <form onChange={handleInputs}>
+    <form onChange={(e) => handleInputs(e, setFormData)}>
       <article className="admin-panel-container">
         <h3>Edit Community Page</h3>
         <article className="title article-container">
@@ -148,7 +76,10 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
           <h3>Rules</h3>
           {formData.rules.map((content: any, i: number) => {
             return (
-              <div className="rule-wrapper" key={`${content.ruleId}`}>
+              <div
+                className="rule-wrapper"
+                key={`${content._id || content.ruleId}`}
+              >
                 <label>{i + 1}</label>
                 <input
                   type="text"
@@ -159,12 +90,20 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
                 />
                 <IoIosClose
                   className="close-icon"
-                  onClick={() => handleRemoveRules(content.ruleId)}
+                  onClick={() =>
+                    handleRemoveRules(
+                      content._id || content.ruleId,
+                      setFormData,
+                      formData
+                    )
+                  }
                 />
               </div>
             );
           })}
-          <button onClick={addRule}>Add a rule</button>
+          <button onClick={(e) => addRule(e, setFormData, formData)}>
+            Add a rule
+          </button>
         </article>
         <article className="logo-container">
           <input
@@ -179,10 +118,18 @@ export function CommunityEditForm({ data }: { data: CommunityType }) {
           <img src={logo} />
         </article>
         <NewCommunityCheckBox />
-        <button className="create-button" onClick={handleSubmit}>
+        <button
+          className="create-button"
+          onClick={(e) => handleSubmit(e, formData, data._id, setData)}
+        >
           Edit
         </button>
       </article>
     </form>
   );
 }
+
+type Props = {
+  data: CommunityType;
+  setData: React.Dispatch<SetStateAction<CommunityType | undefined>>;
+};

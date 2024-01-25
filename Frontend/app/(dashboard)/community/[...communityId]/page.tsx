@@ -37,7 +37,7 @@ export default function CommunityPage({
 
   return (
     <section className="community-page-wrapper">
-      <CommunityContent data={data} />
+      <CommunityContent data={data} setData={setData} />
     </section>
   );
 }

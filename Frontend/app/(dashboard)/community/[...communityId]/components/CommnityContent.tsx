@@ -2,7 +2,7 @@
 
 import { BackButton } from "@/components/action-buttons/BackButton";
 import { CommunityType, UserType } from "../../../../../../types";
-import { useEffect, useMemo, useState } from "react";
+import { SetStateAction, useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CommunityForm } from "./CommunityForm";
 import { CommunitySummary } from "./communitySummary";
@@ -13,7 +13,7 @@ import { fetchMembers } from "@/redux/features/communityMembers-slice";
 import { useAppSelector, useAppDispatch } from "@/hooks";
 import { CommunityAdminPanel } from "./CommunityAdminPanel/CommunityAdminPanel";
 
-export function CommunityContent({ data }: { data: CommunityType }) {
+export function CommunityContent({ data, setData }: Props) {
   const [action, setAction] = useState<string>("posts");
   const [posts, setPosts] = useState([]);
   const { data: session } = useSession();
@@ -98,7 +98,11 @@ export function CommunityContent({ data }: { data: CommunityType }) {
         {action === "about" && <CommunityAbout data={data} members={members} />}
         {action === "members" && <CommunityMembers members={members} />}
         {action === "admin-panel" && (
-          <CommunityAdminPanel members={members} data={data} />
+          <CommunityAdminPanel
+            members={members}
+            data={data}
+            setData={setData}
+          />
         )}
       </section>
     </section>
@@ -109,3 +113,8 @@ export interface CommunityMember extends UserType {
   isFollowing: boolean;
   IsModerator: boolean;
 }
+
+type Props = {
+  data: CommunityType;
+  setData: React.Dispatch<SetStateAction<CommunityType | undefined>>;
+};

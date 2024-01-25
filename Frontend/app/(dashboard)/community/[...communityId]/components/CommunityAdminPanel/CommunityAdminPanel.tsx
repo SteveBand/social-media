@@ -1,17 +1,11 @@
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { CommunityType } from "../../../../../../../types";
 import { CommunityMember } from "../CommnityContent";
 import "@/styles/community/communityAdminPanel.scss";
 import { NewCommunityCheckBox } from "@/app/(dashboard)/communities/new/components/NewCommunityCheckBox";
 import { CommunityEditForm } from "./CommunityEditForm";
 
-export function CommunityAdminPanel({
-  data,
-  members,
-}: {
-  data: CommunityType;
-  members: CommunityMember[];
-}) {
+export function CommunityAdminPanel({ data, members, setData }: Props) {
   const [section, setSection] = useState("edit");
 
   function handleSection(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
@@ -33,7 +27,15 @@ export function CommunityAdminPanel({
           Moderators
         </li>
       </ul>
-      {section === "edit" && <CommunityEditForm data={data} />}
+      {section === "edit" && (
+        <CommunityEditForm data={data} setData={setData} />
+      )}
     </section>
   );
 }
+
+type Props = {
+  data: CommunityType;
+  setData: React.Dispatch<SetStateAction<CommunityType | undefined>>;
+  members: CommunityMember[];
+};

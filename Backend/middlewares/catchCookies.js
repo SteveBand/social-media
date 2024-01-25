@@ -13,6 +13,7 @@ function catchCookies(req, res, next) {
         req.access_token = req.cookies.access_token;
       }
     });
+    console.log(verify);
   }
 
   next();

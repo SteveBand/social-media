@@ -165,19 +165,25 @@ const communitySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    about: String,
+    about: {
+      type: String,
+      index: {
+        text: true,
+      },
+    },
     title: {
       type: String,
-      lowercase: true,
-      index: true,
+      index: {
+        text: true,
+      },
     },
     rules: {
       type: [
         {
           description: {
             type: String,
-            lowercase: true,
           },
+          _id: String,
         },
       ],
       required: false,
