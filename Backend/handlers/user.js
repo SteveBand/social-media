@@ -1,16 +1,15 @@
 const {
   getUserFollowingLogged,
   getUserFollowersLogged,
+  userAllLikedLogged,
+  userCommentsLogged,
+  userPostsLogged,
 } = require("../lib/aggregations/user/logged");
 const {
   getUserFollowingUnlogged,
   getUserFollowersUnLogged,
+  userAllLikedUnLogged,
 } = require("../lib/aggregations/user/unLogged");
-const {
-  userPostsAggregation,
-  userAllLiked,
-  userCommentLikes,
-} = require("../lib/aggregations/userAgg");
 const { catchCookies } = require("../middlewares/catchCookies");
 const {
   UserModel,
@@ -23,24 +22,40 @@ const {
 module.exports = (app) => {
   app.get("/profile/:userId", async (req, res) => {
     const userId = req.params.userId;
-    console.log(req.cookies);
-    const user = await UserModel.findOne({ email: userId });
-    if (!user) {
-      return res.send({ message: "User not Found" }).status(404);
-    } else {
-      return res.send(user).status(200);
+    try {
+      const user = await UserModel.findOne({ email: userId });
+      if (!user) {
+        return res.status(404).send({ message: "User not Found" });
+      } else {
+        return res.status(200).send(user);
+      }
+    } catch (error) {
+      console.log("an error has Occured at /profile/:userId", error);
+      return res.status(500).send({ message: "An error has occured" });
     }
   });
 
   app.get("/:user/posts", catchCookies, async (req, res) => {
     const userId = req.params.user;
+    const loggedUserId = req.userData?.email || null;
 
     if (!userId) {
       return res.send({ message: "User not Found!" }).status(404);
     }
-
-    const postArr = await Post.aggregate(userPostsAggregation(userId));
-    return res.send(postArr).status(200);
+    try {
+      if (loggedUserId) {
+        const postArr = await Post.aggregate(
+          userPostsLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(postArr);
+      } else {
+        const postArr = await Post.find({ parentId: userId });
+        return res.status(200).send(postArr);
+      }
+    } catch (error) {
+      console.log("An error has Occured at /:user/posts", error);
+      return res.status(500).send({ message: "An error has occured" });
+    }
   });
 
   app.get("/:user/likes", catchCookies, async (req, res) => {
@@ -50,10 +65,15 @@ module.exports = (app) => {
       return res.send({ message: "User not Found!" }).status(404);
     }
     try {
-      const obj = await LikesModel.aggregate(
-        userAllLiked(userId, loggedUserId)
-      );
-      return res.send(obj);
+      if (loggedUserId !== "") {
+        const obj = await LikesModel.aggregate(
+          userAllLikedLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(obj);
+      } else {
+        const obj = await LikesModel.aggregate(userAllLikedUnLogged(userId));
+        return res.status(200).send(obj);
+      }
     } catch (err) {
       console.log("An error occured at /:user/likes ", err.name);
       return res.send({ message: "An error has occured try again later" });
@@ -62,16 +82,21 @@ module.exports = (app) => {
 
   app.get("/:user/comments", catchCookies, async (req, res) => {
     const userId = req.params.user;
-    const loggedUserId = req.userData.email;
+    const loggedUserId = req.userData?.email || "";
     if (!userId) {
       return res.send({ message: "User not found!" }).status(404);
     }
     try {
-      const obj = await CommentModel.aggregate(
-        userCommentLikes(userId, loggedUserId)
-      );
-      console.log(obj);
-      return res.send(obj);
+      if (loggedUserId !== "") {
+        const obj = await CommentModel.aggregate(
+          userCommentsLogged(userId, loggedUserId)
+        );
+        console.log(obj);
+        return res.status(200).send(obj);
+      } else {
+        const obj = await CommentModel.find({ userId: userId });
+        return res.status(200).send(obj);
+      }
     } catch (err) {
       console.log("An error occured at /:user/comments", err);
       return res.send({ message: "An error has occured try again later" });

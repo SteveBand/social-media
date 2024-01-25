@@ -57,5 +57,72 @@ function getUserFollowersUnLogged(userId) {
   ];
 }
 
+///////////////
+
+function userAllLikedUnLogged(userId) {
+  return [
+    { $match: { userId: userId } },
+    {
+      $lookup: {
+        from: "posts",
+        let: { parentId: userId, postId: "$parentId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [{ $toString: "$_id" }, { $toString: "$$postId" }],
+              },
+            },
+          },
+        ],
+        as: "posts",
+      },
+    },
+    {
+      $lookup: {
+        from: "comments",
+        let: { userId: userId, postId: "$parentId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [{ $toString: "$_id" }, { $toString: "$$postId" }],
+              },
+            },
+          },
+        ],
+        as: "comments",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        parentId: 0,
+        userId: 0,
+        __v: 0,
+      },
+    },
+    {
+      $project: {
+        resultArray: {
+          $concatArrays: ["$posts", "$comments"],
+        },
+      },
+    },
+    {
+      $unwind: "$resultArray",
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$resultArray",
+      },
+    },
+  ];
+}
+
+function userPostsUnLogged() {}
+
 exports.getUserFollowingUnlogged = getUserFollowingUnlogged;
 exports.getUserFollowersUnLogged = getUserFollowersUnLogged;
+exports.userAllLikedUnLogged = userAllLikedUnLogged;
+exports.userPostsUnLogged = userPostsUnLogged;
