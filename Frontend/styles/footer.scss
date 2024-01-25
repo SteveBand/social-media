@@ -8,6 +8,9 @@
   padding: 0px 10px;
   box-sizing: border-box;
   height: 40px;
+  z-index: 100;
+  background-color: rgb(235, 234, 234);
+  align-items: center;
   .icon {
     font-size: 1.25rem;
     box-sizing: content-box;

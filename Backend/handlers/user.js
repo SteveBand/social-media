@@ -148,7 +148,7 @@ module.exports = (app) => {
         return res.status(200).send(obj);
       }
     } catch (err) {
-      console.log("An error has occured at /:user/followes", err);
+      console.log("An error has occured at /:user/following", err);
       return res.send({ message: "something went wrong" });
     }
   });

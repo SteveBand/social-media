@@ -1,5 +1,5 @@
 function getUserFollowingLogged(userId, loggedUserId) {
-  [
+  return [
     {
       $match: { parentId: userId },
     },
