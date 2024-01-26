@@ -2,8 +2,8 @@ import { SetStateAction, useState } from "react";
 import { CommunityType } from "../../../../../../../types";
 import { CommunityMember } from "../CommnityContent";
 import "@/styles/community/communityAdminPanel.scss";
-import { NewCommunityCheckBox } from "@/app/(dashboard)/communities/new/components/NewCommunityCheckBox";
 import { CommunityEditForm } from "./CommunityEditForm";
+import { User } from "@/components/User";
 
 export function CommunityAdminPanel({ data, members, setData }: Props) {
   const [section, setSection] = useState("edit");
@@ -29,6 +29,13 @@ export function CommunityAdminPanel({ data, members, setData }: Props) {
       </ul>
       {section === "edit" && (
         <CommunityEditForm data={data} setData={setData} />
+      )}
+      {section === "members" && (
+        <section>
+          {members.map((member: any) => {
+            return <User content={member} path={"community/adminPanel"} />;
+          })}
+        </section>
       )}
     </section>
   );

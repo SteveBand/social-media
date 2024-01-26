@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { SlOptions } from "react-icons/sl";
 import { useState } from "react";
 
-export function User({ content, loading }: Props) {
+export function User({ content, loading, path }: Props) {
   const [isOptions, setIsOptions] = useState(true);
   if (loading) {
     return <FollowerSkeleton />;
@@ -39,6 +39,12 @@ export function User({ content, loading }: Props) {
           <FollowButton user={content} />
         )}
       </div>
+      {path === "community/adminPanel" && (
+        <SlOptions onClick={() => setIsOptions((prev) => !prev)} />
+      )}
+      {isOptions && <div className="options-container">
+          
+      </div>}
     </Link>
   );
 }
@@ -46,4 +52,5 @@ export function User({ content, loading }: Props) {
 type Props = {
   content: any;
   loading?: boolean;
+  path?: string;
 };
