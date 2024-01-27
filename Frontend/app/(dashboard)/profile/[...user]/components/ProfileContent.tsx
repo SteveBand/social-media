@@ -1,6 +1,5 @@
 "use client";
 
-import { FaArrowLeft } from "react-icons/fa";
 import { PostType, UserType } from "../../../../../../types";
 import { useEffect, useState } from "react";
 import { Post } from "@/components/Post";
@@ -9,11 +8,17 @@ import { Comment } from "@/app/(dashboard)/post/[...postId]/components/Comment";
 import { BackButton } from "@/components/action-buttons/BackButton";
 
 export function ProfileContent({ user }: { user: UserType }) {
-  const [action, setAction] = useState("posts");
-  const [data, setData] = useState([]);
+  const [action, setAction] = useState<Action>("posts");
+  const [data, setData] = useState<DataType>({
+    posts: [],
+    likes: [],
+    comments: [],
+    following: [],
+    followers: [],
+  });
   const [loading, setLoading] = useState(true);
+  
   async function fetchData() {
-    setData([]);
     setLoading(true);
     try {
       const res = await fetch(`http://localhost:4000/${user.email}/${action}`, {
@@ -22,7 +27,12 @@ export function ProfileContent({ user }: { user: UserType }) {
       });
       if (res.ok) {
         const fetchedData = await res.json();
-        setData(fetchedData);
+        setData((prev) => {
+          return {
+            ...prev,
+            [action]: fetchedData,
+          };
+        });
         setLoading(false);
       }
     } catch (err) {
@@ -36,11 +46,13 @@ export function ProfileContent({ user }: { user: UserType }) {
   function handleButtons(e: React.MouseEvent<HTMLElement, MouseEvent>) {
     const target = e.target as HTMLElement;
     const dataAttr = target.getAttribute("data-fetch");
-    dataAttr && setAction(dataAttr);
+    dataAttr && setAction(dataAttr as Action);
   }
 
   useEffect(() => {
-    fetchData();
+    if (data[action] && data[action].length === 0) {
+      fetchData();
+    }
   }, [action]);
 
   return (
@@ -102,7 +114,7 @@ export function ProfileContent({ user }: { user: UserType }) {
       </div>
       <section className="profile-page-data">
         {action !== "followers" && action !== "following"
-          ? data.map((post: PostType) => {
+          ? data[action].map((post: PostType) => {
               !post.user_info ? (post.user_info = user) : null;
               return post.isComment ? (
                 <Comment comment={post} />
@@ -113,7 +125,7 @@ export function ProfileContent({ user }: { user: UserType }) {
           : null}
 
         {action === "followers" || action === "following"
-          ? data.map((content) => {
+          ? data[action].map((content) => {
               return <User content={content} loading={loading} />;
             })
           : null}
@@ -121,3 +133,13 @@ export function ProfileContent({ user }: { user: UserType }) {
     </section>
   );
 }
+
+type DataType = {
+  posts: PostType[];
+  comments: PostType[];
+  likes: PostType[];
+  followers: UserType[];
+  following: UserType[];
+};
+
+type Action = "posts" | "comments" | "likes" | "followers" | "following";
