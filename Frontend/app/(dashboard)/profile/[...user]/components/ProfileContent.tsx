@@ -17,7 +17,7 @@ export function ProfileContent({ user }: { user: UserType }) {
     followers: [],
   });
   const [loading, setLoading] = useState(true);
-  
+
   async function fetchData() {
     setLoading(true);
     try {
@@ -47,6 +47,28 @@ export function ProfileContent({ user }: { user: UserType }) {
     const target = e.target as HTMLElement;
     const dataAttr = target.getAttribute("data-fetch");
     dataAttr && setAction(dataAttr as Action);
+  }
+
+  function handlePostLikeFunction(
+    postId: string,
+    isLiked: { liked: boolean; likesCount: number }
+  ) {
+    const updatedArray = [...data[action]];
+    const index = data[action].findIndex((element) => element._id === postId);
+    const updatedPost = {
+      ...data[action][index],
+      liked: !isLiked.liked,
+      likesCount: !isLiked.liked
+        ? isLiked.likesCount + 1
+        : isLiked.likesCount - 1,
+    };
+    updatedArray[index] = updatedPost;
+    setData((prev) => {
+      return {
+        ...prev,
+        [action]: updatedArray,
+      };
+    });
   }
 
   useEffect(() => {
@@ -117,9 +139,16 @@ export function ProfileContent({ user }: { user: UserType }) {
           ? data[action].map((post: PostType) => {
               !post.user_info ? (post.user_info = user) : null;
               return post.isComment ? (
-                <Comment comment={post} />
+                <Comment
+                  comment={post}
+                  handlePostLikeFunction={handlePostLikeFunction}
+                />
               ) : (
-                <Post post={post} key={post._id} />
+                <Post
+                  post={post}
+                  key={post._id}
+                  handlePostLikeFunction={handlePostLikeFunction}
+                />
               );
             })
           : null}
@@ -134,7 +163,7 @@ export function ProfileContent({ user }: { user: UserType }) {
   );
 }
 
-type DataType = {
+export type DataType = {
   posts: PostType[];
   comments: PostType[];
   likes: PostType[];

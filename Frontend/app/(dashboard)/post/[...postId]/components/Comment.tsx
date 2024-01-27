@@ -1,5 +1,5 @@
 import { IoIosShareAlt } from "react-icons/io";
-import { CommunityPostType, PostType } from "../../../../../../types";
+import { PostType } from "../../../../../../types";
 import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { IoChatboxOutline } from "react-icons/io5";
@@ -10,10 +10,14 @@ import { PostLike } from "@/components/action-buttons/PostLike";
 import { ProfileImage } from "@/components/ProfileImage";
 
 type Props = {
-  comment: PostType | CommunityPostType;
+  comment: PostType;
+  handlePostLikeFunction?: (
+    postId: string,
+    isLiked: { liked: boolean; likesCount: number }
+  ) => void;
 };
 
-export function Comment({ comment }: Props) {
+export function Comment({ comment, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
   if (!comment || comment === undefined) {
@@ -67,7 +71,10 @@ export function Comment({ comment }: Props) {
       <footer
         data-navigate-to={`/comment/${comment.user_info.name}?postId=${comment._id}`}
       >
-        <PostLike post={comment} />
+        <PostLike
+          post={comment}
+          handlePostLikeFunction={handlePostLikeFunction}
+        />
         <div className="button-container" onClick={handleCommentModel} id="">
           <IoChatboxOutline className="icon" />
           <p>{comment.commentsCount > 0 && comment.commentsCount}</p>

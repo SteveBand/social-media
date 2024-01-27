@@ -57,6 +57,23 @@ export default function CommunityPage({
     }
   }
 
+  function handlePostLikeFunction(
+    postId: string,
+    isLiked: { liked: boolean; likesCount: number }
+  ) {
+    const updatedArray = [...posts];
+    const index = posts.findIndex((element) => element._id === postId);
+    const updatedPost = {
+      ...posts[index],
+      liked: !isLiked.liked,
+      likesCount: !isLiked.liked
+        ? isLiked.likesCount + 1
+        : isLiked.likesCount - 1,
+    };
+    updatedArray[index] = updatedPost;
+    setPosts(updatedArray);
+  }
+
   function handleAction(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
     const target = e.target as HTMLElement;
     const action = target.getAttribute("data-fetch");
@@ -125,7 +142,10 @@ export default function CommunityPage({
       )}
       <section className="community-content">
         {action === "posts" && (
-          <CommunityPosts posts={posts} setPosts={setPosts} />
+          <CommunityPosts
+            posts={posts}
+            handlePostLikeFunction={handlePostLikeFunction}
+          />
         )}
         {action === "about" && <CommunityAbout data={data} members={members} />}
         {action === "members" && <CommunityMembers members={members} />}

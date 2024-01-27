@@ -10,7 +10,8 @@ import { SetStateAction, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
-export function Post({ post, setPosts }: Props) {
+import { DataType } from "@/app/(dashboard)/profile/[...user]/components/ProfileContent";
+export function Post({ post, setPosts, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
   function handleNavigation(
@@ -41,7 +42,7 @@ export function Post({ post, setPosts }: Props) {
         <SlOptions className="post-options-button" />
       </div>
       <div className="footer-container" data-navigate-to={`/post/${post._id}`}>
-        <PostLike post={post} setPosts={setPosts} />
+        <PostLike post={post} handlePostLikeFunction={handlePostLikeFunction} />
         <div className="button-container">
           <IoChatboxOutline
             className="action-button-icon"
@@ -64,5 +65,9 @@ export function Post({ post, setPosts }: Props) {
 
 type Props = {
   post: PostType;
-  setPosts?: React.Dispatch<SetStateAction<PostType[]>>;
+  setPosts?: React.Dispatch<SetStateAction<PostType[] | DataType>>;
+  handlePostLikeFunction?: (
+    postId: string,
+    isLiked: { liked: boolean; likesCount: number }
+  ) => void;
 };
