@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
 import { navLinks } from "@/lib/navbar/navbar-utils";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { signOut} from "next-auth/react";
 import { useState } from "react";
 import { useAppSelector } from "@/hooks";
 type Props = {};

@@ -28,7 +28,7 @@ module.exports = (app) => {
       email: req.userData?.email || null,
     });
 
-    const userId = new mongoose.Types.ObjectId(user?._id);
+    const userId = req.userData && new mongoose.Types.ObjectId(user?._id);
 
     try {
       const community = await Community.aggregate(fetchCommunity(id, userId));
@@ -36,10 +36,6 @@ module.exports = (app) => {
       if (!community) {
         return res.status(400).send({ message: "Bad Request" });
       }
-      const isMember = await CommunityMember.findOne({
-        parentId: userId,
-        communityId: id,
-      });
 
       return res.status(200).send(community.pop());
     } catch (error) {
@@ -51,37 +47,44 @@ module.exports = (app) => {
   app.get("/community/:id/posts", catchCookies, async (req, res) => {
     const id = req.params?.id;
     const userData = req.userData || null;
-    const userEmail = userData?.email || null;
+    try {
+      if (!id) {
+        return res.send({ message: "Bad Request" }).status(400);
+      }
 
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
+      const community = await Community.findById(
+        new mongoose.Types.ObjectId(id)
+      );
 
-    const community = await Community.findById(new mongoose.Types.ObjectId(id));
+      if (!community) {
+        return res.status(404).send({ message: "Community does not exist" });
+      }
 
-    if (!community) {
-      return res.status(404).send({ message: "Community does not exist" });
-    }
+      const user =
+        userData && (await UserModel.findOne({ email: userData.email }));
 
-    const user = userEmail
-      ? await UserModel.findOne({ email: userEmail })
-      : null;
+      if (community.membership === "private" && !user) {
+        return res
+          .status(403)
+          .send({ message: "Community is Private, You need to be a member" });
+      }
 
-    if (community.membership === "private" && !user) {
-      return res
-        .status(403)
-        .send({ message: "Community is Private, You need to be a member" });
-    }
+      const isMember = CommunityMember.findOne({
+        parentId: new mongoose.Types.ObjectId(user._id),
+        communityId: new mongoose.Types.ObjectId(id),
+      });
 
-    const isMember = CommunityMember.findOne({
-      parentId: new mongoose.Types.ObjectId(user._id),
-      communityId: new mongoose.Types.ObjectId(id),
-    });
-
-    if (community.membership === "private" && !isMember) {
-      return res
-        .status(403)
-        .send({ message: "Community is Privat, You need to be a member" });
+      if (community.membership === "private" && !isMember) {
+        return res
+          .status(403)
+          .send({ message: "Community is Privat, You need to be a member" });
+      }
+    } catch (err) {
+      console.log(
+        "An error has occured at /community/:id/posts at data verification",
+        err
+      );
+      return res.status(500).send({ message: "An error has Occured!" });
     }
 
     try {
@@ -98,11 +101,13 @@ module.exports = (app) => {
           },
           { $unwind: "$user_info" },
         ]);
+        console.log(posts);
         return res.status(200).send(posts);
       } else {
         const postsArr = await Post.aggregate(
           fetchCommunityPosts(userData, id)
         );
+        console.log(postsArr);
         return res.send(postsArr).status(200);
       }
     } catch (err) {
@@ -181,6 +186,24 @@ module.exports = (app) => {
         error
       );
       return res.status(500);
+    }
+  });
+
+  app.post("/community/:id/remove/member", authGuard, async (req, res) => {
+    const id = req.params.id;
+    const userData = req.userData || null;
+    if (!id) {
+      return res.status(400).send({ message: "Bad request" });
+    }
+
+    const community = await Community.findById(new mongoose.Types.ObjectId(id));
+
+    if (!community) {
+      return res.status(404).send({ message: "Community Not found!" });
+    }
+
+    if (!userData) {
+      return res.status(401).send({ message: "Unauthorized" });
     }
   });
 

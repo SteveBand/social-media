@@ -10,7 +10,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
-export function Post({ post }: { post: PostType }) {
+export function Post({ post, posts }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
   function handleNavigation(
@@ -61,3 +61,8 @@ export function Post({ post }: { post: PostType }) {
     </Link>
   );
 }
+
+type Props = {
+  post: PostType;
+  posts?: PostType[];
+};

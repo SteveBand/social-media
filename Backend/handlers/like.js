@@ -9,18 +9,19 @@ module.exports = (app) => {
       const likeBody = { parentId: _id, userId: userData.email };
       const existingLike = await LikesModel.findOne(likeBody);
       if (existingLike) {
-        return res.send({ message: "Already Liked" }).status(400);
+        return res.status(400).send({ message: "Already Liked" });
       }
       const existingPost = await Post.findOne({ _id });
       if (!existingPost) {
-        return res.send({ message: "404 Posts doesnt exist" }).status(404);
+        return res.status(404).send({ message: "404 Posts doesnt exist" });
       }
       await Post.updateOne({ _id }, { $inc: { __v: 1, likesCount: 1 } });
       const newLike = await new LikesModel(likeBody).save();
-      console.log(newLike);
-      res.send({ message: "Success" }).status(200);
+      // console.log(newLike);
+      return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("Falls within /new/like Route!");
+      return res.status(500).send({ message: "Internal Server Error" });
     }
   });
 
@@ -31,11 +32,11 @@ module.exports = (app) => {
       const likeBody = { parentId: _id, userId: userData.email };
       const existingLike = await LikesModel.findOne(likeBody);
       if (existingLike) {
-        return res.send({ message: "Already Liked" }).status(400);
+        return res.status(400).send({ message: "Already Liked" });
       }
       const existingPost = await CommentModel.findOne({ _id });
       if (!existingPost) {
-        return res.send({ message: "404 Posts doesnt exist" }).status(404);
+        return res.status(404).send({ message: "404 Posts doesnt exist" });
       }
       await CommentModel.updateOne(
         { _id },
@@ -43,9 +44,10 @@ module.exports = (app) => {
       );
       const newLike = await new LikesModel(likeBody).save();
       console.log(newLike);
-      res.send({ message: "Success" }).status(200);
+      return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("Falls within /new/like Route!");
+      return res.status(500).send({ message: "Internal Server Error" });
     }
   });
 

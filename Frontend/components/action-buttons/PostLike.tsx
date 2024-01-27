@@ -6,60 +6,37 @@ import { useState } from "react";
 
 type Props = {
   post: PostType;
+  posts?: PostType[];
 };
 
-export function PostLike({ post }: Props) {
+export function PostLike({ post, posts }: Props) {
   const [isLiked, setIsLiked] = useState({
     liked: post.liked,
     likesCount: post.likesCount,
   });
 
-  const fetchUrl = post.isPost
-    ? "http://localhost:4000/new/post/like"
-    : post.isComment
-    ? "http://localhost:4000/new/comment/like"
-    : "";
+  const fetchUrl = `http://localhost:4000/${isLiked.liked ? "delete" : "new"}/${
+    post.isPost ? "post" : "comment"
+  }/like`;
 
   async function handleLike(post: PostType) {
-    if (isLiked.liked === true) {
-      try {
-        const res = await fetch("http://localhost:4000/delete/post/like", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(post),
-        });
-        if (res.ok) {
-          setIsLiked((prev) => ({
-            liked: false,
-            likesCount: prev.likesCount - 1,
-          }));
-        }
-      } catch (err) {
-        console.log(err);
+    try {
+      const res = await fetch(fetchUrl, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post),
+      });
+      if (res.ok) {
+        setIsLiked((prev) => ({
+          liked: false,
+          likesCount: prev.likesCount - 1,
+        }));
       }
-    }
-    if (isLiked.liked === false) {
-      try {
-        const res = await fetch(fetchUrl, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(post),
-        });
-        if (res.ok) {
-          setIsLiked((prev) => ({
-            liked: true,
-            likesCount: prev.likesCount + 1,
-          }));
-        }
-      } catch (err) {
-        console.log(err);
-      }
+    } catch (err) {
+      console.log(err);
     }
   }
 

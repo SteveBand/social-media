@@ -7,6 +7,7 @@ a.follower-wrapper {
   border-bottom: 1px solid rgb(198, 196, 196);
   display: block;
   transition: 200ms ease;
+  position: relative;
 
   &:hover {
     background-color: rgb(212, 212, 212);
@@ -40,5 +41,15 @@ a.follower-wrapper {
     .options-icon {
       margin-left: auto;
     }
+  }
+
+  .options-button {
+    position: absolute;
+    background-color: rgb(217, 159, 159);
+    padding: 5px;
+    top: 50px;
+    right: -5px;
+
+    @include darkButtons;
   }
 }

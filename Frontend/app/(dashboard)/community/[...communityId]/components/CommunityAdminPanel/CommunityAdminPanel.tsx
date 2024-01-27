@@ -33,7 +33,13 @@ export function CommunityAdminPanel({ data, members, setData }: Props) {
       {section === "members" && (
         <section>
           {members.map((member: any) => {
-            return <User content={member} path={"community/adminPanel"} />;
+            return (
+              <User
+                content={member}
+                path={"community/adminPanel"}
+                communityId={data._id}
+              />
+            );
           })}
         </section>
       )}

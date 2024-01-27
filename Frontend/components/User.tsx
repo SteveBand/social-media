@@ -6,8 +6,8 @@ import { useSession } from "next-auth/react";
 import { SlOptions } from "react-icons/sl";
 import { useState } from "react";
 
-export function User({ content, loading, path }: Props) {
-  const [isOptions, setIsOptions] = useState(true);
+export function User({ content, loading, path, communityId }: Props) {
+  const [isOptions, setIsOptions] = useState(false);
   if (loading) {
     return <FollowerSkeleton />;
   }
@@ -21,6 +21,23 @@ export function User({ content, loading, path }: Props) {
     if (!attribute) {
       e.preventDefault();
     }
+  }
+
+  async function handleRemoveMember(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        `http://localhost:4000/community/${communityId}/remove/member?memberId=${content._id}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+      }
+    } catch (error) {}
   }
 
   return (
@@ -38,13 +55,19 @@ export function User({ content, loading, path }: Props) {
         {user && user.email !== content.email && (
           <FollowButton user={content} />
         )}
+        {path === "community/adminPanel" && (
+          <SlOptions
+            className="options-icon"
+            onClick={() => setIsOptions((prev) => !prev)}
+          />
+        )}
       </div>
-      {path === "community/adminPanel" && (
-        <SlOptions onClick={() => setIsOptions((prev) => !prev)} />
+
+      {isOptions && (
+        <button className="options-button" onClick={handleRemoveMember}>
+          Remove member
+        </button>
       )}
-      {isOptions && <div className="options-container">
-          
-      </div>}
     </Link>
   );
 }
@@ -53,4 +76,5 @@ type Props = {
   content: any;
   loading?: boolean;
   path?: string;
+  communityId?: string;
 };
