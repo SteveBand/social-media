@@ -9,6 +9,7 @@ import { CommunityPosts } from "./components/CommunityPosts";
 import { CommunityAbout } from "./components/CommunityAbout";
 import { CommunityMembers } from "./components/CommunityMembers";
 import { CommunityAdminPanel } from "./components/CommunityAdminPanel/CommunityAdminPanel";
+import { fetchMembers } from "@/redux/features/communityMembers-slice";
 
 export default function CommunityPage({
   params,
@@ -69,6 +70,7 @@ export default function CommunityPage({
 
     if (data) {
       fetchPosts();
+      dispatch(fetchMembers(data._id));
     }
   }, [data]);
 
@@ -84,38 +86,40 @@ export default function CommunityPage({
       </header>
       <img className="community-logo" src={data.image} />
       <CommunitySummary data={data} />
-      <ul className="actions">
-        <li
-          data-fetch="posts"
-          className={action === "posts" ? "active" : ""}
-          onClick={handleAction}
-        >
-          Posts
-        </li>
-        <li
-          data-fetch="about"
-          className={action === "about" ? "active" : ""}
-          onClick={handleAction}
-        >
-          About
-        </li>
-        <li
-          data-fetch="members"
-          className={action === "members" ? "active" : ""}
-          onClick={handleAction}
-        >
-          Members
-        </li>
-        {data.isAdmin && (
+      <div className="actions-wrapper">
+        <ul className="actions">
           <li
-            data-fetch="admin-panel"
-            className={action === "admin-panel" ? "active" : ""}
+            data-fetch="posts"
+            className={action === "posts" ? "active" : ""}
             onClick={handleAction}
           >
-            AdminPanel
+            Posts
           </li>
-        )}
-      </ul>
+          <li
+            data-fetch="about"
+            className={action === "about" ? "active" : ""}
+            onClick={handleAction}
+          >
+            About
+          </li>
+          <li
+            data-fetch="members"
+            className={action === "members" ? "active" : ""}
+            onClick={handleAction}
+          >
+            Members
+          </li>
+          {data.isAdmin && (
+            <li
+              data-fetch="admin-panel"
+              className={action === "admin-panel" ? "active" : ""}
+              onClick={handleAction}
+            >
+              AdminPanel
+            </li>
+          )}
+        </ul>
+      </div>
       {user.status === "authenticated" && action === "posts" && (
         <CommunityForm data={data} />
       )}

@@ -192,18 +192,46 @@ module.exports = (app) => {
   app.post("/community/:id/remove/member", authGuard, async (req, res) => {
     const id = req.params.id;
     const userData = req.userData || null;
-    if (!id) {
-      return res.status(400).send({ message: "Bad request" });
-    }
+    const memberId = req.query.memberId;
+    try {
+      if (!id) {
+        return res.status(400).send({ message: "Bad request" });
+      }
 
-    const community = await Community.findById(new mongoose.Types.ObjectId(id));
+      const community = await Community.findById(
+        new mongoose.Types.ObjectId(id)
+      );
 
-    if (!community) {
-      return res.status(404).send({ message: "Community Not found!" });
-    }
+      if (!community) {
+        return res.status(404).send({ message: "Community Not found!" });
+      }
 
-    if (!userData) {
-      return res.status(401).send({ message: "Unauthorized" });
+      if (!userData) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      const user = await UserModel.findOne({ email: userData.email });
+
+      if (!user) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      if (community.admin.equals(user._id)) {
+        const removedMember = await CommunityMember.findOneAndDelete({
+          parentId: new mongoose.Types.ObjectId(memberId),
+          communityId: new mongoose.Types.ObjectId(id),
+        });
+        console.log(removedMember);
+        return res.status(200).send({ message: "Member successfuly removed" });
+      } else {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+    } catch (error) {
+      console.log(
+        "An error has occured at /community/:id/remove/member",
+        error
+      );
+      return res.status(500).send({ message: "Internal Server Error" });
     }
   });
 
@@ -446,3 +474,12 @@ module.exports = (app) => {
     }
   });
 };
+
+//   {
+// "parentId": {
+//   "$oid": "65957d3fc9b437a6ed6f5c00"
+// },
+// "communityId": {
+//   "$oid": "65ae8ee9db04703ed46bc180"
+// }
+// }

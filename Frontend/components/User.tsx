@@ -2,18 +2,21 @@ import "@/styles/follower/follower-style.scss";
 import Link from "next/link";
 import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
 import { FollowButton } from "./action-buttons/FollowButton";
-import { useSession } from "next-auth/react";
 import { SlOptions } from "react-icons/sl";
 import { useState } from "react";
-
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { removeMember } from "@/redux/features/communityMembers-slice";
 export function User({ content, loading, path, communityId }: Props) {
   const [isOptions, setIsOptions] = useState(false);
+
   if (loading) {
     return <FollowerSkeleton />;
   }
-
-  const { data: session } = useSession();
-  const user = session?.user;
+  const user = useAppSelector((state) => state.userReducer);
+  const members = useAppSelector(
+    (state) => state.communityMembersReducer.communityMembers
+  );
+  const dispatch = useAppDispatch();
 
   function navigation(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     const target = e.target as HTMLAnchorElement;
@@ -35,9 +38,12 @@ export function User({ content, loading, path, communityId }: Props) {
       );
 
       if (res.ok) {
-        const data = await res.json();
+        dispatch(removeMember(content._id));
+        console.log("MememberId: ", content._id, "new State: ", members);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -52,9 +58,10 @@ export function User({ content, loading, path, communityId }: Props) {
           <h5 data-navigate={true}>{content.name}</h5>
           <p data-navigate={true}>{content.bio}</p>
         </div>
-        {user && user.email !== content.email && (
-          <FollowButton user={content} />
-        )}
+        {user.status === "authenticated" &&
+          user.user_info.email !== content.email && (
+            <FollowButton user={content} />
+          )}
         {path === "community/adminPanel" && (
           <SlOptions
             className="options-icon"

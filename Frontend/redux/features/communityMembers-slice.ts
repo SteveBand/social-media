@@ -27,10 +27,26 @@ export const CommunityMembers = createSlice({
   name: "communityMembers",
   initialState,
   reducers: {
+    removeMember: (state, action) => {
+      const memberId = action.payload;
+      const updatedMembers = state.communityMembers.filter((member) => {
+        console.log(member);
+        return member._id !== memberId;
+      });
+
+      state.communityMembers = updatedMembers;
+      console.log(
+        "Current State: ",
+        state.communityMembers,
+        "UpdatedMembers: ",
+        updatedMembers
+      );
+    },
+
     follow: (state, action) => {
       const userId = action.payload;
       const index = state.communityMembers.findIndex(
-        (user) => user.id === userId
+        (user) => user._id === userId
       );
 
       if (index !== -1) {
@@ -41,7 +57,7 @@ export const CommunityMembers = createSlice({
     unfollow: (state, action) => {
       const userId = action.payload;
       const index = state.communityMembers.findIndex(
-        (user) => user.id === userId
+        (user) => user._id === userId
       );
 
       if (index !== -1) {
@@ -63,7 +79,7 @@ export const CommunityMembers = createSlice({
   },
 });
 
-export const { follow, unfollow } = CommunityMembers.actions;
+export const { follow, unfollow, removeMember } = CommunityMembers.actions;
 export default CommunityMembers.reducer;
 
 export interface CommunityMember extends UserType {
