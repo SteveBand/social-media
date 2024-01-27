@@ -6,11 +6,11 @@ import { IoChatboxOutline } from "react-icons/io5";
 import { IoIosShareAlt } from "react-icons/io";
 import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
-export function Post({ post, posts }: Props) {
+export function Post({ post, setPosts }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
   function handleNavigation(
@@ -41,7 +41,7 @@ export function Post({ post, posts }: Props) {
         <SlOptions className="post-options-button" />
       </div>
       <div className="footer-container" data-navigate-to={`/post/${post._id}`}>
-        <PostLike post={post} />
+        <PostLike post={post} setPosts={setPosts} />
         <div className="button-container">
           <IoChatboxOutline
             className="action-button-icon"
@@ -64,5 +64,5 @@ export function Post({ post, posts }: Props) {
 
 type Props = {
   post: PostType;
-  posts?: PostType[];
+  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
 };

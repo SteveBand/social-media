@@ -2,14 +2,9 @@
 
 import { BsHeartFill } from "react-icons/bs";
 import { PostType } from "../../../types";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 
-type Props = {
-  post: PostType;
-  posts?: PostType[];
-};
-
-export function PostLike({ post, posts }: Props) {
+export function PostLike({ post, setPosts }: Props) {
   const [isLiked, setIsLiked] = useState({
     liked: post.liked,
     likesCount: post.likesCount,
@@ -18,6 +13,24 @@ export function PostLike({ post, posts }: Props) {
   const fetchUrl = `http://localhost:4000/${isLiked.liked ? "delete" : "new"}/${
     post.isPost ? "post" : "comment"
   }/like`;
+
+  const testPost = {
+    // _id: "65a52d36a1bae895ee16f2e6",
+    content: "Test 1",
+    parentId: "denis@gmail.com",
+    date: "January 15th 2024, 3:03:50 pm",
+    likesCount: 1,
+    commentsCount: 0,
+    sharesCount: 0,
+    isPost: true,
+    createdAt: {
+      $date: "2024-01-15T13:03:50.452Z",
+    },
+    updatedAt: {
+      $date: "2024-01-15T13:06:10.817Z",
+    },
+    __v: 1,
+  };
 
   async function handleLike(post: PostType) {
     try {
@@ -31,9 +44,21 @@ export function PostLike({ post, posts }: Props) {
       });
       if (res.ok) {
         setIsLiked((prev) => ({
-          liked: false,
-          likesCount: prev.likesCount - 1,
+          liked: !isLiked.liked,
+          likesCount: prev.liked ? prev.likesCount - 1 : prev.likesCount + 1,
         }));
+        setPosts((prev) => {
+          return prev.map((el) => {
+            if (el._id === post._id) {
+              return {
+                ...el,
+                liked: !el.liked,
+                likesCount: el.liked ? el.likesCount - 1 : el.likesCount + 1,
+              };
+            }
+            return el;
+          });
+        });
       }
     } catch (err) {
       console.log(err);
@@ -51,3 +76,8 @@ export function PostLike({ post, posts }: Props) {
     </div>
   );
 }
+
+type Props = {
+  post: PostType;
+  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
+};

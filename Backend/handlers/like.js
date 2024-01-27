@@ -31,19 +31,23 @@ module.exports = (app) => {
       const userData = req.userData;
       const likeBody = { parentId: _id, userId: userData.email };
       const existingLike = await LikesModel.findOne(likeBody);
+
       if (existingLike) {
         return res.status(400).send({ message: "Already Liked" });
       }
+
       const existingPost = await CommentModel.findOne({ _id });
+
       if (!existingPost) {
         return res.status(404).send({ message: "404 Posts doesnt exist" });
       }
+
       await CommentModel.updateOne(
         { _id },
         { $inc: { __v: 1, likesCount: 1 } }
       );
-      const newLike = await new LikesModel(likeBody).save();
-      console.log(newLike);
+
+      await new LikesModel(likeBody).save();
       return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("Falls within /new/like Route!");
@@ -54,36 +58,52 @@ module.exports = (app) => {
   app.post("/delete/post/like", authGuard, async (req, res) => {
     try {
       const userData = req.userData;
-      await Post.updateOne(
+      const post = await Post.updateOne(
         { _id: req.body._id },
         { $inc: { __v: 1, likesCount: -1 } }
       );
-      await LikesModel.deleteOne({
+      if (post.modifiedCount < 0) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
+      const like = await LikesModel.deleteOne({
         parentId: req.body._id,
         userId: userData.email,
       });
-      res.send({ message: "Success" }).status(200);
+      if (like.deletedCount < 0) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
+      return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("Error Occured at Delete/like ROUTE!");
-      res.send({ message: "Error Occured!!!" }).status(500);
+      return res.status(500).send({ message: "Error Occured!!!" });
     }
   });
 
   app.post("/delete/comment/like", authGuard, async (req, res) => {
     try {
       const userData = req.userData;
-      await CommentModel.updateOne(
+      const comment = await CommentModel.updateOne(
         { _id: req.body._id },
         { $inc: { __v: 1, likesCount: -1 } }
       );
-      await LikesModel.deleteOne({
+
+      if (comment.modifiedCount < 0) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
+
+      const like = await LikesModel.deleteOne({
         parentId: req.body._id,
         userId: userData.email,
       });
-      res.send({ message: "Success" }).status(200);
+
+      if (like.deletedCount < 0) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
+
+      return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("Error Occured at Delete/like ROUTE!");
-      res.send({ message: "Error Occured!!!" }).status(500);
+      res.status(500).send({ message: "Error Occured!!!" });
     }
   });
 };

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CommunityType } from "../../../../../types";
+import { CommunityType, PostType } from "../../../../../types";
 import { BackButton } from "@/components/action-buttons/BackButton";
 import { CommunitySummary } from "./components/communitySummary";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -17,7 +17,7 @@ export default function CommunityPage({
 }) {
   const [data, setData] = useState<CommunityType>();
   const [action, setAction] = useState<string>("posts");
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<PostType[]>([]);
   const members = useAppSelector(
     (state) => state.communityMembersReducer.communityMembers
   );
@@ -120,7 +120,9 @@ export default function CommunityPage({
         <CommunityForm data={data} />
       )}
       <section className="community-content">
-        {action === "posts" && <CommunityPosts posts={posts} />}
+        {action === "posts" && (
+          <CommunityPosts posts={posts} setPosts={setPosts} />
+        )}
         {action === "about" && <CommunityAbout data={data} members={members} />}
         {action === "members" && <CommunityMembers members={members} />}
         {action === "admin-panel" && (
