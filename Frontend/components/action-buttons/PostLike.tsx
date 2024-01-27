@@ -47,18 +47,19 @@ export function PostLike({ post, setPosts }: Props) {
           liked: !isLiked.liked,
           likesCount: prev.liked ? prev.likesCount - 1 : prev.likesCount + 1,
         }));
-        setPosts((prev) => {
-          return prev.map((el) => {
-            if (el._id === post._id) {
-              return {
-                ...el,
-                liked: !el.liked,
-                likesCount: el.liked ? el.likesCount - 1 : el.likesCount + 1,
-              };
-            }
-            return el;
+        setPosts &&
+          setPosts((prev) => {
+            return prev.map((el) => {
+              if (el._id === post._id) {
+                return {
+                  ...el,
+                  liked: !el.liked,
+                  likesCount: el.liked ? el.likesCount - 1 : el.likesCount + 1,
+                };
+              }
+              return el;
+            });
           });
-        });
       }
     } catch (err) {
       console.log(err);
@@ -79,5 +80,5 @@ export function PostLike({ post, setPosts }: Props) {
 
 type Props = {
   post: PostType;
-  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
+  setPosts?: React.Dispatch<SetStateAction<PostType[]>>;
 };

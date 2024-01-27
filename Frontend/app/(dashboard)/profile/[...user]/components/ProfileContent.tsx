@@ -44,7 +44,7 @@ export function ProfileContent({ user }: { user: UserType }) {
   }, [action]);
 
   return (
-    <section className="profile-content">
+    <section className="profile-page-container">
       <header>
         <BackButton />
         <h4>{user.name}</h4>

@@ -1,26 +1,19 @@
-import Navbar from "@/components/navbar/Navbar";
 import { ProfileContent } from "./components/ProfileContent";
+import { UserType } from "../../../../../types";
 
 export default async function ProfilePage({
   params,
 }: {
-  params: { user: any };
+  params: { user: [string] };
 }) {
   const userId = params.user.pop();
-  const user: User = await fetch(`http://localhost:4000/profile/${userId}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((data) => data.json());
+  const user: UserType = await fetch(
+    `http://localhost:4000/profile/${userId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((data) => data.json());
 
   return <ProfileContent user={user} />;
 }
-
-type User = {
-  id: string;
-  email: string;
-  name: string;
-  bio: string;
-  avatar_url: string;
-  following: number;
-  followers: number;
-};

@@ -35,12 +35,6 @@ export const CommunityMembers = createSlice({
       });
 
       state.communityMembers = updatedMembers;
-      console.log(
-        "Current State: ",
-        state.communityMembers,
-        "UpdatedMembers: ",
-        updatedMembers
-      );
     },
 
     follow: (state, action) => {

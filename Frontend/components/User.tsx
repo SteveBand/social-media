@@ -39,7 +39,6 @@ export function User({ content, loading, path, communityId }: Props) {
 
       if (res.ok) {
         dispatch(removeMember(content._id));
-        console.log("MememberId: ", content._id, "new State: ", members);
       }
     } catch (error) {
       console.log(error);
@@ -59,9 +58,8 @@ export function User({ content, loading, path, communityId }: Props) {
           <p data-navigate={true}>{content.bio}</p>
         </div>
         {user.status === "authenticated" &&
-          user.user_info.email !== content.email && (
-            <FollowButton user={content} />
-          )}
+          user.user_info.email !== content.email &&
+          !isOptions && <FollowButton user={content} />}
         {path === "community/adminPanel" && (
           <SlOptions
             className="options-icon"

@@ -2,15 +2,14 @@
 import { useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
 import { PostSchema } from "@/lib/schemas";
-import moment from "moment";
-import { useSession } from "next-auth/react";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { disable } from "@/redux/features/postModal-slice";
+import { IoMdClose } from "react-icons/io";
 
 type Props = {};
 
 export default function PostModal({}: Props) {
-  const { data: session }: any = useSession();
+  const user = useAppSelector((state) => state.userReducer);
   const dispatch = useAppDispatch();
   const [params, setParams] = useState({
     content: "",
@@ -55,12 +54,16 @@ export default function PostModal({}: Props) {
     <section className="feed-post-modal-wrapper">
       <form className="feed-post-modal-container">
         <div className="profile-content">
-          {session?.user?.image ? (
-            <img src={session.user.image} width={50} />
+          {user.user_info.image ? (
+            <img src={user.user_info.image} width={50} />
           ) : (
             <PiUserCircle className="icon" />
           )}
-          <p>{`${session?.user?.name}`}</p>
+          <p>{`${user.user_info.name}`}</p>
+          <IoMdClose
+            onClick={() => dispatch(disable())}
+            className="modal-close-icon"
+          />
         </div>
         <div className="inputs">
           <textarea

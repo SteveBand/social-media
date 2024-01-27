@@ -64,5 +64,5 @@ export function Post({ post, setPosts }: Props) {
 
 type Props = {
   post: PostType;
-  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
+  setPosts?: React.Dispatch<SetStateAction<PostType[]>>;
 };
