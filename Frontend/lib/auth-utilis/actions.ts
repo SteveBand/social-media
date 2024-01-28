@@ -78,10 +78,20 @@ export async function validateCredentials(
 }
 
 export async function fetchUser(email: string) {
-  await connectToDB();
-  const user = await UserModel.findOne({ email });
-  const newUser = await user.toObject();
-  return newUser;
+  try {
+    await connectToDB();
+    const user = await UserModel.findOne({ email });
+    
+    if (!user) {
+      return null;
+    }
+    const newUser = await user.toObject();
+
+    return newUser;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
 export async function fetchProfileImage(parentId: string) {

@@ -12,6 +12,7 @@ import {
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { decode } from "next-auth/jwt";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -38,34 +39,40 @@ export const authOptions: AuthOptions = {
         },
       },
       async authorize(credentials, req) {
-        if (!req.body) return null;
-        const isValid = await validateCredentials(req);
-        if (!isValid) return null;
-        const { email, password } = req.body;
-        const user = await fetchUser(email);
-        const isPasswordValid = await compare(password, user.password);
-        if (!isPasswordValid) return null;
-        const userObj = {
-          email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
-          id: user.id,
-        };
-        return userObj;
+        try {
+          if (!req.body) return null;
+
+          const isValid = await validateCredentials(req);
+
+          if (!isValid) return null;
+
+          const { email, password } = req.body;
+          const user = await fetchUser(email);
+          const isPasswordValid = await compare(password, user.password);
+
+          if (!isPasswordValid) return null;
+
+          delete user.password;
+          return user;
+        } catch (err) {
+          console.log(err);
+          return null;
+        }
       },
     }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24,
+    maxAge: 60 * 60 * 2,
   },
 
   jwt: {
     secret: process.env.JWT_SECRET,
-    maxAge: 60 * 60 * 24,
+    maxAge: 60 * 60 * 2,
   },
 
   pages: {
-    signIn: "localhost:3000/login",
+    signIn: "/login",
   },
 
   callbacks: {
@@ -78,11 +85,19 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token, user }: any) {
       const encodedToken = jwt.sign(token, process.env.JWT_SECRET as string);
-      cookies().set("access_token", encodedToken);
-      session.token = encodedToken;
+      if (encodedToken) {
+        cookies().set("access_token", encodedToken);
+        session.token = encodedToken;
+      }
+      if (token.user) {
+        session.user = token.user;
+      }
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
+      if (user) {
+        token.user;
+      }
       return token;
     },
   },

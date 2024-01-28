@@ -18,6 +18,7 @@ const {
   LikesModel,
   CommentModel,
 } = require("../models/models");
+const bcrypt = require("bcrypt");
 
 module.exports = (app) => {
   app.get("/profile/:userId", async (req, res) => {
@@ -150,6 +151,40 @@ module.exports = (app) => {
     } catch (err) {
       console.log("An error has occured at /:user/following", err);
       return res.send({ message: "something went wrong" });
+    }
+  });
+
+  app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    const lowerCaseEmail = email.toLowerCase();
+    try {
+      if (!password || !email) {
+        return res.status(400).send({ message: "Bad Requst" });
+      }
+
+      const user = await UserModel.findOne({ email: lowerCaseEmail });
+      if (!user) {
+        return res.status(400).send({ message: "Bad Request user not found" });
+      }
+
+      const comparePasswords = await bcrypt.compare(password, user.password);
+      if (!comparePasswords) {
+        return res
+          .status(401)
+          .send({ message: "Email or Password is incorrect" });
+      }
+
+      req.session.user = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      };
+
+      return res.status(200).send({ message: "User logged In" });
+    } catch (error) {
+      console.log("An error has occured at /login", error);
+      return res.status(500).send({ message: "Internal server error" });
     }
   });
 };

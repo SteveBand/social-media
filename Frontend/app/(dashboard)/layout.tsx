@@ -2,7 +2,7 @@
 
 import { Footer } from "@/components/footer";
 import Navbar from "@/components/navbar/Navbar";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";
 import { useSession } from "next-auth/react";
@@ -23,13 +23,17 @@ export default function RootLayout({
     return obj;
   }, [session, status]);
 
+  const redux = useAppSelector((state) => state.userReducer);
+
+  async function checkUserLogin() {}
+
+  console.log(session);
+
   useEffect(() => {
     if (user) {
       dispatch(logIn(user));
     }
   }, [user]);
-
-  console.log("hi");
   return (
     <html lang="en">
       <body>

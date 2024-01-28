@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
 import { DataType } from "@/app/(dashboard)/profile/[...user]/components/ProfileContent";
-export function Post({ post, setPosts, handlePostLikeFunction }: Props) {
+export function Post({ post, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
   function handleNavigation(
@@ -65,7 +65,6 @@ export function Post({ post, setPosts, handlePostLikeFunction }: Props) {
 
 type Props = {
   post: PostType;
-  setPosts?: React.Dispatch<SetStateAction<PostType[] | DataType>>;
   handlePostLikeFunction?: (
     postId: string,
     isLiked: { liked: boolean; likesCount: number }

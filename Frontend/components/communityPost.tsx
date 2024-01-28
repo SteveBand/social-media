@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { CommunityPostType } from "../../types";
 import { ProfileImage } from "./ProfileImage";
 import { SlOptions } from "react-icons/sl";
 import { IoChatboxOutline } from "react-icons/io5";
 import { IoIosShareAlt } from "react-icons/io";
 import { createPortal } from "react-dom";
 import "@/styles/components/post/post.scss";
-import { CommunityPostLike } from "./action-buttons/CommunityPostLike";
 import { useState } from "react";
 import { CommentModal } from "./commentModal/CommentModal";
 import { useRouter } from "next/navigation";
+import { PostLike } from "./action-buttons/PostLike";
+import { PostType } from "../../types";
+import { PostModal } from "./postModal";
 
-export function CommunityPost({ content }: { content: CommunityPostType }) {
+export function CommunityPost({ content }: { content: PostType }) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
   function handleNavigation(
@@ -50,7 +51,7 @@ export function CommunityPost({ content }: { content: CommunityPostType }) {
         className="footer-container"
         data-navigate-to={`/community/post/${content._id}`}
       >
-        {<CommunityPostLike post={content} />}
+        {<PostLike post={content} />}
         <div className="button-container">
           <IoChatboxOutline
             className="action-button-icon"
@@ -67,6 +68,7 @@ export function CommunityPost({ content }: { content: CommunityPostType }) {
           <IoIosShareAlt className="action-button-icon" />
         </div>
       </div>
+      <PostModal post={content} path={"community"} />
     </Link>
   );
 }

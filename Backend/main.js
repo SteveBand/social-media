@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
-
+const session = require("express-session");
 async function main() {
   const dbConnection = await mongoose.connect(
     "mongodb://localhost:27017/social-media"
@@ -23,6 +23,14 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  session({
+    secret: "StevesProject",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
 app.listen("4000", () => {
   console.log("Connection to server established on port 4000");

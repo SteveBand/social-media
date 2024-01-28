@@ -50,8 +50,10 @@ function fetchCommunity(id, userId) {
   ];
 }
 
-function fetchCommunityPosts(userData, id) {
-  const email = userData.email || "";
+function fetchCommunityPosts(user, id) {
+  const email = user.email;
+  const userId = new mongoose.Types.ObjectId(user._id);
+  const communityId = new mongoose.Types.ObjectId(id);
   return [
     { $match: { communityId: id } },
     {
@@ -90,8 +92,28 @@ function fetchCommunityPosts(userData, id) {
       },
     },
     {
+      $lookup: {
+        from: "communitymoderators",
+        let: { userId: userId, communityId: communityId },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$$userId", "$parentId"] },
+                  { $eq: ["$$communityId", "$communityId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "moderator",
+      },
+    },
+    {
       $addFields: {
         liked: { $gt: [{ $size: "$likes" }, 0] },
+        isModerator: { $gt: [{ $size: "$moderator" }, 0] },
         isAuthor: {
           $cond: {
             if: { $eq: [email, "$parentId"] },
@@ -104,6 +126,7 @@ function fetchCommunityPosts(userData, id) {
     {
       $project: {
         likes: 0,
+        moderator: 0,
       },
     },
   ];

@@ -1,6 +1,6 @@
 import { SetStateAction, useState } from "react";
-import { CommunityType } from "../../../../../../../types";
-import { CommunityMember } from "../CommnityContent";
+import { CommunityMember, CommunityType } from "../../../../../../../types";
+// import { CommunityMember } from "../CommnityContent";
 import "@/styles/community/communityAdminPanel.scss";
 import { CommunityEditForm } from "./CommunityEditForm";
 import { User } from "@/components/User";

@@ -47,6 +47,8 @@ module.exports = (app) => {
   app.get("/community/:id/posts", catchCookies, async (req, res) => {
     const id = req.params?.id;
     const userData = req.userData || null;
+    const user =
+      userData && (await UserModel.findOne({ email: userData.email }));
     try {
       if (!id) {
         return res.send({ message: "Bad Request" }).status(400);
@@ -59,9 +61,6 @@ module.exports = (app) => {
       if (!community) {
         return res.status(404).send({ message: "Community does not exist" });
       }
-
-      const user =
-        userData && (await UserModel.findOne({ email: userData.email }));
 
       if (community.membership === "private" && !user) {
         return res
@@ -77,7 +76,7 @@ module.exports = (app) => {
       if (community.membership === "private" && !isMember) {
         return res
           .status(403)
-          .send({ message: "Community is Privat, You need to be a member" });
+          .send({ message: "Community is Private, You need to be a member" });
       }
     } catch (err) {
       console.log(
@@ -101,12 +100,9 @@ module.exports = (app) => {
           },
           { $unwind: "$user_info" },
         ]);
-        console.log(posts);
         return res.status(200).send(posts);
       } else {
-        const postsArr = await Post.aggregate(
-          fetchCommunityPosts(userData, id)
-        );
+        const postsArr = await Post.aggregate(fetchCommunityPosts(user, id));
         console.log(postsArr);
         return res.send(postsArr).status(200);
       }

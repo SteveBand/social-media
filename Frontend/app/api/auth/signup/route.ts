@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { connectToDB } from "@/lib/dbConnect";
 import SignupModel from "@/models/user";
 import { signupSchema } from "@/lib/auth-utilis/authSchemas";
-import { NextRequest, NextResponse } from "next/server";
+import {NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const params = await request.json();
