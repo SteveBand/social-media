@@ -7,21 +7,21 @@ import { PostType } from "../../../../../types";
 import { MainComment } from "./components/MainComment";
 import { Comment } from "@/app/(dashboard)/post/[...postId]/components/Comment";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { useAppSelector } from "@/hooks";
 
 export default function CommentPage() {
   const [content, setContent] = useState<PostType | null>();
   const [comments, setComments] = useState<PostType[] | null>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
-  const { data: session } = useSession();
-  const user = session?.user;
+  const user = useAppSelector((state) => state.userReducer);
   const router = useRouter();
   const searchParams = useSearchParams();
   const postId = useMemo(() => {
     return searchParams.get("postId");
   }, [searchParams]);
+
   async function fetchPostData() {
     try {
       const res = await fetch(`http://localhost:4000/comment/post/${postId}`, {
@@ -90,11 +90,10 @@ export default function CommentPage() {
     fetchData();
   }, [postId]);
 
-  console.log("hi");
-
   if (!content) {
     return <div>no Content</div>;
   }
+
   return (
     <section className="post-page-wrapper">
       <section className="post-page-container">
@@ -108,7 +107,11 @@ export default function CommentPage() {
             Replying to <Link href={"/"}>{content.user_info.name}</Link>
           </p>
           <div className="content">
-            {user?.image ? <img src={user?.image} /> : <CgProfile />}
+            {user?.user_info.image ? (
+              <img src={user?.user_info.image} />
+            ) : (
+              <CgProfile />
+            )}
             <textarea
               placeholder="Post your Reply"
               onChange={(e) => setTextAreaValue(e.target.value)}

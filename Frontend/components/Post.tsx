@@ -10,6 +10,7 @@ import { SetStateAction, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
+import { CommentButton } from "./action-buttons/CommentButton";
 
 export function Post({ post, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);
@@ -44,10 +45,7 @@ export function Post({ post, handlePostLikeFunction }: Props) {
       <div className="footer-container" data-navigate-to={`/post/${post._id}`}>
         <PostLike post={post} handlePostLikeFunction={handlePostLikeFunction} />
         <div className="button-container">
-          <IoChatboxOutline
-            className="action-button-icon"
-            onClick={() => setShowComment((prev) => !prev)}
-          />
+          <CommentButton setShowComment={setShowComment} />
           <p>{post.commentsCount > 0 && post.commentsCount}</p>
           {showComment &&
             createPortal(
