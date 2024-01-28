@@ -174,17 +174,30 @@ module.exports = (app) => {
           .send({ message: "Email or Password is incorrect" });
       }
 
-      req.session.user = {
+      const userData = {
         id: user._id,
         name: user.name,
         email: user.email,
-        image: user.image,
+        avatar_url: user.avatar_url,
       };
-
-      return res.status(200).send({ message: "User logged In" });
+      req.session.user = userData;
+      console.log("session-saved");
+      return res.status(200).send(userData);
     } catch (error) {
       console.log("An error has occured at /login", error);
       return res.status(500).send({ message: "Internal server error" });
     }
+  });
+
+  app.get("/login", async (req, res) => {
+    const user = req.session.user;
+    const sessionCookie = req.cookies["connect.sid"];
+    if (!user && !sessionCookie) {
+      return res
+        .status(401)
+        .send({ message: "Session has expired please log in again" });
+    }
+    console.log(user);
+    return res.status(200).send(req.session.user);
   });
 };

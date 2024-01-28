@@ -4,6 +4,8 @@ const cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const SessionDbStore = require("connect-mongodb-session")(session);
+
 async function main() {
   const dbConnection = await mongoose.connect(
     "mongodb://localhost:27017/social-media"
@@ -12,6 +14,11 @@ async function main() {
   return dbConnection;
 }
 main().catch((err) => console.log(err));
+
+const store = new SessionDbStore({
+  uri: "mongodb://localhost:27017/social-media",
+  collection: "sessions",
+});
 
 app.use(
   cors({
@@ -27,8 +34,12 @@ app.use(
   session({
     secret: "StevesProject",
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      secure: false,
+      maxAge: 60 * 1000 * 60 * 2,
+    },
   })
 );
 

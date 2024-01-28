@@ -8,6 +8,9 @@ import Link from "next/link";
 import { Providers } from "./Providers";
 import { BuiltInProviderType } from "next-auth/providers/index";
 import { ClientSafeProvider, LiteralUnion, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/hooks";
+import { logIn } from "@/redux/features/auth-slice";
 
 type Props = {
   providers: Record<
@@ -22,6 +25,9 @@ export default function LoginForm({ providers }: Props) {
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const event = e.target as HTMLInputElement;
@@ -49,13 +55,19 @@ export default function LoginForm({ providers }: Props) {
     e.preventDefault();
     const { email, password } = loginParams;
     try {
-      const value = await signIn("credentials", {
-        email,
-        password,
-        callbackUrl: "localhost:3000",
-        // redirect: false,
+      const res = await fetch(`http://localhost:4000/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
       });
-      console.log(value);
+      if (res.ok) {
+        router.push("/");
+        const data = await res.json();
+        console.log(data);
+        dispatch(logIn(data));
+      }
     } catch (err) {
       console.log("An error occured while trying to login", err);
     }
