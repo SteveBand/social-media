@@ -29,6 +29,8 @@ export function CommentModal({ post, setShowComment }: Props) {
     }
   }
 
+  
+
   return (
     <section className="comment-modal-wrapper">
       <section className="container">

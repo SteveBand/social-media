@@ -2,19 +2,23 @@ import { ProfileImage } from "@/components/ProfileImage";
 import { PostType } from "../../types";
 import { SlOptions } from "react-icons/sl";
 import { PostLike } from "@/components/action-buttons/PostLike";
-import { IoChatboxOutline } from "react-icons/io5";
 import { IoIosShareAlt } from "react-icons/io";
 import { CommentModal } from "@/components/commentModal/CommentModal";
 import { createPortal } from "react-dom";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
 import { CommentButton } from "./action-buttons/CommentButton";
+import { useAppSelector } from "@/hooks";
+import { NotLoggedModal } from "./NotLoggedModal";
 
 export function Post({ post, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
+
+  const user = useAppSelector((user) => user.userReducer);
+
   function handleNavigation(
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) {
@@ -48,10 +52,14 @@ export function Post({ post, handlePostLikeFunction }: Props) {
           <CommentButton setShowComment={setShowComment} />
           <p>{post.commentsCount > 0 && post.commentsCount}</p>
           {showComment &&
+            user.status === "authenticated" &&
             createPortal(
               <CommentModal post={post} setShowComment={setShowComment} />,
               document.body
             )}
+          {showComment &&
+            user.status === "unauthenticated" &&
+            createPortal(<NotLoggedModal />, document.body)}
         </div>
         <div className="button-container">
           <IoIosShareAlt className="action-button-icon" />
