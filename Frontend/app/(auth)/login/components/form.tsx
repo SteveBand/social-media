@@ -57,16 +57,16 @@ export default function LoginForm({ providers }: Props) {
     try {
       const res = await fetch(`http://localhost:4000/login`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
       if (res.ok) {
-        router.push("/");
         const data = await res.json();
-        console.log(data);
         dispatch(logIn(data));
+        router.push("/");
       }
     } catch (err) {
       console.log("An error occured while trying to login", err);

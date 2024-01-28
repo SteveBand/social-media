@@ -19,6 +19,8 @@ const {
   CommentModel,
 } = require("../models/models");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config");
 
 module.exports = (app) => {
   app.get("/profile/:userId", async (req, res) => {
@@ -157,6 +159,13 @@ module.exports = (app) => {
   app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const lowerCaseEmail = email.toLowerCase();
+    const user = req.session.user;
+    const sessionCookie = req.cookies["connect.sid"];
+
+    if (user && sessionCookie) {
+      return res.status(200).send({ message: "Active session exists" });
+    }
+
     try {
       if (!password || !email) {
         return res.status(400).send({ message: "Bad Requst" });
@@ -173,15 +182,18 @@ module.exports = (app) => {
           .status(401)
           .send({ message: "Email or Password is incorrect" });
       }
-
       const userData = {
         id: user._id,
         name: user.name,
         email: user.email,
-        avatar_url: user.avatar_url,
+        image: user.avatar_url,
       };
+
+      const token = jwt.sign(userData, JWT_SECRET, { expiresIn: "2h" });
+      userData.token = token;
+      req.session.token = token;
       req.session.user = userData;
-      console.log("session-saved");
+
       return res.status(200).send(userData);
     } catch (error) {
       console.log("An error has occured at /login", error);
@@ -192,12 +204,13 @@ module.exports = (app) => {
   app.get("/login", async (req, res) => {
     const user = req.session.user;
     const sessionCookie = req.cookies["connect.sid"];
+
     if (!user && !sessionCookie) {
       return res
         .status(401)
         .send({ message: "Session has expired please log in again" });
     }
-    console.log(user);
+
     return res.status(200).send(req.session.user);
   });
 };

@@ -40,7 +40,7 @@ function fetchDashboardPostsLogged(userId) {
     },
     {
       $addFields: {
-        liked: { $ne: [{ $size: "$likes" }, 0] },
+        liked: { $gt: [{ $size: "$likes" }, 0] },
         isAuthor: {
           $cond: {
             if: { $eq: [userId, "$parentId"] },

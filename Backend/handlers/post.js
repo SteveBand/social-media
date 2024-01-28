@@ -37,6 +37,7 @@ module.exports = (app) => {
 
   app.get("/posts", catchCookies, async (req, res) => {
     const userData = req.userData || null;
+    console.log(userData);
     try {
       if (userData) {
         const posts = await Post.aggregate(

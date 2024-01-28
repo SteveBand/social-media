@@ -1,18 +1,18 @@
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { CommunityType } from "../../../../../../types";
+import { useAppSelector } from "@/hooks";
 
 export function CommunityForm({ data }: { data: CommunityType }) {
-  const { data: session } = useSession();
   const [content, setContent] = useState("");
+  const user = useAppSelector((state) => state.userReducer);
   async function handlePost(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     e.preventDefault();
     try {
       const res = await fetch(
-        `http://localhost:4000/community/${data._id}/new/post?content=${content}&parentId=${session?.user?.email}`,
+        `http://localhost:4000/community/${data._id}/new/post?content=${content}&parentId=${user.user_info.email}`,
         {
           method: "POST",
           credentials: "include",
@@ -23,6 +23,7 @@ export function CommunityForm({ data }: { data: CommunityType }) {
       );
       if (res.ok) {
         const post = await res.json();
+        setContent("");
       }
     } catch (err) {
       console.log(
@@ -32,11 +33,15 @@ export function CommunityForm({ data }: { data: CommunityType }) {
     }
   }
 
+  if (!data.isMember) {
+    return null;
+  }
+
   return (
     <form>
       <div className="upper">
-        {session?.user?.image ? (
-          <img src={session?.user?.image} />
+        {user?.user_info?.image ? (
+          <img src={user?.user_info?.image} />
         ) : (
           <CgProfile />
         )}

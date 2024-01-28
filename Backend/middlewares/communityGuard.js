@@ -4,7 +4,8 @@ const { CommunityMember, UserModel } = require("../models/models");
 const mongoose = require("mongoose");
 
 async function communityGuard(req, res, next) {
-  const token = req.cookies.access_token;
+  const user = req.session.user;
+  const token = user.token;
 
   if (!token) {
     return res.send({ message: "Unauthorized" }).status(401);

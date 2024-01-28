@@ -10,7 +10,7 @@ import { SetStateAction, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
-import { DataType } from "@/app/(dashboard)/profile/[...user]/components/ProfileContent";
+
 export function Post({ post, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);
   const router = useRouter();
@@ -39,7 +39,7 @@ export function Post({ post, handlePostLikeFunction }: Props) {
           <p className="username">{post.user_info.name}</p>
           <p data-navigate-to={`/post/${post._id}`}> {post.content}</p>
         </div>
-        <SlOptions className="post-options-button" />
+        {post.isAuthor && <SlOptions className="post-options-button" />}
       </div>
       <div className="footer-container" data-navigate-to={`/post/${post._id}`}>
         <PostLike post={post} handlePostLikeFunction={handlePostLikeFunction} />

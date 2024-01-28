@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn, logOut } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
@@ -16,7 +16,7 @@ export default function RootLayout({
   const user = useAppSelector((state) => state.userReducer);
   async function sessionConnect() {
     try {
-      const res = await fetch(`http://localhost:4000/check-login`, {
+      const res = await fetch(`http://localhost:4000/login`, {
         method: "GET",
         credentials: "include",
       });
@@ -32,8 +32,19 @@ export default function RootLayout({
         } else {
           return dispatch(logOut());
         }
+      } else {
+        logIn({
+          status: "unauthenticated",
+          user_info: {},
+        });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      logIn({
+        status: "unauthenticated",
+        user_info: {},
+      });
+    }
   }
 
   const redux = useAppSelector((state) => state.userReducer);
@@ -41,6 +52,8 @@ export default function RootLayout({
   useEffect(() => {
     sessionConnect();
   }, []);
+
+  console.log(redux);
   return (
     <html lang="en">
       <body>

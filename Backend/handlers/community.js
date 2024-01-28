@@ -49,6 +49,11 @@ module.exports = (app) => {
     const userData = req.userData || null;
     const user =
       userData && (await UserModel.findOne({ email: userData.email }));
+
+    const isMember = await CommunityMember.findOne({
+      parentId: new mongoose.Types.ObjectId(user._id),
+      communityId: new mongoose.Types.ObjectId(id),
+    });
     try {
       if (!id) {
         return res.send({ message: "Bad Request" }).status(400);
@@ -68,11 +73,6 @@ module.exports = (app) => {
           .send({ message: "Community is Private, You need to be a member" });
       }
 
-      const isMember = CommunityMember.findOne({
-        parentId: new mongoose.Types.ObjectId(user._id),
-        communityId: new mongoose.Types.ObjectId(id),
-      });
-
       if (community.membership === "private" && !isMember) {
         return res
           .status(403)
@@ -87,6 +87,7 @@ module.exports = (app) => {
     }
 
     try {
+      if (!isMember) return res.status(401).send({ message: "Unauthorized" });
       if (!userData) {
         const posts = await Post.aggregate([
           { $match: { communityId: id } },
@@ -103,7 +104,6 @@ module.exports = (app) => {
         return res.status(200).send(posts);
       } else {
         const postsArr = await Post.aggregate(fetchCommunityPosts(user, id));
-        console.log(postsArr);
         return res.send(postsArr).status(200);
       }
     } catch (err) {

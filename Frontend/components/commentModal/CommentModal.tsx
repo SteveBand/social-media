@@ -1,17 +1,16 @@
-import { useSession } from "next-auth/react";
-import { CommentType, CommunityPostType, PostType } from "../../../types";
+import { CommentType, PostType } from "../../../types";
 import { IoIosClose } from "react-icons/io";
 import { Dispatch, SetStateAction, useState } from "react";
+import { useAppSelector } from "@/hooks";
 
 type Props = {
-  post: PostType | CommentType | CommunityPostType;
+  post: PostType | CommentType;
   setShowComment: Dispatch<SetStateAction<boolean>>;
 };
 
 export function CommentModal({ post, setShowComment }: Props) {
   const [params, setParams] = useState<String>();
-  const { data: session } = useSession();
-  const user = session?.user;
+  const user = useAppSelector((state) => state.userReducer);
 
   async function postComment(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -47,7 +46,7 @@ export function CommentModal({ post, setShowComment }: Props) {
         </article>
         <article className="comment-post">
           <div className="content">
-            <img src={user?.image || ""} />
+            <img src={user?.user_info.image || ""} />
             <textarea
               placeholder="Post a comment Here..."
               onChange={(e) => {

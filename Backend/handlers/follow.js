@@ -45,7 +45,7 @@ module.exports = (app) => {
   app.post("/delete/follow", authGuard, async (req, res) => {
     const parentId = req.query.parentId;
     const follows = req.query.follows;
-    
+
     try {
       await FollowersModel.deleteOne({ parentId, follows });
       await UserModel.findOneAndUpdate(

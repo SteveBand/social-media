@@ -42,9 +42,37 @@ function fetchCommunity(id, userId) {
       },
     },
     {
+      $lookup: {
+        from: "communitymoderators",
+        let: { communityId: id, userId: userId },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ["$$communityId", "$communityId"],
+                  },
+                  { $eq: ["$$userId", "$userId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "moderator",
+      },
+    },
+    {
       $addFields: {
         isMember: { $gt: [{ $size: "$members" }, 0] },
         isAdmin: { $eq: ["$admin", userId] },
+        isModerator: { $gt: [{ $size: "$moderator" }, 0] },
+      },
+    },
+    {
+      $project: {
+        moderator: 0,
+        members: 0,
       },
     },
   ];
