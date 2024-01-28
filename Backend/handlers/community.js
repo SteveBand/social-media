@@ -234,7 +234,8 @@ module.exports = (app) => {
   app.post("/community/:id/new/post", communityGuard, async (req, res) => {
     const id = req.params.id;
     const content = req.query.content;
-    const parentId = req.query.parentId;
+    const parentId = req.userData.email;
+
     if (!id || !content || !parentId) {
       return res.send({ message: "Bad Requst" }).status(404);
     }
@@ -246,13 +247,19 @@ module.exports = (app) => {
         communityId: id,
       });
       await newPost.save();
-      return res.send(newPost).status(200);
+
+      const post = {
+        ...newPost._doc,
+        user_info: req.userData,
+      };
+      console.log(post);
+      return res.status(200).send(post);
     } catch (error) {
       console.log(
         "An error has Occured at /community/:id/new/post path",
-        err.name
+        error
       );
-      return res.send({ message: "Server Error" }).status(500);
+      return res.status(500).send({ message: "Server Error" });
     }
   });
 

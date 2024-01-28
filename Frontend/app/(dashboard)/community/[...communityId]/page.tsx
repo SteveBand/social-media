@@ -138,7 +138,7 @@ export default function CommunityPage({
         </ul>
       </div>
       {user.status === "authenticated" && action === "posts" && (
-        <CommunityForm data={data} />
+        <CommunityForm data={data} setPosts={setPosts} />
       )}
       <section className="community-content">
         {action === "posts" && (

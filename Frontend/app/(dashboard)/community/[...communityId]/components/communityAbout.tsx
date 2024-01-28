@@ -1,6 +1,5 @@
-import { CommunityModerator, CommunityType } from "../../../../../../types";
+import { CommunityMember, CommunityType } from "../../../../../../types";
 import { User } from "@/components/User";
-import { CommunityMember } from "./CommnityContent";
 import { useMemo } from "react";
 export function CommunityAbout({
   data,
@@ -34,7 +33,7 @@ export function CommunityAbout({
       <article className="moderators">
         <h4>Moderators</h4>
         {moderators.map((user) => {
-          return <User content={user} loading={false} key={user.id} />;
+          return <User content={user} loading={false} key={user._id} />;
         })}
       </article>
     </section>
