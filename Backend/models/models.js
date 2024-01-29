@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema(
     avatar_url: String,
     followers: Number,
     following: Number,
+    githubId: String,
+    facebookId: String,
+    googleId: String,
   },
   {
     timestamps: true,

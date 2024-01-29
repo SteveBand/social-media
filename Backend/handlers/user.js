@@ -202,8 +202,10 @@ module.exports = (app) => {
   });
 
   app.get("/login", async (req, res) => {
-    const user = req.session.user;
+    const user = req.session?.user || req.session?.passport?.user || null;
     const sessionCookie = req.cookies["connect.sid"];
+
+    console.log(user);
 
     if (!user && !sessionCookie) {
       return res
@@ -211,6 +213,6 @@ module.exports = (app) => {
         .send({ message: "Session has expired please log in again" });
     }
 
-    return res.status(200).send(req.session.user);
+    return res.status(200).send(user);
   });
 };

@@ -12,7 +12,6 @@ import {
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { decode } from "next-auth/jwt";
 
 export const authOptions: AuthOptions = {
   providers: [
