@@ -1,5 +1,4 @@
-import { LoginParams } from "@/lib/auth-utilis/authTypes";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 type InitialState = {
   user_info: {
@@ -7,7 +6,7 @@ type InitialState = {
     id: string;
     token: string;
     email: string;
-    image: string;
+    avatar_url: string;
   };
   status: "authenticated" | "unauthenticated";
 };
@@ -18,7 +17,7 @@ const initialState: InitialState = {
     id: "",
     token: "",
     email: "",
-    image: "",
+    avatar_url: "",
   },
   status: "unauthenticated",
 };

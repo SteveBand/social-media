@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
 import { CommentButton } from "./action-buttons/CommentButton";
 import { useAppSelector } from "@/hooks";
-import { NotLoggedModal } from "./NotLoggedModal";
+import { NotLoggedModal } from "./notLoggedModal/NotLoggedModal";
 
 export function Post({ post, handlePostLikeFunction }: Props) {
   const [showComment, setShowComment] = useState(false);

@@ -3,12 +3,12 @@ const { JWT_SECRET } = require("../config");
 const jwt = require("jsonwebtoken");
 
 function catchCookies(req, res, next) {
-  const user = req.session.user || null;
+  const user = req.session?.user || req.session?.passport?.user;
   const token = user?.token || null;
 
   try {
-    if (!user && !token) {
-      next();
+    if (!user || !token) {
+      return next();
     }
 
     if (token) {
@@ -19,7 +19,7 @@ function catchCookies(req, res, next) {
           req.userData = decode;
         }
       });
-      next();
+      return next();
     }
   } catch (error) {
     console.log("An error has Occured at middleware catchCookies");

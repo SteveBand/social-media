@@ -15,7 +15,7 @@ export function NotLoggedModal() {
       className: "github",
       name: "GitHub",
       icon: <PiGithubLogoFill className="icon" />,
-      login: `/auth/github/callback`,
+      login: `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${"http://localhost:4000/auth/github/callback"}`,
     },
     {
       className: "google",
@@ -31,10 +31,18 @@ export function NotLoggedModal() {
     },
   ];
 
-  async function handleProviderLogin(path: string) {
+  async function githubProvider() {
     router.push(
       `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${"http://localhost:4000/auth/github/callback"}`
     );
+  }
+
+  async function googleProvider() {
+    router.push("http://localhost:4000/auth/google/");
+  }
+
+  function facebookProvider() {
+    router.push(``);
   }
 
   return (
@@ -59,18 +67,33 @@ export function NotLoggedModal() {
         </div>
         <button className="login-button">Login</button>
         <p>Or login using different method: </p>
-        {providers.map((provider) => {
-          return (
-            <div
-              className={`provider-container ${provider.className}`}
-              onClick={() => handleProviderLogin(provider.login)}
-              key={provider.className}
-            >
-              {provider.icon}
-              {`Sign in with ${provider.name}`}
-            </div>
-          );
-        })}
+
+        <div
+          className={`provider-container github`}
+          onClick={() => githubProvider()}
+          key={"github"}
+        >
+          {<PiGithubLogoFill className="icon" />}
+          {`Sign in with Github`}
+        </div>
+
+        <div
+          className={`provider-container google`}
+          onClick={() => googleProvider()}
+          key={"google"}
+        >
+          {<FcGoogle className="icon" />}
+          {`Sign in with Google`}
+        </div>
+        <div
+          className={`provider-container facebook`}
+          onClick={() => facebookProvider()}
+          key={"facebook"}
+        >
+          {<FaFacebook className="icon" />}
+          {`Sign in with Facebook`}
+        </div>
+
         <div className="create-account">
           <span>Don't have an Account ?</span>
           <Link className="create-account-btn" href="/signup">

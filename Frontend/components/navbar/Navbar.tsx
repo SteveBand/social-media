@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
 import { navLinks } from "@/lib/navbar/navbar-utils";
 import { usePathname } from "next/navigation";
-import { signOut} from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { useAppSelector } from "@/hooks";
 type Props = {};
@@ -39,8 +39,8 @@ export default function Navbar({}: Props) {
           }`}
           onClick={() => setModal((prev) => !prev)}
         >
-          {user?.user_info?.image ? (
-            <img src={user.user_info.image} />
+          {user?.user_info?.avatar_url ? (
+            <img src={user.user_info.avatar_url} />
           ) : (
             <CgProfile />
           )}

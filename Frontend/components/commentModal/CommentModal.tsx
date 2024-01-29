@@ -48,7 +48,7 @@ export function CommentModal({ post, setShowComment }: Props) {
         </article>
         <article className="comment-post">
           <div className="content">
-            <img src={user?.user_info.image || ""} />
+            <img src={user?.user_info.avatar_url || ""} />
             <textarea
               placeholder="Post a comment Here..."
               onChange={(e) => {
