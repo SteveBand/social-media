@@ -14,7 +14,9 @@ module.exports = (app) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await UserModel.findOne({ googleId: profile.id });
+          let user = await UserModel.findOne({
+            email: profile.emails[0].value,
+          });
           if (!user) {
             user = new UserModel({
               googleId: profile.id,

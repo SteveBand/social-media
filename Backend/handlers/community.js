@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { authGuard } = require("../middlewares/authGuard");
-const { catchCookies } = require("../middlewares/catchCookies");
 const { communityGuard } = require("../middlewares/communityGuard");
 const {
   Community,
@@ -18,99 +17,105 @@ const {
 } = require("../lib/aggregations/communityAgg");
 
 module.exports = (app) => {
-  app.get("/community/:id", catchCookies, async (req, res) => {
-    if (!req.params.id) {
-      return res.status(400).send({ message: "Bad Request" });
-    }
-
-    const id = new mongoose.Types.ObjectId(req.params.id);
-    const user = await UserModel.findOne({
-      email: req.userData?.email || null,
-    });
-
-    const userId = req.userData && new mongoose.Types.ObjectId(user?._id);
-
-    try {
-      const community = await Community.aggregate(fetchCommunity(id, userId));
-
-      if (!community) {
+  app.get(
+    "/community/:id",
+    /*catchCookies,*/ async (req, res) => {
+      if (!req.params.id) {
         return res.status(400).send({ message: "Bad Request" });
       }
 
-      return res.status(200).send(community.pop());
-    } catch (error) {
-      console.log(error, "An error has occured at /community/:id");
-      return res.status(500).send({ message: "An error has occured" });
+      const id = new mongoose.Types.ObjectId(req.params.id);
+      const user = await UserModel.findOne({
+        email: req.userData?.email || null,
+      });
+
+      const userId = req.userData && new mongoose.Types.ObjectId(user?._id);
+
+      try {
+        const community = await Community.aggregate(fetchCommunity(id, userId));
+
+        if (!community) {
+          return res.status(400).send({ message: "Bad Request" });
+        }
+
+        return res.status(200).send(community.pop());
+      } catch (error) {
+        console.log(error, "An error has occured at /community/:id");
+        return res.status(500).send({ message: "An error has occured" });
+      }
     }
-  });
+  );
 
-  app.get("/community/:id/posts", catchCookies, async (req, res) => {
-    const id = req.params?.id;
-    const userData = req.userData || null;
-    const user =
-      userData && (await UserModel.findOne({ email: userData.email }));
+  app.get(
+    "/community/:id/posts",
+    /*catchCookies,*/ async (req, res) => {
+      const id = req.params?.id;
+      const userData = req.userData || null;
+      const user =
+        userData && (await UserModel.findOne({ email: userData.email }));
 
-    const isMember = await CommunityMember.findOne({
-      parentId: new mongoose.Types.ObjectId(user._id),
-      communityId: new mongoose.Types.ObjectId(id),
-    });
-    try {
-      if (!id) {
-        return res.send({ message: "Bad Request" }).status(400);
+      const isMember = await CommunityMember.findOne({
+        parentId: new mongoose.Types.ObjectId(user._id),
+        communityId: new mongoose.Types.ObjectId(id),
+      });
+      try {
+        if (!id) {
+          return res.send({ message: "Bad Request" }).status(400);
+        }
+
+        const community = await Community.findById(
+          new mongoose.Types.ObjectId(id)
+        );
+
+        if (!community) {
+          return res.status(404).send({ message: "Community does not exist" });
+        }
+
+        if (community.membership === "private" && !user) {
+          return res
+            .status(403)
+            .send({ message: "Community is Private, You need to be a member" });
+        }
+
+        if (community.membership === "private" && !isMember) {
+          return res
+            .status(403)
+            .send({ message: "Community is Private, You need to be a member" });
+        }
+      } catch (err) {
+        console.log(
+          "An error has occured at /community/:id/posts at data verification",
+          err
+        );
+        return res.status(500).send({ message: "An error has Occured!" });
       }
 
-      const community = await Community.findById(
-        new mongoose.Types.ObjectId(id)
-      );
-
-      if (!community) {
-        return res.status(404).send({ message: "Community does not exist" });
-      }
-
-      if (community.membership === "private" && !user) {
-        return res
-          .status(403)
-          .send({ message: "Community is Private, You need to be a member" });
-      }
-
-      if (community.membership === "private" && !isMember) {
-        return res
-          .status(403)
-          .send({ message: "Community is Private, You need to be a member" });
-      }
-    } catch (err) {
-      console.log(
-        "An error has occured at /community/:id/posts at data verification",
-        err
-      );
-      return res.status(500).send({ message: "An error has Occured!" });
-    }
-
-    try {
-      if (!isMember) return res.status(401).send({ message: "Unauthorized" });
-      if (!userData) {
-        const posts = await Post.aggregate([
-          { $match: { communityId: id } },
-          {
-            $lookup: {
-              from: "users",
-              localField: "parentId",
-              foreignField: "email",
-              as: "user_info",
+      try {
+        if (!isMember) return res.status(401).send({ message: "Unauthorized" });
+        if (!userData) {
+          const posts = await Post.aggregate([
+            { $match: { communityId: id } },
+            {
+              $lookup: {
+                from: "users",
+                localField: "parentId",
+                foreignField: "email",
+                as: "user_info",
+              },
             },
-          },
-          { $unwind: "$user_info" },
-        ]);
-        return res.status(200).send(posts);
-      } else {
-        const postsArr = await Post.aggregate(fetchCommunityPosts(user, id));
-        return res.send(postsArr).status(200);
+            { $unwind: "$user_info" },
+          ]);
+          return res.status(200).send(posts);
+        } else {
+          const postsArr = await Post.aggregate(fetchCommunityPosts(user, id));
+          return res.send(postsArr).status(200);
+        }
+      } catch (err) {
+        console.log("An error has occured at /community/:id/posts", err);
+        return res.send({ message: "An error has occured" }).status(500);
       }
-    } catch (err) {
-      console.log("An error has occured at /community/:id/posts", err);
-      return res.send({ message: "An error has occured" }).status(500);
     }
-  });
+  );
 
   app.post("/community/:id/new/member", authGuard, async (req, res) => {
     const id = req.params.id;
@@ -357,49 +362,59 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/community/:id/moderators", catchCookies, async (req, res) => {
-    const id = req.params.id;
-    const loggedUserId = req.userData.email;
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
+  app.get(
+    "/community/:id/moderators",
+    /*catchCookies,*/ async (req, res) => {
+      const id = req.params.id;
+      const loggedUserId = req.userData.email;
+      if (!id) {
+        return res.send({ message: "Bad Request" }).status(400);
+      }
+      try {
+        const moderators = await CommunityModerator.aggregate(
+          fetchModerators(loggedUserId, id)
+        );
+        return res.send(moderators).status(200);
+      } catch (error) {
+        console.log("An error has occured at /community/:id/moderators", error);
+        return res.send({ message: "An error has occured" }).status(500);
+      }
     }
-    try {
-      const moderators = await CommunityModerator.aggregate(
-        fetchModerators(loggedUserId, id)
-      );
-      return res.send(moderators).status(200);
-    } catch (error) {
-      console.log("An error has occured at /community/:id/moderators", error);
-      return res.send({ message: "An error has occured" }).status(500);
-    }
-  });
+  );
 
-  app.get("/community/:id/members", catchCookies, async (req, res) => {
-    const id = new mongoose.Types.ObjectId(req.params.id);
-    const loggedUserId = req.userData === undefined ? null : req.userData.email;
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
+  app.get(
+    "/community/:id/members",
+    /*catchCookies,*/ async (req, res) => {
+      const id = new mongoose.Types.ObjectId(req.params.id);
+      const loggedUserId =
+        req.userData === undefined ? null : req.userData.email;
+      if (!id) {
+        return res.send({ message: "Bad Request" }).status(400);
+      }
+      try {
+        const members = await CommunityMember.aggregate(
+          fetchCommunityMembers(id, loggedUserId)
+        );
+        return res.send(members).status(200);
+      } catch (error) {
+        console.log("An error has occured at /community/:id/members", error);
+        return res.send({ message: "An error has occured" }).status(500);
+      }
     }
-    try {
-      const members = await CommunityMember.aggregate(
-        fetchCommunityMembers(id, loggedUserId)
-      );
-      return res.send(members).status(200);
-    } catch (error) {
-      console.log("An error has occured at /community/:id/members", error);
-      return res.send({ message: "An error has occured" }).status(500);
-    }
-  });
+  );
 
-  app.get("/communities", catchCookies, async (req, res) => {
-    try {
-      const communities = await Community.find().limit(10);
-      return res.send(communities).status(200);
-    } catch (error) {
-      console.log("An error has occured at /communities", error);
-      return res.send({ message: "An error has occured at " }).status(500);
+  app.get(
+    "/communities",
+    /*catchCookies,*/ async (req, res) => {
+      try {
+        const communities = await Community.find().limit(10);
+        return res.send(communities).status(200);
+      } catch (error) {
+        console.log("An error has occured at /communities", error);
+        return res.send({ message: "An error has occured at " }).status(500);
+      }
     }
-  });
+  );
 
   app.post("/community/new", authGuard, async (req, res) => {
     const { membership, title, about, image, rules } = req.body;

@@ -2,19 +2,16 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 
 function authGuard(req, res, next) {
-  const user = req.session.user;
-  const token = user.token;
-  if (!token) {
-    console.log("User is not authorized - No token found!");
-    return res.status(401).send({ message: "User Unauthorized" });
-  }
+  const user = req.user || null;
   try {
-    const data = jwt.verify(token, JWT_SECRET);
-    req.userData = data;
-    next();
+    if (!user) {
+      return res.status(401).send({ message: "Unauthorised" });
+    } else {
+      return next();
+    }
   } catch (err) {
-    console.log("User is not authrozied - Token verification failed!");
-    return res.status(401).send("User is not Authorized");
+    console.log("User is not authrozied!");
+    return res.status(401).send({ message: "Unauthorised" });
   }
 }
 

@@ -13,13 +13,15 @@ module.exports = (app) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await UserModel.findOne({ githubId: profile.id });
+          let user = await UserModel.findOne({
+            email: profile.emails[0].value,
+          });
           if (!user) {
             user = new UserModel({
               githubId: profile.id,
               name: profile.displayName,
               avatar_url: profile.photos[0].value,
-              email: profile.email,
+              email: profile.emails[0].value,
               bio: profile.bio,
             });
             await user.save();

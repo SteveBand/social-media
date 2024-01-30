@@ -4,19 +4,17 @@ const mongoose = require("mongoose");
 
 const likesSchema = new mongoose.Schema({
   parentId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
     lowercase: true,
     index: true,
   },
   userId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
     lowercase: true,
     index: true,
   },
-  communityId: {
-    type: String,
-  },
 });
+
 const LikesModel =
   mongoose.models.LikesModel || mongoose.model("likes", likesSchema);
 
@@ -42,8 +40,14 @@ const userSchema = new mongoose.Schema(
       index: { text: true },
     },
     avatar_url: String,
-    followers: Number,
-    following: Number,
+    followers: {
+      type: Number,
+      default: 0,
+    },
+    following: {
+      type: Number,
+      default: 0,
+    },
     githubId: String,
     facebookId: String,
     googleId: String,
@@ -67,7 +71,7 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
     parentId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       index: {
         unique: true,
       },

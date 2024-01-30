@@ -54,8 +54,8 @@ export default function PostModal({}: Props) {
     <section className="feed-post-modal-wrapper">
       <form className="feed-post-modal-container">
         <div className="profile-content">
-          {user.user_info.image ? (
-            <img src={user.user_info.image} width={50} />
+          {user.user_info.avatar_url ? (
+            <img src={user.user_info.avatar_url} width={50} />
           ) : (
             <PiUserCircle className="icon" />
           )}

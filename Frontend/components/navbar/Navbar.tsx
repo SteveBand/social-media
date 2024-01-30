@@ -47,7 +47,7 @@ export default function Navbar({}: Props) {
           <p>{user?.user_info?.name}</p>
           {modal && (
             <div className="logged-user-modal">
-              <Link href={`/profile/${user.user_info.email}`}>Profile</Link>
+              <Link href={`/profile/${user.user_info._id}`}>Profile</Link>
               <div className="signout" onClick={() => signOut()}>
                 Logout
               </div>

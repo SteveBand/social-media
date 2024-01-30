@@ -4,22 +4,12 @@ const { CommunityMember, UserModel } = require("../models/models");
 const mongoose = require("mongoose");
 
 async function communityGuard(req, res, next) {
-  const user = req.session.user;
-  const token = user.token;
-
-  if (!token) {
-    return res.send({ message: "Unauthorized" }).status(401);
-  }
+  const user = req.user || null;
 
   try {
-    const data = jwt.verify(token, JWT_SECRET);
-    if (!data) {
-      return res.send({ message: "Invalid Token" }).status(401);
+    if (!user) {
+      return res.status(401).send({ message: "Unauthorised" });
     }
-
-    req.userData = data;
-
-    const user = await UserModel.findOne({ email: data.email });
 
     const follow = await CommunityMember.findOne({
       parentId: user._id,

@@ -9,7 +9,7 @@ function fetchDashboardPostsUnLogged() {
       $lookup: {
         from: "users",
         localField: "parentId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },

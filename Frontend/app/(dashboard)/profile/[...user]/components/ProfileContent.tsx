@@ -21,7 +21,7 @@ export function ProfileContent({ user }: { user: UserType }) {
   async function fetchData() {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/${user.email}/${action}`, {
+      const res = await fetch(`http://localhost:4000/${user._id}/${action}`, {
         method: "GET",
         credentials: "include",
       });

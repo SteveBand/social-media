@@ -40,7 +40,7 @@ app.use(
     store: store,
     cookie: {
       secure: false,
-      maxAge: 60 * 1000 * 60 * 2,
+      maxAge: 60 * 1000 * 60 * 4,
     },
   })
 );

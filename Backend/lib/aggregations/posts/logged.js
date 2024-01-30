@@ -7,7 +7,7 @@ function fetchDashboardPostsLogged(userId) {
       $lookup: {
         from: "users",
         localField: "parentId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -24,10 +24,7 @@ function fetchDashboardPostsLogged(userId) {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$postId" },
-                    ],
+                    $eq: ["$parentId", "$$postId"], /// Changed It MAYBE IT WILL CAUSE PROBLEMS
                   },
                   { $eq: ["$userId", "$$userId"] },
                 ],

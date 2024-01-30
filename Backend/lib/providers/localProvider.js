@@ -2,6 +2,9 @@ const passport = require("passport");
 const { UserModel } = require("../../models/models");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 module.exports = (app) => {
   passport.use(
     new LocalStrategy({ usernameField: "email" }, async function (
@@ -22,12 +25,7 @@ module.exports = (app) => {
             message: "Username or password are incorrect",
           });
         }
-        const userObject = {
-          email: user.email,
-          name: user.name,
-          _id: user._id,
-          avatar_url: user.avatar_url,
-        };
+
         return done(null, userObject);
       } catch (err) {
         console.log("An error occured in localProvider.js");
