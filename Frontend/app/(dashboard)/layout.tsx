@@ -3,7 +3,7 @@
 import { Footer } from "@/components/footer";
 import Navbar from "@/components/navbar/Navbar";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { logIn, logOut } from "@/redux/features/auth-slice";
+import { logIn } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";
 import { useEffect } from "react";
 
@@ -14,6 +14,10 @@ export default function RootLayout({
 }) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReducer);
+
+  // Function to check if user session still up or need to connect again
+  // Checks by sending a request to the server and confirming an active session.
+  // if session not found (means not active) then it returns false and an empty global user state is implemented with a status of 'unauthenticated'.
   async function sessionConnect() {
     try {
       const res = await fetch(`http://localhost:4000/login`, {
@@ -21,6 +25,8 @@ export default function RootLayout({
         credentials: "include",
       });
       if (res.ok) {
+        // if server returns status of 200 it checks if the user data already exists inside the global redux state. if not it updates it with the user data.
+        // to avoid Unnecessery Rendering we check if user already exists before updating it.
         const data = await res.json();
         if (user.status === "unauthenticated") {
           return dispatch(
@@ -31,6 +37,7 @@ export default function RootLayout({
           );
         }
       } else {
+        // if server returns status other then 200 user global redux state is empty and unauthenticated
         logIn({
           status: "unauthenticated",
           user_info: {},
@@ -45,13 +52,10 @@ export default function RootLayout({
     }
   }
 
-  const redux = useAppSelector((state) => state.userReducer);
-
   useEffect(() => {
     sessionConnect();
   }, []);
 
-  console.log(redux);
   return (
     <html lang="en">
       <body>

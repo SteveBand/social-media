@@ -22,7 +22,13 @@ module.exports = (app) => {
             message: "Username or password are incorrect",
           });
         }
-        return done(null, user);
+        const userObject = {
+          email: user.email,
+          name: user.name,
+          _id: user._id,
+          avatar_url: user.avatar_url,
+        };
+        return done(null, userObject);
       } catch (err) {
         console.log("An error occured in localProvider.js");
         return done(null, false, {
