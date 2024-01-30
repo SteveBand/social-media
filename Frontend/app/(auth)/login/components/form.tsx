@@ -9,7 +9,7 @@ import { Providers } from "./Providers";
 import { BuiltInProviderType } from "next-auth/providers/index";
 import { ClientSafeProvider, LiteralUnion, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 
 type Props = {
@@ -26,7 +26,7 @@ export default function LoginForm({ providers }: Props) {
   });
   const [isValid, setIsValid] = useState<boolean>(false);
   const router = useRouter();
-
+  const user = useAppSelector((state) => state.userReducer);
   const dispatch = useAppDispatch();
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,9 @@ export default function LoginForm({ providers }: Props) {
       });
       if (res.ok) {
         const data = await res.json();
-        dispatch(logIn(data));
+        dispatch(logIn({ status: "authenticated", user_info: data }));
+        console.log(data);
+        console.log(user);
         router.push("/");
       }
     } catch (err) {

@@ -29,8 +29,6 @@ export default function RootLayout({
               user_info: data,
             })
           );
-        } else {
-          return dispatch(logOut());
         }
       } else {
         logIn({

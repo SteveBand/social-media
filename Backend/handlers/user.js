@@ -156,63 +156,63 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    const lowerCaseEmail = email.toLowerCase();
-    const user = req.session.user;
-    const sessionCookie = req.cookies["connect.sid"];
+  // app.post("/login", async (req, res) => {
+  //   const { email, password } = req.body;
+  //   const lowerCaseEmail = email.toLowerCase();
+  //   const user = req.session.user;
+  //   const sessionCookie = req.cookies["connect.sid"];
 
-    if (user && sessionCookie) {
-      return res.status(200).send({ message: "Active session exists" });
-    }
+  //   if (user && sessionCookie) {
+  //     return res.status(200).send({ message: "Active session exists" });
+  //   }
 
-    try {
-      if (!password || !email) {
-        return res.status(400).send({ message: "Bad Requst" });
-      }
+  //   try {
+  //     if (!password || !email) {
+  //       return res.status(400).send({ message: "Bad Requst" });
+  //     }
 
-      const user = await UserModel.findOne({ email: lowerCaseEmail });
-      if (!user) {
-        return res.status(400).send({ message: "Bad Request user not found" });
-      }
+  //     const user = await UserModel.findOne({ email: lowerCaseEmail });
+  //     if (!user) {
+  //       return res.status(400).send({ message: "Bad Request user not found" });
+  //     }
 
-      const comparePasswords = await bcrypt.compare(password, user.password);
-      if (!comparePasswords) {
-        return res
-          .status(401)
-          .send({ message: "Email or Password is incorrect" });
-      }
-      const userData = {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        image: user.avatar_url,
-      };
+  //     const comparePasswords = await bcrypt.compare(password, user.password);
+  //     if (!comparePasswords) {
+  //       return res
+  //         .status(401)
+  //         .send({ message: "Email or Password is incorrect" });
+  //     }
+  //     const userData = {
+  //       id: user._id,
+  //       name: user.name,
+  //       email: user.email,
+  //       image: user.avatar_url,
+  //     };
 
-      const token = jwt.sign(userData, JWT_SECRET, { expiresIn: "2h" });
-      userData.token = token;
-      req.session.token = token;
-      req.session.user = userData;
+  //     const token = jwt.sign(userData, JWT_SECRET, { expiresIn: "2h" });
+  //     userData.token = token;
+  //     req.session.token = token;
+  //     req.session.user = userData;
 
-      return res.status(200).send(userData);
-    } catch (error) {
-      console.log("An error has occured at /login", error);
-      return res.status(500).send({ message: "Internal server error" });
-    }
-  });
+  //     return res.status(200).send(userData);
+  //   } catch (error) {
+  //     console.log("An error has occured at /login", error);
+  //     return res.status(500).send({ message: "Internal server error" });
+  //   }
+  // });
 
-  app.get("/login", async (req, res) => {
-    const user = req.session?.user || req.session?.passport?.user || null;
-    const sessionCookie = req.cookies["connect.sid"];
+  // app.get("/login", async (req, res) => {
+  //   const user = req.session?.user || req.session?.passport?.user || null;
+  //   const sessionCookie = req.cookies["connect.sid"];
 
-    console.log(user);
+  //   console.log(user);
 
-    if (!user && !sessionCookie) {
-      return res
-        .status(401)
-        .send({ message: "Session has expired please log in again" });
-    }
+  //   if (!user && !sessionCookie) {
+  //     return res
+  //       .status(401)
+  //       .send({ message: "Session has expired please log in again" });
+  //   }
 
-    return res.status(200).send(user);
-  });
+  //   return res.status(200).send(user);
+  // });
 };

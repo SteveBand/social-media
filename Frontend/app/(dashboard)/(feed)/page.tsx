@@ -13,13 +13,10 @@ export default function Page() {
   return (
     <>
       {modal && createPortal(<PostModal />, document.body)}
-
       <section className="feed-wrapper">
         <PostInput />
         <section className="feed-container">
-          <Suspense fallback={<div>hi</div>}>
-            <PostsFeed />
-          </Suspense>
+          <PostsFeed />
         </section>
       </section>
     </>
