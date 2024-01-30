@@ -55,14 +55,14 @@ function fetchDashboardPostsLogged(userId) {
   ];
 }
 
-const fetchPostLogged = (postId, loggedUserId) => {
+const fetchPostLogged = (postId, userId) => {
   return [
-    { $match: { _id: new mongoose.Types.ObjectId(postId) } },
+    { $match: { _id: postId } },
     {
       $lookup: {
         from: "users",
-        let: { userId: "$parentId" },
-        pipeline: [{ $match: { $expr: { $eq: ["$email", "$$userId"] } } }],
+        localField: "parentId",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -70,20 +70,20 @@ const fetchPostLogged = (postId, loggedUserId) => {
     {
       $lookup: {
         from: "likes",
-        let: { loggedUserId: loggedUserId, postId: postId },
+        let: { userId: userId, postId: postId },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$$postId, $parentId"] },
-                  { $eq: ["$$loggedUserId", "$userId"] },
+                  { $eq: ["$$postId", "$parentId"] },
+                  { $eq: ["$$userId", "$userId"] },
                 ],
               },
             },
           },
         ],
-        as: "liked",
+        as: "like",
       },
     },
     {

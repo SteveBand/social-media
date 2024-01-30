@@ -1,23 +1,33 @@
 const { authGuard } = require("../middlewares/authGuard");
 const { LikesModel, Post, CommentModel } = require("../models/models");
+const mongoose = require("mongoose");
 
 module.exports = (app) => {
   app.post("/new/post/like", authGuard, async (req, res) => {
     try {
-      const { _id } = req.body;
-      const userData = req.userData;
-      const likeBody = { parentId: _id, userId: userData.email };
+      const postId = new mongoose.Types.ObjectId(req.body._id);
+      const userId = new mongoose.Types.ObjectId(req.user._id);
+
+      const likeBody = { parentId: postId, userId };
       const existingLike = await LikesModel.findOne(likeBody);
+
       if (existingLike) {
         return res.status(400).send({ message: "Already Liked" });
       }
-      const existingPost = await Post.findOne({ _id });
+
+      const existingPost = await Post.findById(postId);
+
       if (!existingPost) {
         return res.status(404).send({ message: "404 Posts doesnt exist" });
       }
-      await Post.updateOne({ _id }, { $inc: { __v: 1, likesCount: 1 } });
+
+      await Post.updateOne(
+        { _id: postId },
+        { $inc: { __v: 1, likesCount: 1 } }
+      );
+
       const newLike = await new LikesModel(likeBody).save();
-      // console.log(newLike);
+
       return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("Falls within /new/like Route!");

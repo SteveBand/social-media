@@ -54,16 +54,14 @@ module.exports = (app) => {
   app.get(
     "/post/:postId",
     /*catchCookies,*/ async (req, res) => {
-      const postId = req.params.postId;
-      const userData = req.userData || null;
-      if (!postId) {
-        return res.send("Bad Request").status(400);
-      }
+      const postId = new mongoose.Types.ObjectId(req.params.postId);
+      const userId = req.user?._id
+        ? new mongoose.Types.ObjectId(req.user._id)
+        : null;
+
       try {
-        if (userData) {
-          const obj = await Post.aggregate(
-            fetchPostLogged(postId, userData.email)
-          );
+        if (userId) {
+          const obj = await Post.aggregate(fetchPostLogged(postId, userId));
           console.log(obj);
           return res.send(obj.pop()).status(200);
         } else {
@@ -72,7 +70,7 @@ module.exports = (app) => {
           res.status(200).send(obj.pop());
         }
       } catch (err) {
-        console.log("Post not Found: ");
+        console.log("Post not Found: ", err);
         return res.send({ message: "Error 404, Page not found!" }).status(404);
       }
     }

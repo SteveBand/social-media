@@ -86,11 +86,9 @@
       }
       footer {
         .post-details {
-          .date {
-            color: gray;
-            font-size: 0.85rem;
-            letter-spacing: 0.8px;
-          }
+          color: rgb(83, 83, 83);
+          font-size: 0.8rem;
+          letter-spacing: 0.8px;
         }
         .post-action-buttons {
           display: flex;

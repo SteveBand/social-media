@@ -7,15 +7,15 @@ import { PostType } from "../../../../../types";
 import { MainPost } from "./components/MainPost";
 import { Comment } from "./components/Comment";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/hooks";
 export default function PostPage({ params }: { params: { postId: any } }) {
   const [content, setContent] = useState<PostType | null>();
   const [comments, setComments] = useState<PostType[] | null>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
-  const { data: session } = useSession();
-  const user = session?.user;
   const router = useRouter();
+  const user = useAppSelector((state) => state.userReducer);
+
   async function fetchPostData() {
     try {
       const postId = params?.postId?.[0];
@@ -96,7 +96,11 @@ export default function PostPage({ params }: { params: { postId: any } }) {
             Replying to <Link href={"/"}>{content.user_info.name}</Link>
           </p>
           <div className="content">
-            {user?.image ? <img src={user?.image} /> : <CgProfile />}
+            {user?.user_info.avatar_url ? (
+              <img src={user?.user_info.avatar_url} />
+            ) : (
+              <CgProfile />
+            )}
             <textarea
               placeholder="Post your Reply"
               onChange={(e) => setTextAreaValue(e.target.value)}
