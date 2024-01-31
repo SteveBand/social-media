@@ -59,7 +59,7 @@ export function User({ content, loading, path, communityId }: Props) {
         </div>
         {user.status === "authenticated" &&
           user.user_info.email !== content.email &&
-          !isOptions && <FollowButton user={content} />}
+          !isOptions && <FollowButton userData={content} />}
         {path === "community/adminPanel" && (
           <SlOptions
             className="options-icon"

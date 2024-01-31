@@ -87,10 +87,36 @@ const fetchPostLogged = (postId, userId) => {
       },
     },
     {
+      $lookup: {
+        from: "followers",
+        let: { userId: userId, postUserId: "$user_info._id" }, /////// STOPPED HERE !!!! NEED TO CHECK IF LOGGED USER FOLLOWS THE USER WHO POSTED!
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$$userId", "$parentId"] },
+                  { $eq: ["$$postUserId", "$follows"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "followers",
+      },
+    },
+    {
       $addFields: {
         liked: {
           $cond: {
             if: { $gt: [{ $size: "$like" }, 0] },
+            then: true,
+            else: false,
+          },
+        },
+        "user_info.isFollowing": {
+          $cond: {
+            if: { $gt: [{ $size: "$followers" }, 0] },
             then: true,
             else: false,
           },
@@ -100,6 +126,7 @@ const fetchPostLogged = (postId, userId) => {
     {
       $project: {
         like: 0,
+        followers: 0,
       },
     },
   ];

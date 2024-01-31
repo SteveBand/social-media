@@ -51,28 +51,23 @@ module.exports = (app) => {
     }
   });
 
-  app.get(
-    "/post/:postId",
-    /*catchCookies,*/ async (req, res) => {
-      const postId = new mongoose.Types.ObjectId(req.params.postId);
-      const userId = req.user?._id
-        ? new mongoose.Types.ObjectId(req.user._id)
-        : null;
+  app.get("/post/:postId", async (req, res) => {
+    const postId = new mongoose.Types.ObjectId(req.params.postId);
+    const userId = req.user?._id
+      ? new mongoose.Types.ObjectId(req.user._id)
+      : null;
 
-      try {
-        if (userId) {
-          const obj = await Post.aggregate(fetchPostLogged(postId, userId));
-          console.log(obj);
-          return res.send(obj.pop()).status(200);
-        } else {
-          const obj = await Post.aggregate(fetchPostUnLogged(postId));
-          console.log(obj);
-          res.status(200).send(obj.pop());
-        }
-      } catch (err) {
-        console.log("Post not Found: ", err);
-        return res.send({ message: "Error 404, Page not found!" }).status(404);
+    try {
+      if (userId) {
+        const obj = await Post.aggregate(fetchPostLogged(postId, userId));
+        return res.status(200).send(obj.pop());
+      } else {
+        const obj = await Post.aggregate(fetchPostUnLogged(postId));
+        return res.status(200).send(obj.pop());
       }
+    } catch (err) {
+      console.log("Post not Found: ", err);
+      return res.send({ message: "Error 404, Page not found!" }).status(404);
     }
-  );
+  });
 };

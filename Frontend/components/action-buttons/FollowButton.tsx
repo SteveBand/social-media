@@ -1,14 +1,14 @@
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { CommunityModerator } from "../../../types";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { follow, unfollow } from "@/redux/features/communityMembers-slice";
 
-export function FollowButton({ user }: { user: CommunityModerator }) {
-  const [following, setFollowing] = useState<boolean>(user.isFollowing);
+export function FollowButton({ userData }: { userData: CommunityModerator }) {
+  const [following, setFollowing] = useState<boolean>(userData.isFollowing);
+
   const dispatch = useAppDispatch();
-  const { data: session } = useSession();
-  const parentId = session?.user?.email;
+  const user = useAppSelector((state) => state.userReducer);
+
   async function handleFollow(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
@@ -17,7 +17,7 @@ export function FollowButton({ user }: { user: CommunityModerator }) {
       const res = await fetch(
         `http://localhost:4000/${
           following ? "delete" : "new"
-        }/follow?parentId=${parentId}&follows=${user.email}`,
+        }/follow?parentId=${user.user_info._id}&follows=${userData._id}`,
         {
           method: "POST",
           credentials: "include",
@@ -26,9 +26,13 @@ export function FollowButton({ user }: { user: CommunityModerator }) {
           },
         }
       );
+
       if (res.ok) {
         setFollowing((prev) => !prev);
-        !following ? dispatch(follow(user.id)) : dispatch(unfollow(user.id));
+
+        !following
+          ? dispatch(follow(userData._id))
+          : dispatch(unfollow(userData._id));
       }
     } catch (err) {
       console.log(err);

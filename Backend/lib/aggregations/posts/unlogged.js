@@ -21,12 +21,12 @@ function fetchDashboardPostsUnLogged() {
 
 function fetchPostUnLogged(postId) {
   return [
-    { $match: { _id: new mongoose.Types.ObjectId(postId) } },
+    { $match: { _id: postId } },
     {
       $lookup: {
         from: "users",
-        let: { userId: "$parentId" },
-        pipeline: [{ $match: { $expr: { $eq: ["$email", "$$userId"] } } }],
+        localField: "parentId",
+        foreignField: "_id",
         as: "user_info",
       },
     },

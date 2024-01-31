@@ -142,12 +142,10 @@ const CommentModel =
 const followersScehma = new mongoose.Schema(
   {
     parentId: {
-      type: String,
-      lowercase: true,
+      type: mongoose.Types.ObjectId,
     },
     follows: {
-      type: String,
-      lowercase: true,
+      type: mongoose.Types.ObjectId,
     },
   },
   { timestamps: true }

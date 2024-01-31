@@ -3,8 +3,8 @@ import { IoIosShareAlt } from "react-icons/io";
 import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
 import { PostType } from "../../../../../../types";
-import { Date } from "@/components/Date";
 import moment from "moment";
+import { FollowButton } from "@/components/action-buttons/FollowButton";
 type Props = {
   content: PostType;
 };
@@ -24,7 +24,7 @@ export function MainPost({ content }: Props) {
           <p>{content.user_info?.name}</p>
         </div>
         <div className="action-buttons">
-          <button className="subscribe-btn">Subscribe</button>
+          <FollowButton userData={content.user_info} />
           <SlOptions className="options-btn" />
         </div>
       </div>
