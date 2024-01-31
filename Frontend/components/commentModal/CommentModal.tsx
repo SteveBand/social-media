@@ -1,16 +1,22 @@
 import { CommentType, PostType } from "../../../types";
 import { IoIosClose } from "react-icons/io";
-import { Dispatch, SetStateAction, useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useAppSelector } from "@/hooks";
 import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";
 
 type Props = {
   post: PostType | CommentType;
-  setShowComment: Dispatch<SetStateAction<boolean>>;
   setComments?: React.Dispatch<SetStateAction<PostType[]>>;
+  setCommentsCount: React.Dispatch<SetStateAction<number>>;
+  setCommentModal: React.Dispatch<SetStateAction<boolean>>;
 };
 
-export function CommentModal({ post, setShowComment, setComments }: Props) {
+export function CommentModal({
+  post,
+  setComments,
+  setCommentsCount,
+  setCommentModal,
+}: Props) {
   const [params, setParams] = useState<String>();
 
   const user = useAppSelector((state) => state.userReducer);
@@ -25,12 +31,14 @@ export function CommentModal({ post, setShowComment, setComments }: Props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ params, target: "post" }),
+      body: JSON.stringify({
+        params,
+        target: post.isPost ? "post" : "comment",
+      }),
     });
     if (res.ok) {
       const data = await res.json();
-      setShowComment(false);
-
+      setCommentsCount((prev) => prev++);
       setComments &&
         setComments((prev) => {
           return [...prev, data];
@@ -46,7 +54,10 @@ export function CommentModal({ post, setShowComment, setComments }: Props) {
     <section className="comment-modal-wrapper">
       <section className="container">
         <header>
-          <IoIosClose className="icon" onClick={() => setShowComment(false)} />
+          <IoIosClose
+            className="icon"
+            onClick={() => setCommentModal((prev) => !prev)}
+          />
         </header>
         <article className="parent-post">
           <div className="content">

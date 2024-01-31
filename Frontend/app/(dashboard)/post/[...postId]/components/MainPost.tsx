@@ -1,22 +1,18 @@
 import { PostLike } from "@/components/action-buttons/PostLike";
 import { IoIosShareAlt } from "react-icons/io";
-import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
 import { PostType } from "../../../../../../types";
 import moment from "moment";
 import { FollowButton } from "@/components/action-buttons/FollowButton";
 import { CommentButton } from "@/components/action-buttons/CommentButton";
 import { SetStateAction, useState } from "react";
-import { CommentModal } from "@/components/commentModal/CommentModal";
-import { createPortal } from "react-dom";
+
 type Props = {
   content: PostType;
   setComments: React.Dispatch<SetStateAction<PostType[]>>;
 };
 
 export function MainPost({ content, setComments }: Props) {
-  const [showComment, setShowComment] = useState(false);
-
   if (!content) {
     return <div>None</div>;
   }
@@ -25,15 +21,6 @@ export function MainPost({ content, setComments }: Props) {
 
   return (
     <article className="main-post">
-      {showComment &&
-        createPortal(
-          <CommentModal
-            post={content}
-            setShowComment={setShowComment}
-            setComments={setComments}
-          />,
-          document.body
-        )}
       <div className="upper-post">
         <div className="user-details">
           <img src={content.user_info?.avatar_url} />
@@ -52,8 +39,7 @@ export function MainPost({ content, setComments }: Props) {
         <div className="post-action-buttons">
           <PostLike post={content} />
           <div className="button-container">
-            <CommentButton setShowComment={setShowComment} />
-            <p>{content.commentsCount > 0 && content.commentsCount}</p>
+            <CommentButton setComments={setComments} content={content} />
           </div>
           <div className="button-container">
             <IoIosShareAlt className="icon" />

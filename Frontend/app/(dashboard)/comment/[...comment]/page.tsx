@@ -13,18 +13,19 @@ import { useAppSelector } from "@/hooks";
 
 export default function CommentPage() {
   const [content, setContent] = useState<PostType | null>();
-  const [comments, setComments] = useState<PostType[] | null>([]);
+  const [comments, setComments] = useState<PostType[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const user = useAppSelector((state) => state.userReducer);
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const postId = useMemo(() => {
     return searchParams.get("postId");
   }, [searchParams]);
 
   async function fetchPostData() {
     try {
-      const res = await fetch(`http://localhost:4000/comment/post/${postId}`, {
+      const res = await fetch(`http://localhost:4000/comment/${postId}`, {
         credentials: "include",
         method: "GET",
       });
@@ -101,14 +102,14 @@ export default function CommentPage() {
           <FaArrowLeft className="back-button" onClick={() => router.back()} />
           <p>Post</p>
         </header>
-        <MainComment content={content} />
+        <MainComment content={content} setComments={setComments} />
         <form>
           <p>
             Replying to <Link href={"/"}>{content.user_info.name}</Link>
           </p>
           <div className="content">
-            {user?.user_info.image ? (
-              <img src={user?.user_info.image} />
+            {user?.user_info.avatar_url ? (
+              <img src={user?.user_info.avatar_url} />
             ) : (
               <CgProfile />
             )}
@@ -123,7 +124,13 @@ export default function CommentPage() {
         </form>
         <section className="comments-section">
           {comments?.map((comment) => {
-            return <Comment comment={comment} key={comment._id} />;
+            return (
+              <Comment
+                comment={comment}
+                key={comment._id}
+                setComments={setComments}
+              />
+            );
           })}
         </section>
       </section>

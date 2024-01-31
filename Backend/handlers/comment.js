@@ -38,7 +38,7 @@ module.exports = (app) => {
         }
 
         await CommentModel.findOneAndUpdate(
-          { _id: req.params.parentId },
+          { _id: parentId },
           { $inc: { __v: 1, commentsCount: 1 } }
         );
       }
@@ -68,7 +68,6 @@ module.exports = (app) => {
         const comments = await CommentModel.aggregate(
           fetchCommentsLogged(postId, userId)
         );
-        console.log(comments);
         return res.send(comments).status(200);
       }
     } catch (err) {
@@ -76,29 +75,27 @@ module.exports = (app) => {
     }
   });
 
-  app.get(
-    "/comment/post/:postId",
-    /*catchCookies,*/ async (req, res) => {
-      const postId = req.params.postId;
-      const userId = req.userData.email;
-      try {
-        if (userId) {
-          const obj = await CommentModel.aggregate(
-            fetchCommentPost(postId, req.userData.email)
-          );
-          console.log(obj);
-          return res.send(obj.pop()).status(200);
-        } else if (!userId) {
-          const obj = await CommentModel.aggregate(
-            fetchCommentPost(postId, req.userData.email)
-          );
-          console.log(obj);
-          return res.send(obj.pop()).status(200);
-        }
-      } catch (err) {
-        console.log("An error has Occured at /comment/post/:postId", err);
-        return res.send({ message: "An error has Occured", ErrorMessage: err });
+  app.get("/comment/:postId", async (req, res) => {
+    const postId = new mongoose.Types.ObjectId(req.params.postId);
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
+    try {
+      if (userId) {
+        const obj = await CommentModel.aggregate(
+          fetchCommentPost(postId, userId)
+        );
+
+        return res.send(obj.pop()).status(200);
+      } else if (!userId) {
+        const obj = await CommentModel.aggregate(
+          fetchCommentPost(postId, req.userData.email)
+        );
+
+        return res.send(obj.pop()).status(200);
       }
+    } catch (err) {
+      console.log("An error has Occured at /comment/post/:postId", err);
+
+      return res.send({ message: "An error has Occured", ErrorMessage: err });
     }
-  );
+  });
 };

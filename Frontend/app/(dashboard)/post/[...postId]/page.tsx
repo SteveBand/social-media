@@ -113,7 +113,13 @@ export default function PostPage({ params }: { params: { postId: any } }) {
         )}
         <section className="comments-section">
           {comments?.map((comment) => {
-            return <Comment comment={comment} key={comment._id} />;
+            return (
+              <Comment
+                comment={comment}
+                key={comment._id}
+                setComments={setComments}
+              />
+            );
           })}
         </section>
       </section>

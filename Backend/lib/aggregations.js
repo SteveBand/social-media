@@ -1,13 +1,11 @@
-const mongoose = require("mongoose");
-
 function fetchCommentPost(postId, userId) {
   return [
-    { $match: { _id: new mongoose.Types.ObjectId(postId) } },
+    { $match: { _id: postId } },
     {
       $lookup: {
         from: "users",
         localField: "userId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -22,10 +20,7 @@ function fetchCommentPost(postId, userId) {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$parentId" },
-                    ],
+                    $eq: ["$parentId", "$$parentId"],
                   },
                   { $eq: ["$userId", "$$userId"] },
                 ],
