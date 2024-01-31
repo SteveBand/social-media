@@ -3,6 +3,7 @@ import { IoIosClose } from "react-icons/io";
 import { SetStateAction, useState } from "react";
 import { useAppSelector } from "@/hooks";
 import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";
+import { useRouter } from "next/navigation";
 
 type Props = {
   post: PostType | CommentType;
@@ -18,7 +19,7 @@ export function CommentModal({
   setCommentModal,
 }: Props) {
   const [params, setParams] = useState<String>();
-
+  const router = useRouter();
   const user = useAppSelector((state) => state.userReducer);
 
   async function postComment(
@@ -39,10 +40,13 @@ export function CommentModal({
     if (res.ok) {
       const data = await res.json();
       setCommentsCount((prev) => prev++);
+
       setComments &&
         setComments((prev) => {
           return [...prev, data];
         });
+
+      router.push(`/${post.isPost ? "post" : "comment"}/${post._id}`);
     }
   }
 

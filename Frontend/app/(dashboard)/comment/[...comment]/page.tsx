@@ -2,26 +2,21 @@
 
 import { FaArrowLeft } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { PostType } from "../../../../../types";
 import { MainComment } from "./components/MainComment";
 import { Comment } from "@/app/(dashboard)/post/[...postId]/components/Comment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/hooks";
 
-export default function CommentPage() {
+export default function CommentPage({ params }: { params: any }) {
   const [content, setContent] = useState<PostType | null>();
   const [comments, setComments] = useState<PostType[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const user = useAppSelector((state) => state.userReducer);
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const postId = useMemo(() => {
-    return searchParams.get("postId");
-  }, [searchParams]);
+  const postId = params.comment[0];
 
   async function fetchPostData() {
     try {

@@ -66,10 +66,7 @@ export function Comment({
           handlePostLikeFunction={handlePostLikeFunction}
         />
         <div className="button-container" id="">
-          <CommentButton
-            content={comment}
-            setComments={setComments}
-          />
+          <CommentButton content={comment} setComments={setComments} />
         </div>
         <div className="button-container">
           <IoIosShareAlt className="icon" />
