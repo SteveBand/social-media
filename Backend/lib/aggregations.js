@@ -72,7 +72,7 @@ function fetchCommentsLogged(postId, userId) {
       $lookup: {
         from: "users",
         localField: "userId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -87,10 +87,7 @@ function fetchCommentsLogged(postId, userId) {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$parentId" },
-                    ],
+                    $eq: ["$parentId", "$$parentId"],
                   },
                   { $eq: ["$userId", "$$userId"] },
                 ],

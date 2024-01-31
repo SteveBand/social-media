@@ -12,17 +12,17 @@ export function PostLike({ post, setPosts, handlePostLikeFunction }: Props) {
 
   const fetchUrl = `http://localhost:4000/${isLiked.liked ? "delete" : "new"}/${
     post.isPost ? "post" : "comment"
-  }/like`;
+  }/like?postId=${post._id}`;
 
   async function handleLike(post: PostType) {
     try {
       const res = await fetch(fetchUrl, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(post),
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        // body: JSON.stringify(post),
       });
       if (res.ok) {
         setIsLiked((prev) => ({

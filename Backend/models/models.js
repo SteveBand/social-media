@@ -116,18 +116,25 @@ const commentSchema = new mongoose.Schema(
       },
     },
     parentId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       index: true,
-      lowercase: true,
     },
     userId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       index: true,
-      lowercase: true,
     },
-    likesCount: Number,
-    commentsCount: Number,
-    sharesCount: Number,
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
+    commentsCount: {
+      type: Number,
+      default: 0,
+    },
+    sharesCount: {
+      type: Number,
+      default: 0,
+    },
     isComment: {
       type: Boolean,
       default: true,
