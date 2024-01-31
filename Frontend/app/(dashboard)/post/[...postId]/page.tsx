@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks";
 export default function PostPage({ params }: { params: { postId: any } }) {
   const [content, setContent] = useState<PostType | null>();
-  const [comments, setComments] = useState<PostType[] | null>([]);
+  const [comments, setComments] = useState<PostType[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const router = useRouter();
   const user = useAppSelector((state) => state.userReducer);
@@ -90,7 +90,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
           <FaArrowLeft className="back-button" onClick={() => router.back()} />
           <p>Post</p>
         </header>
-        <MainPost content={content} />
+        <MainPost content={content} setComments={setComments} />
         {user.status === "authenticated" && (
           <form>
             <p>

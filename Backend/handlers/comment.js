@@ -12,11 +12,13 @@ module.exports = (app) => {
   app.post("/new/comment/:parentId", authGuard, async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.user._id);
     const parentId = new mongoose.Types.ObjectId(req.params.parentId);
+
     const comment = {
       content: req.body.params,
       parentId,
       userId,
     };
+
     try {
       if (req.body.target === "post") {
         const existingPost = await Post.findById(parentId);

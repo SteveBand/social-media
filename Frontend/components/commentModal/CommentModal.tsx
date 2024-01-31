@@ -7,9 +7,10 @@ import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";
 type Props = {
   post: PostType | CommentType;
   setShowComment: Dispatch<SetStateAction<boolean>>;
+  setComments?: React.Dispatch<SetStateAction<PostType[]>>;
 };
 
-export function CommentModal({ post, setShowComment }: Props) {
+export function CommentModal({ post, setShowComment, setComments }: Props) {
   const [params, setParams] = useState<String>();
 
   const user = useAppSelector((state) => state.userReducer);
@@ -26,8 +27,14 @@ export function CommentModal({ post, setShowComment }: Props) {
       },
       body: JSON.stringify({ params, target: "post" }),
     });
-    if (res.status === 200) {
+    if (res.ok) {
+      const data = await res.json();
       setShowComment(false);
+
+      setComments &&
+        setComments((prev) => {
+          return [...prev, data];
+        });
     }
   }
 

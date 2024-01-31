@@ -6,13 +6,16 @@ import { PostType } from "../../../../../../types";
 import moment from "moment";
 import { FollowButton } from "@/components/action-buttons/FollowButton";
 import { CommentButton } from "@/components/action-buttons/CommentButton";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
+import { CommentModal } from "@/components/commentModal/CommentModal";
+import { createPortal } from "react-dom";
 type Props = {
   content: PostType;
+  setComments: React.Dispatch<SetStateAction<PostType[]>>;
 };
 
-export function MainPost({ content }: Props) {
-  const [showComment, setShowComment] = useState(true);
+export function MainPost({ content, setComments }: Props) {
+  const [showComment, setShowComment] = useState(false);
 
   if (!content) {
     return <div>None</div>;
@@ -22,6 +25,15 @@ export function MainPost({ content }: Props) {
 
   return (
     <article className="main-post">
+      {showComment &&
+        createPortal(
+          <CommentModal
+            post={content}
+            setShowComment={setShowComment}
+            setComments={setComments}
+          />,
+          document.body
+        )}
       <div className="upper-post">
         <div className="user-details">
           <img src={content.user_info?.avatar_url} />
