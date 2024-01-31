@@ -52,14 +52,10 @@ export function Post({ post, handlePostLikeFunction }: Props) {
           <CommentButton setShowComment={setShowComment} />
           <p>{post.commentsCount > 0 && post.commentsCount}</p>
           {showComment &&
-            user.status === "authenticated" &&
             createPortal(
               <CommentModal post={post} setShowComment={setShowComment} />,
               document.body
             )}
-          {showComment &&
-            user.status === "unauthenticated" &&
-            createPortal(<NotLoggedModal />, document.body)}
         </div>
         <div className="button-container">
           <IoIosShareAlt className="action-button-icon" />

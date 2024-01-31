@@ -5,11 +5,15 @@ import { SlOptions } from "react-icons/sl";
 import { PostType } from "../../../../../../types";
 import moment from "moment";
 import { FollowButton } from "@/components/action-buttons/FollowButton";
+import { CommentButton } from "@/components/action-buttons/CommentButton";
+import { useState } from "react";
 type Props = {
   content: PostType;
 };
 
 export function MainPost({ content }: Props) {
+  const [showComment, setShowComment] = useState(true);
+
   if (!content) {
     return <div>None</div>;
   }
@@ -36,7 +40,7 @@ export function MainPost({ content }: Props) {
         <div className="post-action-buttons">
           <PostLike post={content} />
           <div className="button-container">
-            <IoChatboxOutline className="icon" />
+            <CommentButton setShowComment={setShowComment} />
             <p>{content.commentsCount > 0 && content.commentsCount}</p>
           </div>
           <div className="button-container">

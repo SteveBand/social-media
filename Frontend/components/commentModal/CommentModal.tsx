@@ -2,6 +2,7 @@ import { CommentType, PostType } from "../../../types";
 import { IoIosClose } from "react-icons/io";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useAppSelector } from "@/hooks";
+import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";
 
 type Props = {
   post: PostType | CommentType;
@@ -10,6 +11,7 @@ type Props = {
 
 export function CommentModal({ post, setShowComment }: Props) {
   const [params, setParams] = useState<String>();
+
   const user = useAppSelector((state) => state.userReducer);
 
   async function postComment(
@@ -29,7 +31,9 @@ export function CommentModal({ post, setShowComment }: Props) {
     }
   }
 
-  
+  if (user.status === "unauthenticated") {
+    return <NotLoggedModal />;
+  }
 
   return (
     <section className="comment-modal-wrapper">
