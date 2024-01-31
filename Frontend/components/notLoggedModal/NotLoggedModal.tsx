@@ -10,26 +10,6 @@ const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID as string;
 
 export function NotLoggedModal() {
   const router = useRouter();
-  const providers = [
-    {
-      className: "github",
-      name: "GitHub",
-      icon: <PiGithubLogoFill className="icon" />,
-      login: `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${"http://localhost:4000/auth/github/callback"}`,
-    },
-    {
-      className: "google",
-      name: "Google",
-      icon: <FcGoogle className="icon" />,
-      login: "",
-    },
-    {
-      className: "facebook",
-      name: "Facebook",
-      icon: <FaFacebook className="icon" />,
-      login: "",
-    },
-  ];
 
   async function githubProvider() {
     router.push(
@@ -39,10 +19,6 @@ export function NotLoggedModal() {
 
   async function googleProvider() {
     router.push("http://localhost:4000/auth/google/");
-  }
-
-  function facebookProvider() {
-    router.push(``);
   }
 
   return (
@@ -84,14 +60,6 @@ export function NotLoggedModal() {
         >
           {<FcGoogle className="icon" />}
           {`Sign in with Google`}
-        </div>
-        <div
-          className={`provider-container facebook`}
-          onClick={() => facebookProvider()}
-          key={"facebook"}
-        >
-          {<FaFacebook className="icon" />}
-          {`Sign in with Facebook`}
         </div>
 
         <div className="create-account">
