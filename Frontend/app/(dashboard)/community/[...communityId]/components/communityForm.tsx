@@ -15,8 +15,8 @@ export function CommunityForm({ data, setPosts }: Props) {
   return (
     <form>
       <div className="upper">
-        {user?.user_info?.image ? (
-          <img src={user?.user_info?.image} />
+        {user?.user_info?.avatar_url ? (
+          <img src={user?.user_info?.avatar_url} />
         ) : (
           <CgProfile />
         )}

@@ -20,15 +20,23 @@ module.exports = (app) => {
           });
 
         const validate = await bcrypt.compare(password, user.password);
+
         if (!validate) {
           return done(null, false, {
             message: "Username or password are incorrect",
           });
         }
 
+        const userObject = {
+          email: user.email,
+          name: user.name,
+          _id: user._id,
+          avatar_url: user.avatar_url,
+        };
+
         return done(null, userObject);
       } catch (err) {
-        console.log("An error occured in localProvider.js");
+        console.log("An error occured in localProvider.js", err);
         return done(null, false, {
           message: "Internal Server error",
         });

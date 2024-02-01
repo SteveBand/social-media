@@ -4,7 +4,6 @@ type InitialState = {
   user_info: {
     name: string;
     _id: string;
-    token: string;
     email: string;
     avatar_url: string;
   };
@@ -15,7 +14,6 @@ const initialState: InitialState = {
   user_info: {
     name: "",
     _id: "",
-    token: "",
     email: "",
     avatar_url: "",
   },
@@ -27,7 +25,8 @@ export const user = createSlice({
   initialState,
   reducers: {
     logIn: (state, action) => {
-      return action.payload;
+      state.status = action.payload.status;
+      state.user_info = action.payload.user_info;
     },
     logOut: () => {
       return initialState;

@@ -54,8 +54,10 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    sessionConnect();
-  }, []);
+    if (user.status === "unauthenticated") {
+      sessionConnect();
+    }
+  }, [user.status]);
 
   return (
     <html lang="en">
