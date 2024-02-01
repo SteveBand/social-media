@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 function fetchCommunity(id, userId) {
   return [
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
+    { $match: { _id: id } },
     {
       $lookup: {
         from: "communitymembers",
@@ -24,20 +24,22 @@ function fetchCommunity(id, userId) {
     {
       $lookup: {
         from: "communitymoderators",
-        let: { communityId: id },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $eq: ["$$communityId", "$communityId"],
-                  },
-                ],
-              },
-            },
-          },
-        ],
+        // let: { communityId: id },
+        // pipeline: [
+        //   {
+        //     $match: {
+        //       $expr: {
+        //         $and: [
+        //           {
+        //             $eq: ["$$communityId", "$communityId"],
+        //           },
+        //         ],
+        //       },
+        //     },
+        //   },
+        // ],
+        localField: "communityId",
+        foreignField: "communityId",
         as: "moderatorsInfo",
       },
     },
@@ -78,17 +80,14 @@ function fetchCommunity(id, userId) {
   ];
 }
 
-function fetchCommunityPosts(user, id) {
-  const email = user.email;
-  const userId = new mongoose.Types.ObjectId(user._id);
-  const communityId = new mongoose.Types.ObjectId(id);
+function fetchCommunityPosts(id, userId) {
   return [
     { $match: { communityId: id } },
     {
       $lookup: {
         from: "users",
         localField: "parentId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -96,17 +95,14 @@ function fetchCommunityPosts(user, id) {
     {
       $lookup: {
         from: "likes",
-        let: { parentId: email, postId: "$_id" },
+        let: { parentId: userId, postId: "$_id" },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$postId" },
-                    ],
+                    $eq: ["$parentId", "$$postId"],
                   },
                   {
                     $eq: ["$$parentId", "$userId"],
@@ -122,7 +118,7 @@ function fetchCommunityPosts(user, id) {
     {
       $lookup: {
         from: "communitymoderators",
-        let: { userId: userId, communityId: communityId },
+        let: { userId: userId, communityId: id },
         pipeline: [
           {
             $match: {
@@ -144,7 +140,7 @@ function fetchCommunityPosts(user, id) {
         isModerator: { $gt: [{ $size: "$moderator" }, 0] },
         isAuthor: {
           $cond: {
-            if: { $eq: [email, "$parentId"] },
+            if: { $eq: [userId, "$parentId"] },
             then: true,
             else: "$$REMOVE",
           },

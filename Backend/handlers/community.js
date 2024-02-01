@@ -17,105 +17,96 @@ const {
 } = require("../lib/aggregations/communityAgg");
 
 module.exports = (app) => {
-  app.get(
-    "/community/:id",
-    /*catchCookies,*/ async (req, res) => {
-      if (!req.params.id) {
+  app.get("/community/:id", async (req, res) => {
+    if (!req.params.id) {
+      return res.status(400).send({ message: "Bad Request" });
+    }
+
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
+
+    try {
+      const community = await Community.aggregate(fetchCommunity(id, userId));
+
+      if (!community) {
         return res.status(400).send({ message: "Bad Request" });
       }
 
-      const id = new mongoose.Types.ObjectId(req.params.id);
-      const user = await UserModel.findOne({
-        email: req.userData?.email || null,
-      });
-
-      const userId = req.userData && new mongoose.Types.ObjectId(user?._id);
-
-      try {
-        const community = await Community.aggregate(fetchCommunity(id, userId));
-
-        if (!community) {
-          return res.status(400).send({ message: "Bad Request" });
-        }
-
-        return res.status(200).send(community.pop());
-      } catch (error) {
-        console.log(error, "An error has occured at /community/:id");
-        return res.status(500).send({ message: "An error has occured" });
-      }
+      return res.status(200).send(community.pop());
+    } catch (error) {
+      console.log(error, "An error has occured at /community/:id");
+      return res.status(500).send({ message: "An error has occured" });
     }
-  );
+  });
 
-  app.get(
-    "/community/:id/posts",
-    /*catchCookies,*/ async (req, res) => {
-      const id = req.params?.id;
-      const userData = req.userData || null;
-      const user =
-        userData && (await UserModel.findOne({ email: userData.email }));
+  app.get("/community/:id/posts", async (req, res) => {
+    const id = new mongoose.Types.ObjectId(req.params?.id);
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
 
-      const isMember = await CommunityMember.findOne({
-        parentId: new mongoose.Types.ObjectId(user._id),
-        communityId: new mongoose.Types.ObjectId(id),
-      });
-      try {
-        if (!id) {
-          return res.send({ message: "Bad Request" }).status(400);
-        }
+    const isMember = userId
+      ? await CommunityMember.findOne({
+          parentId: new mongoose.Types.ObjectId(userId),
+          communityId: new mongoose.Types.ObjectId(id),
+        })
+      : null;
 
-        const community = await Community.findById(
-          new mongoose.Types.ObjectId(id)
-        );
-
-        if (!community) {
-          return res.status(404).send({ message: "Community does not exist" });
-        }
-
-        if (community.membership === "private" && !user) {
-          return res
-            .status(403)
-            .send({ message: "Community is Private, You need to be a member" });
-        }
-
-        if (community.membership === "private" && !isMember) {
-          return res
-            .status(403)
-            .send({ message: "Community is Private, You need to be a member" });
-        }
-      } catch (err) {
-        console.log(
-          "An error has occured at /community/:id/posts at data verification",
-          err
-        );
-        return res.status(500).send({ message: "An error has Occured!" });
+    try {
+      if (!id) {
+        return res.send({ message: "Bad Request" }).status(400);
       }
 
-      try {
-        if (!isMember) return res.status(401).send({ message: "Unauthorized" });
-        if (!userData) {
-          const posts = await Post.aggregate([
-            { $match: { communityId: id } },
-            {
-              $lookup: {
-                from: "users",
-                localField: "parentId",
-                foreignField: "email",
-                as: "user_info",
-              },
+      const community = await Community.findById(
+        new mongoose.Types.ObjectId(id)
+      );
+
+      if (!community) {
+        return res.status(404).send({ message: "Community does not exist" });
+      }
+
+      if (community.membership === "private" && !userId) {
+        return res
+          .status(403)
+          .send({ message: "Community is Private, You need to be a member" });
+      }
+
+      if (community.membership === "private" && !isMember) {
+        return res
+          .status(403)
+          .send({ message: "Community is Private, You need to be a member" });
+      }
+    } catch (err) {
+      console.log(
+        "An error has occured at /community/:id/posts at data verification",
+        err
+      );
+      return res.status(500).send({ message: "An error has Occured!" });
+    }
+
+    try {
+      if (!isMember) return res.status(401).send({ message: "Unauthorized" });
+      if (!userId) {
+        const posts = await Post.aggregate([
+          { $match: { communityId: id } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "parentId",
+              foreignField: "_id",
+              as: "user_info",
             },
-            { $unwind: "$user_info" },
-          ]);
-          return res.status(200).send(posts);
-        } else {
-          const postsArr = await Post.aggregate(fetchCommunityPosts(user, id));
-          return res.send(postsArr).status(200);
-        }
-      } catch (err) {
-        console.log("An error has occured at /community/:id/posts", err);
-        return res.send({ message: "An error has occured" }).status(500);
+          },
+          { $unwind: "$user_info" },
+        ]);
+        return res.status(200).send(posts);
+      } else {
+        const postsArr = await Post.aggregate(fetchCommunityPosts(id, userId));
+        return res.send(postsArr).status(200);
       }
+    } catch (err) {
+      console.log("An error has occured at /community/:id/posts", err);
+      return res.send({ message: "An error has occured" }).status(500);
     }
-  );
+  });
 
   app.post("/community/:id/new/member", authGuard, async (req, res) => {
     const id = req.params.id;
@@ -153,31 +144,21 @@ module.exports = (app) => {
   });
 
   app.post("/community/:id/delete/member", authGuard, async (req, res) => {
-    const id = req.params.id;
-    const userData = req.userData;
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
 
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
-
-    if (!userData || userData === undefined) {
+    if (!userId) {
       return res.send({ message: "Unauthorized" }).status(401);
     }
 
     try {
-      const loggedUser = await UserModel.findOne({ email: userData.email });
-
-      if (!loggedUser) {
-        return res.send({ message: "User not found!" }).status(404);
-      }
-
       await CommunityMember.findOneAndDelete({
-        parentId: loggedUser._id,
-        communityId: new mongoose.Types.ObjectId(id),
+        parentId: userId,
+        communityId: id,
       });
 
       await Community.findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(id) },
+        { _id: id },
         { $inc: { membersCount: -1 } }
       );
       return res.send({ newMember: false }).status(200);
@@ -192,7 +173,7 @@ module.exports = (app) => {
 
   app.post("/community/:id/remove/member", authGuard, async (req, res) => {
     const id = req.params.id;
-    const userData = req.userData || null;
+    const userId = req.user._id;
     const memberId = req.query.memberId;
     try {
       if (!id) {
@@ -239,11 +220,7 @@ module.exports = (app) => {
   app.post("/community/:id/new/post", communityGuard, async (req, res) => {
     const id = req.params.id;
     const content = req.query.content;
-    const parentId = req.userData.email;
-
-    if (!id || !content || !parentId) {
-      return res.send({ message: "Bad Requst" }).status(404);
-    }
+    const parentId = req.user._id;
 
     try {
       const newPost = await new Post({
@@ -255,7 +232,7 @@ module.exports = (app) => {
 
       const post = {
         ...newPost._doc,
-        user_info: req.userData,
+        user_info: req.user,
       };
       console.log(post);
       return res.status(200).send(post);

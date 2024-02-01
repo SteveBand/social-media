@@ -95,7 +95,7 @@ const postSchema = new mongoose.Schema(
       default: true,
     },
     communityId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       index: true,
       required: false,
     },

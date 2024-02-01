@@ -1,6 +1,4 @@
-const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config");
-const { CommunityMember, UserModel } = require("../models/models");
+const { CommunityMember } = require("../models/models");
 const mongoose = require("mongoose");
 
 async function communityGuard(req, res, next) {
