@@ -227,7 +227,7 @@ function fetchModerators(loggedUserId, id) {
   ];
 }
 
-function fetchCommunityMembers(id, loggedUserId) {
+function fetchCommunityMembers(id, userId) {
   return [
     { $match: { communityId: id } },
     {
@@ -261,7 +261,7 @@ function fetchCommunityMembers(id, loggedUserId) {
     {
       $lookup: {
         from: "followers",
-        let: { loggedUserId: loggedUserId, userId: "$users.email" },
+        let: { loggedUserId: userId, userId: "$users._id" },
         pipeline: [
           {
             $match: {

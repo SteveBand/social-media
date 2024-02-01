@@ -109,21 +109,12 @@ module.exports = (app) => {
   });
 
   app.post("/community/:id/new/member", authGuard, async (req, res) => {
-    const id = req.params.id;
-
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const userId = new mongoose.Types.ObjectId(req.user._id);
 
     try {
-      const loggedUser = await UserModel.findOne({ email: req.userData.email });
-
-      if (!loggedUser) {
-        return res.send({ message: "User not found" }).status(404);
-      }
-
       const newMember = await new CommunityMember({
-        parentId: new mongoose.Types.ObjectId(loggedUser._id),
+        parentId: new mongoose.Types.ObjectId(userId),
         communityId: new mongoose.Types.ObjectId(id),
       });
 
@@ -359,26 +350,20 @@ module.exports = (app) => {
     }
   );
 
-  app.get(
-    "/community/:id/members",
-    /*catchCookies,*/ async (req, res) => {
-      const id = new mongoose.Types.ObjectId(req.params.id);
-      const loggedUserId =
-        req.userData === undefined ? null : req.userData.email;
-      if (!id) {
-        return res.send({ message: "Bad Request" }).status(400);
-      }
-      try {
-        const members = await CommunityMember.aggregate(
-          fetchCommunityMembers(id, loggedUserId)
-        );
-        return res.send(members).status(200);
-      } catch (error) {
-        console.log("An error has occured at /community/:id/members", error);
-        return res.send({ message: "An error has occured" }).status(500);
-      }
+  app.get("/community/:id/members", async (req, res) => {
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
+
+    try {
+      const members = await CommunityMember.aggregate(
+        fetchCommunityMembers(id, userId)
+      );
+      return res.send(members).status(200);
+    } catch (error) {
+      console.log("An error has occured at /community/:id/members", error);
+      return res.send({ message: "An error has occured" }).status(500);
     }
-  );
+  });
 
   app.get(
     "/communities",
