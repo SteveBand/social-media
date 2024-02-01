@@ -19,7 +19,7 @@ export function PostLike({ post, setPosts, handlePostLikeFunction }: Props) {
 
   const fetchUrl = `http://localhost:4000/${isLiked.liked ? "delete" : "new"}/${
     post.isPost ? "post" : "comment"
-  }/like?postId=${post._id}`;
+  }/like?postId=${post._id}&author=${post.parentId}`;
 
   async function handleLike(post: PostType) {
     if (user.status === "authenticated") {

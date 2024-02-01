@@ -6,6 +6,7 @@ import { SlOptions } from "react-icons/sl";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { removeMember } from "@/redux/features/communityMembers-slice";
+
 export function User({ content, loading, path, communityId }: Props) {
   const [isOptions, setIsOptions] = useState(false);
 
@@ -47,7 +48,7 @@ export function User({ content, loading, path, communityId }: Props) {
 
   return (
     <Link
-      href={`/profile/${content.email}`}
+      href={`/profile/${content._id}`}
       className="follower-wrapper"
       onClick={navigation}
     >
@@ -58,7 +59,7 @@ export function User({ content, loading, path, communityId }: Props) {
           <p data-navigate={true}>{content.bio}</p>
         </div>
         {user.status === "authenticated" &&
-          user.user_info.email !== content.email &&
+          user.user_info._id !== content._id &&
           !isOptions && <FollowButton userData={content} />}
         {path === "community/adminPanel" && (
           <SlOptions

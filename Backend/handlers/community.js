@@ -125,7 +125,7 @@ module.exports = (app) => {
         { $inc: { membersCount: 1 } }
       );
 
-      return res.send({ newMember: true }).status(200);
+      return res.status(200).send({ newMember: true });
     } catch (error) {
       console.log(
         "An error has Occured at /community/:id/new/member",
@@ -424,19 +424,20 @@ module.exports = (app) => {
 
   app.put("/community/:id/edit", authGuard, async (req, res) => {
     const id = new mongoose.Types.ObjectId(req.params.id);
+    const userId = new mongoose.Types.ObjectId(req.user._id);
     const body = req.body;
+
     if (!body || !id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
-    const user = await UserModel.findOne({ email: req.userData.email });
-    if (!user) {
-      return res.send({ message: "Unauthorized" }).status(401);
-    }
+
     const community = await Community.findById(id);
-    if (!community.admin.equals(user._id)) {
-      return res.send({ message: "Unauthorized" }).status(401);
-    }
+
     try {
+      if (!community.admin.equals(userId)) {
+        return res.send({ message: "Unauthorized" }).status(401);
+      }
+
       const updatedCommunity = await Community.findOneAndUpdate(
         { _id: id },
         body,

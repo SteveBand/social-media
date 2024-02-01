@@ -103,35 +103,20 @@ function userAllLikedLogged(userId, loggedUserId) {
     {
       $lookup: {
         from: "posts",
-        let: { parentId: userId, postId: "$parentId" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: [{ $toString: "$_id" }, { $toString: "$$postId" }],
-              },
-            },
-          },
-        ],
+        localField: "parentId",
+        foreignField: "_id",
         as: "posts",
       },
     },
     {
       $lookup: {
         from: "comments",
-        let: { userId: userId, postId: "$parentId" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: [{ $toString: "$_id" }, { $toString: "$$postId" }],
-              },
-            },
-          },
-        ],
+        localField: "parentId",
+        foreignField: "_id",
         as: "comments",
       },
     },
+
     {
       $project: {
         _id: 0,
@@ -145,6 +130,7 @@ function userAllLikedLogged(userId, loggedUserId) {
         resultArray: {
           $concatArrays: ["$posts", "$comments"],
         },
+        user_info: "$user_info",
       },
     },
     {
@@ -158,6 +144,7 @@ function userAllLikedLogged(userId, loggedUserId) {
             { $eq: [loggedUserId, "$resultArray.parentId"] },
           ],
         },
+        "resultArray.user_info": "$user_info",
       },
     },
     {
@@ -216,7 +203,7 @@ const userPostsLogged = (userId, loggedUserId) => {
       $lookup: {
         from: "users",
         localField: "parentId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -231,10 +218,7 @@ const userPostsLogged = (userId, loggedUserId) => {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$$parentId" },
-                      { $toString: "$parentId" },
-                    ],
+                    $eq: ["$$parentId", "$parentId"],
                   },
                   { $eq: ["$userId", "$$userId"] },
                 ],

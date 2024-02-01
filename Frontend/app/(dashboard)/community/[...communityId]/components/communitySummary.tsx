@@ -1,33 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CommunityType } from "../../../../../../types";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { activate } from "@/redux/features/loginModal-slice";
 
-export function CommunitySummary({ data }: { data: CommunityType }) {
+export function CommunitySummary({
+  data,
+  fetchPosts,
+}: {
+  data: CommunityType;
+  fetchPosts: () => Promise<void>;
+}) {
   const [isMember, setIsMember] = useState(data.isMember || false);
   const [membersCount, setMembersCount] = useState(data.membersCount);
-
+  const user = useAppSelector((state) => state.userReducer);
+  const dispatch = useAppDispatch();
   async function handleJoin(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     e.preventDefault();
-    try {
-      const res = await fetch(
-        `http://localhost:4000/community/${data._id}/${
-          !isMember ? "new" : "delete"
-        }/member`,
-        {
-          method: "POST",
-          credentials: "include",
+    if (user.status === "authenticated") {
+      try {
+        const res = await fetch(
+          `http://localhost:4000/community/${data._id}/${
+            !isMember ? "new" : "delete"
+          }/member`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setIsMember((prev) => !prev);
+          setMembersCount((prev) => (data.newMember ? prev + 1 : prev - 1));
         }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setIsMember((prev) => !prev);
-        setMembersCount((prev) => (data.newMember ? prev + 1 : prev - 1));
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      dispatch(activate());
     }
   }
+
+  useEffect(() => {
+    if (data.membership === "private") {
+      isMember && fetchPosts();
+    }
+  }, [isMember]);
+
   return (
     <div className="summary">
       <h2>{data.title}</h2>

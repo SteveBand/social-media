@@ -1,8 +1,9 @@
-import { User } from "../../types";
+import { UserType } from "../../types";
 import { useRouter } from "next/navigation";
 import "@/styles/components/profileImage.scss";
+
 type Props = {
-  userInfo: User;
+  userInfo: UserType;
 };
 
 export function ProfileImage({ userInfo }: Props) {
@@ -12,7 +13,7 @@ export function ProfileImage({ userInfo }: Props) {
       <img src={userInfo.avatar_url} className="post-profile-icon" />
       <div
         className="profile-pop-modal"
-        onClick={() => router.push(`/profile/${userInfo.email}`)}
+        onClick={() => router.push(`/profile/${userInfo._id}`)}
       >
         <img src={userInfo.avatar_url} />
         <h5>{userInfo.name}</h5>

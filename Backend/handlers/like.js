@@ -7,8 +7,12 @@ module.exports = (app) => {
     try {
       const postId = new mongoose.Types.ObjectId(req.query.postId);
       const userId = new mongoose.Types.ObjectId(req.user._id);
+      const authorId = new mongoose.Types.ObjectId(req.query.author);
 
-      const likeBody = { parentId: postId, userId };
+      console.log(authorId);
+      console.log(req.query);
+
+      const likeBody = { parentId: postId, userId, authorId };
       const existingLike = await LikesModel.findOne(likeBody);
 
       if (existingLike) {
@@ -39,8 +43,11 @@ module.exports = (app) => {
     try {
       const postId = new mongoose.Types.ObjectId(req.query.postId);
       const userId = new mongoose.Types.ObjectId(req.user._id);
+      const parentId = new mongoose.mongooose.Types.ObjectId(
+        req.query.parentId
+      );
 
-      const likeBody = { parentId: postId, userId };
+      const likeBody = { parentId: postId, userId, authorId: parentId };
       const existingLike = await LikesModel.findOne(likeBody);
 
       if (existingLike) {

@@ -13,7 +13,7 @@ type Props = {
     postId: string,
     isLiked: { liked: boolean; likesCount: number }
   ) => void;
-  setComments: React.Dispatch<SetStateAction<PostType[]>>;
+  setComments?: React.Dispatch<SetStateAction<PostType[]>>;
 };
 
 export function Comment({

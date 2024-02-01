@@ -137,7 +137,6 @@ export function ProfileContent({ user }: { user: UserType }) {
       <section className="profile-page-data">
         {action !== "followers" && action !== "following"
           ? data[action].map((post: PostType) => {
-              !post.user_info ? (post.user_info = user) : null;
               return post.isComment ? (
                 <Comment
                   comment={post}

@@ -29,6 +29,7 @@ export default function CommunityPage({
   const id = params.communityId[0];
 
   async function fetchPosts() {
+    if (action === "adminPanel") return;
     const res = await fetch(
       `http://localhost:4000/community/${data?._id}/${action}`,
       {
@@ -102,7 +103,7 @@ export default function CommunityPage({
         <h5>{data.title}</h5>
       </header>
       <img className="community-logo" src={data.image} />
-      <CommunitySummary data={data} />
+      <CommunitySummary data={data} fetchPosts={fetchPosts} />
       <div className="actions-wrapper">
         <ul className="actions">
           <li

@@ -13,6 +13,7 @@ const likesSchema = new mongoose.Schema({
     lowercase: true,
     index: true,
   },
+  authorId: mongoose.Types.ObjectId,
 });
 
 const LikesModel =
@@ -99,6 +100,9 @@ const postSchema = new mongoose.Schema(
       index: true,
       required: false,
     },
+    authorId: {
+      type: mongoose.Types.ObjectId,
+    },
   },
   { timestamps: true }
 );
@@ -139,6 +143,7 @@ const commentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    authorId: mongoose.Types.ObjectId,
   },
   { timestamps: true }
 );

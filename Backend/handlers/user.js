@@ -38,55 +38,49 @@ module.exports = (app) => {
     }
   });
 
-  app.get(
-    "/:user/posts",
-    /*catchCookies,*/ async (req, res) => {
-      const userId = new mongoose.Types.ObjectId(req.params.user);
-      const loggedUserId = req.user?._id
-        ? new mongoose.Types.ObjectId(req.user?._id)
-        : null;
+  app.get("/:user/posts", async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.user);
+    const loggedUserId = req.user?._id
+      ? new mongoose.Types.ObjectId(req.user?._id)
+      : null;
 
-      try {
-        if (loggedUserId) {
-          const postArr = await Post.aggregate(
-            userPostsLogged(userId, loggedUserId)
-          );
-          return res.status(200).send(postArr);
-        } else {
-          const postArr = await Post.find({ parentId: userId });
-          return res.status(200).send(postArr);
-        }
-      } catch (error) {
-        console.log("An error has Occured at /:user/posts", error);
-        return res.status(500).send({ message: "An error has occured" });
+    try {
+      if (loggedUserId) {
+        const postArr = await Post.aggregate(
+          userPostsLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(postArr);
+      } else {
+        const postArr = await Post.find({ parentId: userId });
+        return res.status(200).send(postArr);
       }
+    } catch (error) {
+      console.log("An error has Occured at /:user/posts", error);
+      return res.status(500).send({ message: "An error has occured" });
     }
-  );
+  });
 
-  app.get(
-    "/:user/likes",
-    /*catchCookies,*/ async (req, res) => {
-      const userId = req.params.user;
-      const loggedUserId = req?.userData?.email || "";
-      if (!userId) {
-        return res.send({ message: "User not Found!" }).status(404);
+  app.get("/:user/likes", async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.user);
+    const loggedUserId = req.user
+      ? new mongoose.Types.ObjectId(req.user._id)
+      : null;
+
+    try {
+      if (loggedUserId) {
+        const obj = await LikesModel.aggregate(
+          userAllLikedLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(obj);
+      } else {
+        const obj = await LikesModel.aggregate(userAllLikedUnLogged(userId));
+        return res.status(200).send(obj);
       }
-      try {
-        if (loggedUserId !== "") {
-          const obj = await LikesModel.aggregate(
-            userAllLikedLogged(userId, loggedUserId)
-          );
-          return res.status(200).send(obj);
-        } else {
-          const obj = await LikesModel.aggregate(userAllLikedUnLogged(userId));
-          return res.status(200).send(obj);
-        }
-      } catch (err) {
-        console.log("An error occured at /:user/likes ", err.name);
-        return res.send({ message: "An error has occured try again later" });
-      }
+    } catch (err) {
+      console.log("An error occured at /:user/likes ", err);
+      return res.send({ message: "An error has occured try again later" });
     }
-  );
+  });
 
   app.get(
     "/:user/comments",
