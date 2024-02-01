@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 
   .not-logged-form {
     background-color: white;
@@ -15,6 +16,7 @@
     min-height: 50vh;
     box-sizing: content-box;
     max-width: 650px;
+    min-width: 420px;
     padding: 20px 0;
     display: flex;
     justify-content: center;
@@ -22,6 +24,21 @@
     flex-direction: column;
     gap: 20px;
     border-radius: 20px;
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 95%;
+      .icon {
+        margin-left: auto;
+        position: absolute;
+        right: 0;
+        font-size: 1.3rem;
+        cursor: pointer;
+      }
+    }
 
     .input-field {
       display: flex;
@@ -158,6 +175,31 @@
         letter-spacing: 0.8px;
         cursor: pointer;
         font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .not-logged-modal-wrapper {
+    .not-logged-form {
+      width: 100%;
+      min-width: 300px;
+
+      .title {
+        flex-direction: column;
+        justify-content: center;
+
+        h3 {
+          order: 2;
+        }
+
+        .icon {
+          position: relative;
+          font-size: 2rem;
+          margin-left: 0;
+          order: 1;
+        }
       }
     }
   }

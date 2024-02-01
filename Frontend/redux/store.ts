@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./features/auth-slice";
-import postReducer from "./features/postModal-slice";
+import loginReducer from "./features/loginModal-slice";
 import communityMembersReducer from "./features/communityMembers-slice";
 export const store = configureStore({
   reducer: {
     userReducer,
-    postReducer,
+    loginReducer,
     communityMembersReducer,
   },
 });

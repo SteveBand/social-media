@@ -3,7 +3,6 @@ import { useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
 import { PostSchema } from "@/lib/schemas";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { disable } from "@/redux/features/postModal-slice";
 import { IoMdClose } from "react-icons/io";
 
 type Props = {};
@@ -44,10 +43,6 @@ export default function PostModal({}: Props) {
       },
       body: JSON.stringify(params),
     });
-
-    if (res.ok) {
-      dispatch(disable());
-    }
   }
 
   return (
@@ -60,10 +55,7 @@ export default function PostModal({}: Props) {
             <PiUserCircle className="icon" />
           )}
           <p>{`${user.user_info.name}`}</p>
-          <IoMdClose
-            onClick={() => dispatch(disable())}
-            className="modal-close-icon"
-          />
+          <IoMdClose className="modal-close-icon" />
         </div>
         <div className="inputs">
           <textarea

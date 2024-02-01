@@ -1,9 +1,10 @@
 import { CommentType, PostType } from "../../../types";
 import { IoIosClose } from "react-icons/io";
 import { SetStateAction, useState } from "react";
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";
 import { useRouter } from "next/navigation";
+import { activate } from "@/redux/features/loginModal-slice";
 
 type Props = {
   post: PostType | CommentType;
@@ -21,7 +22,7 @@ export function CommentModal({
   const [params, setParams] = useState<String>();
   const router = useRouter();
   const user = useAppSelector((state) => state.userReducer);
-
+  const dispatch = useAppDispatch();
   async function postComment(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
@@ -50,9 +51,9 @@ export function CommentModal({
     }
   }
 
-  if (user.status === "unauthenticated") {
-    return <NotLoggedModal />;
-  }
+  // if (user.status === "unauthenticated") {
+  //   return <NotLoggedModal />;
+  // }
 
   return (
     <section className="comment-modal-wrapper">

@@ -2,6 +2,7 @@
 
 import { Footer } from "@/components/footer";
 import Navbar from "@/components/navbar/Navbar";
+import { NotLoggedModal } from "@/components/notLoggedModal/NotLoggedModal";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";
@@ -14,7 +15,7 @@ export default function RootLayout({
 }) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReducer);
-
+  const loginModal = useAppSelector((state) => state.loginReducer.isModal);
   // Function to check if user session still up or need to connect again
   // Checks by sending a request to the server and confirming an active session.
   // if session not found (means not active) then it returns false and an empty global user state is implemented with a status of 'unauthenticated'.
@@ -59,6 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {loginModal && <NotLoggedModal />}
         {<Navbar />}
         {children}
         {<Footer />}

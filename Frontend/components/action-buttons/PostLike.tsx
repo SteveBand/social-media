@@ -3,8 +3,9 @@
 import { BsHeartFill } from "react-icons/bs";
 import { PostType } from "../../../types";
 import { SetStateAction, useState } from "react";
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";
+import { activate } from "@/redux/features/loginModal-slice";
 
 export function PostLike({ post, setPosts, handlePostLikeFunction }: Props) {
   const [isLiked, setIsLiked] = useState({
@@ -12,9 +13,9 @@ export function PostLike({ post, setPosts, handlePostLikeFunction }: Props) {
     likesCount: post.likesCount,
   });
 
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReducer);
+  const loginModal = useAppSelector((state) => state.loginReducer.isModal);
 
   const fetchUrl = `http://localhost:4000/${isLiked.liked ? "delete" : "new"}/${
     post.isPost ? "post" : "comment"
@@ -38,13 +39,12 @@ export function PostLike({ post, setPosts, handlePostLikeFunction }: Props) {
         console.log(err);
       }
     } else {
-      setShowLoginModal(true);
+      dispatch(activate());
     }
   }
 
   return (
     <>
-      {showLoginModal && <NotLoggedModal />}
       <div className="button-container" onClick={() => handleLike(post)}>
         <BsHeartFill
           className={`post-like-button${

@@ -3,13 +3,11 @@
 import PostInput from "./components/PostInput";
 import PostModal from "./components/PostModal";
 import { createPortal } from "react-dom";
-import { useAppSelector } from "@/hooks";
 import { PostsFeed } from "./components/PostsFeed";
-import { Suspense } from "react";
+import { useState } from "react";
 
 export default function Page() {
-  const modal = useAppSelector((state) => state.postReducer.isModal);
-
+  const [modal, setModal] = useState(false);
   return (
     <>
       {modal && createPortal(<PostModal />, document.body)}

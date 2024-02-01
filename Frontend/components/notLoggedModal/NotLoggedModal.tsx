@@ -2,14 +2,17 @@ import "@/styles/components/notLoggedModal.scss";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CiLock, CiMail } from "react-icons/ci";
-import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { PiGithubLogoFill } from "react-icons/pi";
+import { IoMdClose } from "react-icons/io";
+import { useAppDispatch } from "@/hooks";
+import { activate } from "@/redux/features/loginModal-slice";
 
 const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID as string;
 
 export function NotLoggedModal() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   async function githubProvider() {
     router.push(
@@ -24,7 +27,10 @@ export function NotLoggedModal() {
   return (
     <section className="not-logged-modal-wrapper">
       <form className="not-logged-form">
-        <h3>You have to Login for this action</h3>
+        <div className="title">
+          <h3>You have to Login for this action</h3>
+          <IoMdClose className="icon" onClick={() => dispatch(activate())} />
+        </div>
         <div className="input-field">
           <CiMail />
           <input type="text" id="email" name="email" placeholder="Email" />
