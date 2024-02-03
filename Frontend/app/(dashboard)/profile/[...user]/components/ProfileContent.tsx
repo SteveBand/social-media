@@ -6,6 +6,7 @@ import { Post } from "@/components/Post";
 import { User } from "@/components/User";
 import { Comment } from "@/app/(dashboard)/post/[...postId]/components/Comment";
 import { BackButton } from "@/components/action-buttons/BackButton";
+import moment from "moment";
 
 export function ProfileContent({ user }: { user: UserType }) {
   const [action, setAction] = useState<Action>("posts");
@@ -71,6 +72,8 @@ export function ProfileContent({ user }: { user: UserType }) {
     });
   }
 
+  const date = moment(user.createdAt).format("MMM YY");
+
   useEffect(() => {
     if (data[action] && data[action].length === 0) {
       fetchData();
@@ -88,7 +91,7 @@ export function ProfileContent({ user }: { user: UserType }) {
         <div className="content">
           <h5>{user.name}</h5>
           <p>{user.bio}</p>
-          <p>Joined "Date"</p>
+          <p>Joined {date}</p>
           <div className="followers-container">
             <p>{user.following} Following</p>
             <p>{user.followers} Followers</p>

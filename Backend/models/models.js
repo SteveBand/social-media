@@ -239,14 +239,6 @@ const CommunityMember =
   mongoose.models.communityMembers ||
   mongoose.model("communityMembers", communityMemberSchema);
 
-const communityModeratorSchema = new mongoose.Schema({
-  communityId: mongoose.Types.ObjectId,
-  parentId: mongoose.Types.ObjectId,
-});
-
-const CommunityModerator =
-  mongoose.models.CommunityModerator ||
-  mongoose.model("CommunityModerator", communityModeratorSchema);
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;
@@ -254,5 +246,4 @@ exports.Post = Post;
 exports.CommentModel = CommentModel;
 exports.FollowersModel = FollowersModel;
 exports.Community = Community;
-exports.CommunityModerator = CommunityModerator;
 exports.CommunityMember = CommunityMember;

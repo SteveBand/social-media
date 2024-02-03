@@ -6,13 +6,11 @@ const {
   CommunityMember,
   Post,
   LikesModel,
-  CommunityModerator,
   UserModel,
 } = require("../models/models");
 const {
   fetchCommunity,
   fetchCommunityPosts,
-  fetchModerators,
   fetchCommunityMembers,
 } = require("../lib/aggregations/communityAgg");
 
@@ -112,6 +110,13 @@ module.exports = (app) => {
     const id = new mongoose.Types.ObjectId(req.params.id);
     const userId = new mongoose.Types.ObjectId(req.user._id);
 
+    const community = Community.findById(id);
+    if (community.admin.equals(userId)) {
+      return res.status(400).send({
+        message: "You the admin of this community no member needed :D",
+      });
+    }
+
     try {
       const newMember = await new CommunityMember({
         parentId: new mongoose.Types.ObjectId(userId),
@@ -179,17 +184,7 @@ module.exports = (app) => {
         return res.status(404).send({ message: "Community Not found!" });
       }
 
-      if (!userData) {
-        return res.status(401).send({ message: "Unauthorized" });
-      }
-
-      const user = await UserModel.findOne({ email: userData.email });
-
-      if (!user) {
-        return res.status(401).send({ message: "Unauthorized" });
-      }
-
-      if (community.admin.equals(user._id)) {
+      if (community.admin.equals(userId)) {
         const removedMember = await CommunityMember.findOneAndDelete({
           parentId: new mongoose.Types.ObjectId(memberId),
           communityId: new mongoose.Types.ObjectId(id),
@@ -225,7 +220,6 @@ module.exports = (app) => {
         ...newPost._doc,
         user_info: req.user,
       };
-      console.log(post);
       return res.status(200).send(post);
     } catch (error) {
       console.log(
@@ -235,120 +229,6 @@ module.exports = (app) => {
       return res.status(500).send({ message: "Server Error" });
     }
   });
-
-  app.post("/community/post/:id/new/like", authGuard, async (req, res) => {
-    const postId = req.params.id;
-    const userData = req.userData;
-    const communityId = req.query.communityId;
-    if (!postId || !communityId) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
-    const existingLike = await LikesModel.findOne({
-      parentId: userData.email,
-      postId: postId,
-    });
-    if (existingLike) {
-      return res.send({ message: "User already liked this post" }).status(400);
-    }
-    try {
-      const newLike = await new LikesModel({
-        parentId: userData.email,
-        communityId,
-        postId,
-      });
-      await newLike.save();
-      await Post.findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(postId) },
-        {
-          $inc: { likesCount: 1 },
-        }
-      );
-      return res.send({ message: "new Like Generated" }).status(200);
-    } catch (error) {
-      console.log(
-        "An error has occured at /community/post/:id/new/like",
-        error
-      );
-      return res.send({ message: "Server error" }).status(500);
-    }
-  });
-
-  app.post("/community/post/:id/remove/like", authGuard, async (req, res) => {
-    const postId = req.params.id;
-    const communityId = req.query.communityId;
-    if (!postId) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
-    try {
-      await LikesModel.findOneAndDelete({
-        postId: postId,
-      });
-      await Post.findOneAndUpdate(
-        {
-          _id: new mongoose.Types.ObjectId(postId),
-        },
-        { $inc: { likesCount: -1 } }
-      );
-      return res.send({ message: "Disliked successfully" }).status(200);
-    } catch (error) {
-      console.log(
-        "An error has occured at /community/post/:id/remove/like",
-        error
-      );
-      return res.send({ message: "A server error has occured" }).status(500);
-    }
-  });
-
-  app.post("/community/:id/new/moderator", async (req, res) => {
-    const id = req.params.id;
-    const userData = req.userData;
-    const applicableUser = req.query.user;
-    if (!id) {
-      return res.send({ message: "Bad Request" }).status(400);
-    }
-
-    const user = await UserModel.findById(applicableUser);
-
-    if (!user) {
-      return res.send({ message: "User not found" }).status(404);
-    }
-
-    const newModerator = {
-      parentId: new mongoose.Types.ObjectId(applicableUser),
-      communityId: id,
-    };
-    try {
-      const moderator = await new CommunityModerator(newModerator);
-      await moderator.save();
-      return res.send(moderator).status(200);
-    } catch (error) {
-      console.log(
-        "An error has occured at /community/:id/new/moderator",
-        error
-      );
-      return res.send({ message: "An error has occured" }).status(500);
-    }
-  });
-
-  app.get(
-    "/community/:id/moderators",
-    /*catchCookies,*/ async (req, res) => {
-      const id = req.params.id;
-      const loggedUserId = req.userData.email;
-      if (!id) {
-        return res.send({ message: "Bad Request" }).status(400);
-      }
-      try {
-        const moderators = await CommunityModerator.aggregate(
-          fetchModerators(loggedUserId, id)
-        );
-        return res.send(moderators).status(200);
-      } catch (error) {
-        console.log("An error has occured at /community/:id/moderators", error);
-        return res.send({ message: "An error has occured" }).status(500);
-      }
-    }
-  );
 
   app.get("/community/:id/members", async (req, res) => {
     const id = new mongoose.Types.ObjectId(req.params.id);
@@ -365,21 +245,19 @@ module.exports = (app) => {
     }
   });
 
-  app.get(
-    "/communities",
-    /*catchCookies,*/ async (req, res) => {
-      try {
-        const communities = await Community.find().limit(10);
-        return res.send(communities).status(200);
-      } catch (error) {
-        console.log("An error has occured at /communities", error);
-        return res.send({ message: "An error has occured at " }).status(500);
-      }
+  app.get("/communities", async (req, res) => {
+    try {
+      const communities = await Community.find().limit(10);
+      return res.send(communities).status(200);
+    } catch (error) {
+      console.log("An error has occured at /communities", error);
+      return res.send({ message: "An error has occured at " }).status(500);
     }
-  );
+  });
 
   app.post("/community/new", authGuard, async (req, res) => {
     const { membership, title, about, image, rules } = req.body;
+    const userId = req.user._id;
     if (!membership || !title || !about) {
       return res.send({ message: "Bad Request" }).status(400);
     }
@@ -394,27 +272,25 @@ module.exports = (app) => {
           })
           .status(400);
       }
-      const admin = await UserModel.findOne({ email: req.userData.email });
+
       const obj = {
         membership,
         title,
         about,
         image: image || "",
-        admin: new mongoose.Types.ObjectId(admin._id),
+        admin: new mongoose.Types.ObjectId(userId),
         rules: rules || [],
       };
+
       const newCommunity = await new Community(obj);
       newCommunity.save();
+
       const newMember = await new CommunityMember({
         parentId: new mongoose.Types.ObjectId(admin._id),
         communityId: new mongoose.Types.ObjectId(newCommunity._id),
       });
+
       newMember.save();
-      const newModerator = await new CommunityModerator({
-        parentId: new mongoose.Types.ObjectId(admin._id),
-        communityId: new mongoose.Types.ObjectId(newCommunity._id),
-      });
-      newModerator.save();
       return res.send({ id: newCommunity._id }).status(200);
     } catch (error) {
       console.log("An error has occured at /community/new", error);

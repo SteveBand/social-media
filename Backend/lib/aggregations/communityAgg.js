@@ -239,25 +239,7 @@ function fetchCommunityMembers(id, userId) {
       },
     },
     { $unwind: "$users" },
-    {
-      $lookup: {
-        from: "communitymoderators",
-        let: { parentId: "$users._id", communityId: "$communityId" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$communityId", "$$communityId"] },
-                  { $eq: ["$parentId", "$$parentId"] },
-                ],
-              },
-            },
-          },
-        ],
-        as: "moderator",
-      },
-    },
+
     {
       $lookup: {
         from: "followers",
@@ -280,7 +262,6 @@ function fetchCommunityMembers(id, userId) {
     {
       $addFields: {
         "users.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
-        "users.IsModerator": { $gt: [{ $size: "$moderator" }, 0] },
       },
     },
     {

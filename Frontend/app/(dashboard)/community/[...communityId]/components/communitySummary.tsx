@@ -33,9 +33,9 @@ export function CommunitySummary({
           }
         );
         if (res.ok) {
-          const data = await res.json();
+          const joinData = await res.json();
           setIsMember((prev) => !prev);
-          setMembersCount((prev) => (data.newMember ? prev + 1 : prev - 1));
+          setMembersCount((prev) => (joinData.newMember ? prev + 1 : prev - 1));
           handleFetch();
         }
       } catch (error) {
@@ -58,7 +58,9 @@ export function CommunitySummary({
       <p>{data.about}</p>
       <footer>
         <p>{membersCount} Members</p>
-        {!isMember && <button onClick={handleJoin}>Join</button>}
+        {!isMember && !data.isAdmin && (
+          <button onClick={handleJoin}>Join</button>
+        )}
         {isMember && !data.isAdmin && (
           <button onClick={handleJoin} className="is-member">
             <span className="joined">Joined</span>

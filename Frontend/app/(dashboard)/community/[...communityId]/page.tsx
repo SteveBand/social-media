@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { CommunityType, PostType } from "../../../../../types";
 import { BackButton } from "@/components/action-buttons/BackButton";
 import { CommunitySummary } from "./components/communitySummary";
@@ -19,6 +19,7 @@ export default function CommunityPage({
   const [data, setData] = useState<CommunityType>();
   const [action, setAction] = useState<string>("posts");
   const [posts, setPosts] = useState<PostType[]>([]);
+
   const members = useAppSelector(
     (state) => state.communityMembersReducer.communityMembers
   );
@@ -103,7 +104,11 @@ export default function CommunityPage({
         <h5>{data.title}</h5>
       </header>
       <img className="community-logo" src={data.image} />
-      <CommunitySummary data={data} fetchPosts={fetchPosts} handleFetch={handleFetch} />
+      <CommunitySummary
+        data={data}
+        fetchPosts={fetchPosts}
+        handleFetch={handleFetch}
+      />
       <div className="actions-wrapper">
         <ul className="actions">
           <li
@@ -148,7 +153,7 @@ export default function CommunityPage({
             handlePostLikeFunction={handlePostLikeFunction}
           />
         )}
-        {action === "about" && <CommunityAbout data={data} members={members} />}
+        {action === "about" && <CommunityAbout data={data} />}
         {action === "members" && <CommunityMembers members={members} />}
         {action === "admin-panel" && (
           <CommunityAdminPanel

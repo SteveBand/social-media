@@ -23,9 +23,6 @@ export function CommunityAdminPanel({ data, members, setData }: Props) {
         <li onClick={handleSection} data-section="edit">
           Edit
         </li>
-        <li onClick={handleSection} data-section="moderators">
-          Moderators
-        </li>
       </ul>
       {section === "edit" && (
         <CommunityEditForm data={data} setData={setData} />

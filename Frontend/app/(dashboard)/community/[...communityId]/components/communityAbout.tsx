@@ -1,17 +1,7 @@
 import { CommunityMember, CommunityType } from "../../../../../../types";
 import { User } from "@/components/User";
 import { useMemo } from "react";
-export function CommunityAbout({
-  data,
-  members,
-}: {
-  data: CommunityType;
-  members: CommunityMember[];
-}) {
-  const moderators = useMemo(() => {
-    const moderators = members.filter((mod) => mod.IsModerator === true);
-    return moderators;
-  }, [members]);
+export function CommunityAbout({ data }: { data: CommunityType }) {
   return (
     <section className="about">
       <article className="community-info">
@@ -28,12 +18,6 @@ export function CommunityAbout({
               <h5>{rule.description}</h5>
             </div>
           );
-        })}
-      </article>
-      <article className="moderators">
-        <h4>Moderators</h4>
-        {moderators.map((user) => {
-          return <User content={user} loading={false} key={user._id} />;
         })}
       </article>
     </section>
