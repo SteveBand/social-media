@@ -12,7 +12,7 @@ export default function Page() {
     <>
       {modal && createPortal(<PostModal />, document.body)}
       <section className="feed-wrapper">
-        <PostInput />
+        <PostInput setModal={setModal} />
         <section className="feed-container">
           <PostsFeed />
         </section>

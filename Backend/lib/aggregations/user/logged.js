@@ -102,6 +102,15 @@ function userAllLikedLogged(userId, loggedUserId) {
     { $match: { userId: userId } },
     {
       $lookup: {
+        from: "users",
+        localField: "authorId",
+        foreignField: "_id",
+        as: "user_info",
+      },
+    },
+    { $unwind: "$user_info" },
+    {
+      $lookup: {
         from: "posts",
         localField: "parentId",
         foreignField: "_id",
@@ -137,12 +146,32 @@ function userAllLikedLogged(userId, loggedUserId) {
       $unwind: "$resultArray",
     },
     {
+      $lookup: {
+        from: "likes",
+        let: { loggedUserId: loggedUserId, parentId: "$resultArray._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$$parentId", "$parentId"] },
+                  { $eq: ["$$loggedUserId", "$userId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "likes",
+      },
+    },
+    {
       $addFields: {
         "resultArray.liked": {
-          $or: [
-            { $eq: [loggedUserId, "$resultArray.userId"] },
-            { $eq: [loggedUserId, "$resultArray.parentId"] },
-          ],
+          $cond: {
+            if: { $gt: [{ $size: "$likes" }, 0] },
+            then: true,
+            else: false,
+          },
         },
         "resultArray.user_info": "$user_info",
       },
