@@ -86,7 +86,6 @@ module.exports = (app) => {
       } else {
         const obj = await LikesModel.aggregate(userAllLikedUnLogged(userId));
         return res.status(200).send(obj);
-        console.log(obj);
       }
     } catch (err) {
       console.log("An error occured at /:user/likes ", err);
@@ -94,31 +93,38 @@ module.exports = (app) => {
     }
   });
 
-  app.get(
-    "/:user/comments",
-    /*catchCookies,*/ async (req, res) => {
-      const userId = req.params.user;
-      const loggedUserId = req.userData?.email || "";
-      if (!userId) {
-        return res.send({ message: "User not found!" }).status(404);
+  app.get("/:user/comments", async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.user);
+    const loggedUserId = req.user
+      ? new mongoose.Types.ObjectId(req.user._id)
+      : null;
+
+    const user_info = await UserModel.findById(userId);
+
+    try {
+      if (loggedUserId) {
+        const obj = await CommentModel.aggregate(
+          userCommentsLogged(userId, loggedUserId, user_info)
+        );
+
+        return res.status(200).send(obj);
+      } else {
+        const obj = await CommentModel.aggregate([
+          { $match: { userId: userId } },
+          {
+            $addFields: {
+              user_info: user_info,
+            },
+          },
+        ]);
+
+        return res.status(200).send(obj);
       }
-      try {
-        if (loggedUserId !== "") {
-          const obj = await CommentModel.aggregate(
-            userCommentsLogged(userId, loggedUserId)
-          );
-          console.log(obj);
-          return res.status(200).send(obj);
-        } else {
-          const obj = await CommentModel.find({ userId: userId });
-          return res.status(200).send(obj);
-        }
-      } catch (err) {
-        console.log("An error occured at /:user/comments", err);
-        return res.send({ message: "An error has occured try again later" });
-      }
+    } catch (err) {
+      console.log("An error occured at /:user/comments", err);
+      return res.send({ message: "An error has occured try again later" });
     }
-  );
+  });
 
   app.get(
     "/:user/followers",

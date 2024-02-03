@@ -184,7 +184,7 @@ function userAllLikedLogged(userId, loggedUserId) {
   ];
 }
 
-function userCommentsLogged(userId, loggedUserId) {
+function userCommentsLogged(userId, loggedUserId, user_info) {
   return [
     { $match: { userId: userId } },
     {
@@ -197,10 +197,7 @@ function userCommentsLogged(userId, loggedUserId) {
               $expr: {
                 $and: [
                   {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$parentId" },
-                    ],
+                    $eq: ["$parentId", "$$parentId"],
                   },
                   { $eq: ["$userId", "$$userId"] },
                 ],
@@ -220,6 +217,7 @@ function userCommentsLogged(userId, loggedUserId) {
             else: false,
           },
         },
+        user_info: user_info,
       },
     },
   ];
