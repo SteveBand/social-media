@@ -64,6 +64,15 @@ function userAllLikedUnLogged(userId) {
     { $match: { userId: userId } },
     {
       $lookup: {
+        from: "users",
+        localField: "authorId",
+        foreignField: "_id",
+        as: "user_info",
+      },
+    },
+    { $unwind: "$user_info" },
+    {
+      $lookup: {
         from: "posts",
         let: { parentId: userId, postId: "$parentId" },
         pipeline: [
@@ -96,22 +105,22 @@ function userAllLikedUnLogged(userId) {
     },
     {
       $project: {
-        _id: 0,
-        parentId: 0,
-        userId: 0,
-        __v: 0,
-      },
-    },
-    {
-      $project: {
         resultArray: {
           $concatArrays: ["$posts", "$comments"],
         },
+        user_info: "$user_info",
       },
     },
     {
       $unwind: "$resultArray",
     },
+
+    {
+      $addFields: {
+        "resultArray.user_info": "$user_info",
+      },
+    },
+
     {
       $replaceRoot: {
         newRoot: "$resultArray",

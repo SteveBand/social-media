@@ -51,7 +51,18 @@ module.exports = (app) => {
         );
         return res.status(200).send(postArr);
       } else {
-        const postArr = await Post.find({ parentId: userId });
+        const postArr = await Post.aggregate([
+          { $match: { parentId: userId } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "parentId",
+              foreignField: "_id",
+              as: "user_info",
+            },
+          },
+          { $unwind: "$user_info" },
+        ]);
         return res.status(200).send(postArr);
       }
     } catch (error) {
@@ -75,6 +86,7 @@ module.exports = (app) => {
       } else {
         const obj = await LikesModel.aggregate(userAllLikedUnLogged(userId));
         return res.status(200).send(obj);
+        console.log(obj);
       }
     } catch (err) {
       console.log("An error occured at /:user/likes ", err);

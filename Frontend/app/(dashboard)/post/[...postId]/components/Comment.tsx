@@ -56,7 +56,7 @@ export function Comment({
             {comment.content}
           </p>
         </div>
-        <SlOptions className="options-btn" />
+        {comment.isAuthor && <SlOptions className="options-btn" />}
       </div>
       <footer
         data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
