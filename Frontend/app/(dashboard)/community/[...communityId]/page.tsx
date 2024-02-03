@@ -103,7 +103,7 @@ export default function CommunityPage({
         <h5>{data.title}</h5>
       </header>
       <img className="community-logo" src={data.image} />
-      <CommunitySummary data={data} fetchPosts={fetchPosts} />
+      <CommunitySummary data={data} fetchPosts={fetchPosts} handleFetch={handleFetch} />
       <div className="actions-wrapper">
         <ul className="actions">
           <li

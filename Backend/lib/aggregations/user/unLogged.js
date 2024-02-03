@@ -7,7 +7,7 @@ function getUserFollowingUnlogged(userId) {
       $lookup: {
         from: "users",
         localField: "follows",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -36,7 +36,7 @@ function getUserFollowersUnLogged(userId) {
       $lookup: {
         from: "users",
         localField: "parentId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },

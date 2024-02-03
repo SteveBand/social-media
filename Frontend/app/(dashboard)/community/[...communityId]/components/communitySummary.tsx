@@ -6,14 +6,17 @@ import { activate } from "@/redux/features/loginModal-slice";
 export function CommunitySummary({
   data,
   fetchPosts,
+  handleFetch,
 }: {
   data: CommunityType;
   fetchPosts: () => Promise<void>;
+  handleFetch: () => Promise<void>;
 }) {
   const [isMember, setIsMember] = useState(data.isMember || false);
   const [membersCount, setMembersCount] = useState(data.membersCount);
   const user = useAppSelector((state) => state.userReducer);
   const dispatch = useAppDispatch();
+
   async function handleJoin(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
@@ -33,6 +36,7 @@ export function CommunitySummary({
           const data = await res.json();
           setIsMember((prev) => !prev);
           setMembersCount((prev) => (data.newMember ? prev + 1 : prev - 1));
+          handleFetch();
         }
       } catch (error) {
         console.log(error);
