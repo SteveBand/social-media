@@ -117,7 +117,6 @@ module.exports = (app) => {
             },
           },
         ]);
-
         return res.status(200).send(obj);
       }
     } catch (err) {
@@ -126,59 +125,51 @@ module.exports = (app) => {
     }
   });
 
-  app.get(
-    "/:user/followers",
-    /*catchCookies,*/ async (req, res) => {
-      const userId = req.params.user;
-      const loggedUserId = req.userData?.email || "";
+  app.get("/:user/followers", async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.user);
+    const loggedUserId = req.user
+      ? new mongoose.Types.ObjectId(req.user._id)
+      : null;
 
-      if (!userId) {
-        return res.send({ message: "User not Found!" });
+    try {
+      if (loggedUserId) {
+        const obj = await FollowersModel.aggregate(
+          getUserFollowersLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(obj);
+      } else {
+        const obj = await FollowersModel.aggregate(
+          getUserFollowersUnLogged(userId)
+        );
+        return res.send(obj).status(200);
       }
-
-      try {
-        if (loggedUserId !== "") {
-          const obj = await FollowersModel.aggregate(
-            getUserFollowersLogged(userId, loggedUserId)
-          );
-          return res.status(200).send(obj);
-        } else {
-          const obj = await FollowersModel.aggregate(
-            getUserFollowersUnLogged(userId)
-          );
-          return res.send(obj).status(200);
-        }
-      } catch (err) {
-        console.log("An error occured at /:user/followers", err.name);
-        return res.send({ message: "An error has Occured" }).status(400);
-      }
+    } catch (err) {
+      console.log("An error occured at /:user/followers", err.name);
+      return res.send({ message: "An error has Occured" }).status(400);
     }
-  );
+  });
 
-  app.get(
-    "/:user/following",
-    /*catchCookies,*/ async (req, res) => {
-      const userId = req.params.user;
-      const loggedUserId = req.userData?.email || "";
-      if (!userId) {
-        return res.send({ message: "User not found!" });
+  app.get("/:user/following", async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.user);
+    const loggedUserId = req.user
+      ? new mongoose.Types.ObjectId(req.user._id)
+      : null;
+
+    try {
+      if (loggedUserId) {
+        const obj = await FollowersModel.aggregate(
+          getUserFollowingLogged(userId, loggedUserId)
+        );
+        return res.status(200).send(obj);
+      } else {
+        const obj = await FollowersModel.aggregate(
+          getUserFollowingUnlogged(userId)
+        );
+        return res.status(200).send(obj);
       }
-      try {
-        if (loggedUserId !== "") {
-          const obj = await FollowersModel.aggregate(
-            getUserFollowingLogged(userId, loggedUserId)
-          );
-          return res.status(200).send(obj);
-        } else {
-          const obj = await FollowersModel.aggregate(
-            getUserFollowingUnlogged(userId)
-          );
-          return res.status(200).send(obj);
-        }
-      } catch (err) {
-        console.log("An error has occured at /:user/following", err);
-        return res.send({ message: "something went wrong" });
-      }
+    } catch (err) {
+      console.log("An error has occured at /:user/following", err);
+      return res.send({ message: "something went wrong" });
     }
-  );
+  });
 };

@@ -7,7 +7,7 @@ function getUserFollowingLogged(userId, loggedUserId) {
       $lookup: {
         from: "users",
         localField: "follows",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -17,7 +17,7 @@ function getUserFollowingLogged(userId, loggedUserId) {
         "user_info.isFollowing": {
           $and: [
             { $eq: ["$parentId", loggedUserId] },
-            { $eq: ["$follows", "$user_info.email"] },
+            { $eq: ["$follows", "$user_info._id"] },
           ],
         },
       },
@@ -46,7 +46,7 @@ function getUserFollowersLogged(userId, loggedUserId) {
       $lookup: {
         from: "users",
         localField: "parentId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },
@@ -54,7 +54,7 @@ function getUserFollowersLogged(userId, loggedUserId) {
     {
       $lookup: {
         from: "followers",
-        let: { userId: "$user_info.email", parentId: loggedUserId },
+        let: { userId: "$user_info._id", parentId: loggedUserId },
         pipeline: [
           {
             $match: {
