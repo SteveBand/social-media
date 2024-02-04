@@ -19,11 +19,6 @@ export const navLinks = [
     icon: <BsHeart className="navbar-link-icon" />,
   },
   {
-    path: "/post/new",
-    name: "Post",
-    icon: <RiImageAddLine className="navbar-link-icon" />,
-  },
-  {
     path: "/communities",
     name: "Communities",
     icon: <GrGroup className="navbar-link-icon" />,

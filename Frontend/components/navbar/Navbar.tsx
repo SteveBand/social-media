@@ -1,18 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { CgProfile } from "react-icons/cg";
 import { navLinks } from "@/lib/navbar/navbar-utils";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAppSelector } from "@/hooks";
-type Props = {};
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { logIn } from "@/redux/features/auth-slice";
 
-export default function Navbar({}: Props) {
+export default function Navbar() {
   const pathname = usePathname();
   const [modal, setModal] = useState(false);
   const user = useAppSelector((state) => state.userReducer);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  async function handleLogout() {
+    const res = await fetch(`http://localhost:4000/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      dispatch(
+        logIn({
+          status: "unauthenticated",
+          user_info: {},
+        })
+      );
+      router.push("/");
+    }
+  }
 
   return (
     <nav className="navbar-wrapper">
@@ -23,7 +40,10 @@ export default function Navbar({}: Props) {
               key={el.path}
               href={el.path}
               className={`${
-                pathname === el.path ? "navbar-link-active" : "navbar-link"
+                pathname === el.path ||
+                (el.name === "Communities" && pathname.includes("community"))
+                  ? "navbar-link-active"
+                  : "navbar-link"
               }`}
             >
               {el.icon}
@@ -33,22 +53,30 @@ export default function Navbar({}: Props) {
         })}
         <div
           className={`${
-            pathname === `/profile/${user?.user_info?.email}`
+            pathname === `/profile/${user?.user_info?._id}`
               ? "logged-user active"
               : "logged-user"
           }`}
           onClick={() => setModal((prev) => !prev)}
         >
           {user?.user_info?.avatar_url ? (
-            <img src={user.user_info.avatar_url} />
+            <div className="user-field-logged">
+              <img src={user.user_info.avatar_url} />
+              <p>{user?.user_info?.name}</p>
+            </div>
           ) : (
-            <CgProfile />
+            <button
+              className="login-button"
+              onClick={() => router.push("/login")}
+            >
+              Login
+            </button>
           )}
-          <p>{user?.user_info?.name}</p>
-          {modal && (
+
+          {modal && user.status === "authenticated" && (
             <div className="logged-user-modal">
               <Link href={`/profile/${user.user_info._id}`}>Profile</Link>
-              <div className="signout" onClick={() => signOut()}>
+              <div className="signout" onClick={() => handleLogout()}>
                 Logout
               </div>
             </div>

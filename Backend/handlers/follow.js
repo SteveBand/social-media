@@ -1,10 +1,10 @@
 const { authGuard } = require("../middlewares/authGuard");
 const { FollowersModel, UserModel } = require("../models/models");
-
+const mongoose = require("mongoose");
 module.exports = (app) => {
   app.post("/new/follow", authGuard, async (req, res) => {
-    const parentId = req.query.parentId;
-    const follows = req.query.follows;
+    const parentId = new mongoose.Types.ObjectId(req.query.parentId);
+    const follows = new mongoose.Types.ObjectId(req.query.follows);
 
     try {
       const existingFollow = await FollowersModel.findOne({
@@ -13,10 +13,9 @@ module.exports = (app) => {
       });
 
       if (existingFollow) {
-        console.log("Follow exists");
         return res
-          .send({ message: "Already following this User!" })
-          .status(400);
+          .status(400)
+          .send({ message: "Already following this User!" });
       }
 
       const newFollow = await new FollowersModel({
@@ -25,18 +24,18 @@ module.exports = (app) => {
       }).save();
 
       await UserModel.findOneAndUpdate(
-        { email: parentId },
+        { _id: parentId },
         { $inc: { following: 1 } }
       );
 
       await UserModel.findOneAndUpdate(
         {
-          email: follows,
+          _id: follows,
         },
         { $inc: { followers: 1 } }
       );
 
-      return res.send(newFollow).status(200);
+      return res.status(200).send(newFollow);
     } catch (err) {
       console.log("An error has occured at /new/follow", err);
       return res.send({ message: "An error has occured" }).status(500);
@@ -44,31 +43,29 @@ module.exports = (app) => {
   });
 
   app.post("/delete/follow", authGuard, async (req, res) => {
-    const parentId = req.query.parentId;
-    const follows = req.query.follows;
+    const parentId = new mongoose.Types.ObjectId(req.query.parentId);
+    const follows = new mongoose.Types.ObjectId(req.query.follows);
 
     try {
       await FollowersModel.deleteOne({ parentId, follows });
       await UserModel.findOneAndUpdate(
-        { email: parentId },
+        { _id: parentId },
         { $inc: { following: -1 } }
       );
 
       await UserModel.findOneAndUpdate(
         {
-          email: follows,
+          _id: follows,
         },
         { $inc: { followers: -1 } }
       );
 
-      return res.send().status(200);
+      return res.status(200).send({ message: "Success" });
     } catch (err) {
       console.log("An error has occured at '/delete/follow':  ", err);
-      return res
-        .send({
-          message: "An error has Occured please try again later",
-        })
-        .status(500);
+      return res.status(500).send({
+        message: "An error has Occured please try again later",
+      });
     }
   });
 };

@@ -45,6 +45,12 @@
       .followers-container {
         display: flex;
         gap: 20px;
+        width: 100%;
+
+        .follow-button {
+          margin-left: auto;
+          @include darkButtons;
+        }
       }
     }
   }

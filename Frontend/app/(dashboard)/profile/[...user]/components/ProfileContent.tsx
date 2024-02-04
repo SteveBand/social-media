@@ -7,9 +7,11 @@ import { User } from "@/components/User";
 import { Comment } from "@/app/(dashboard)/post/[...postId]/components/Comment";
 import { BackButton } from "@/components/action-buttons/BackButton";
 import moment from "moment";
+import { FollowButton } from "@/components/action-buttons/FollowButton";
 
-export function ProfileContent({ user }: { user: UserType }) {
+export function ProfileContent({ userId }: { userId: string }) {
   const [action, setAction] = useState<Action>("posts");
+  const [user, setUser] = useState<Partial<UserType>>();
   const [data, setData] = useState<DataType>({
     posts: [],
     likes: [],
@@ -19,10 +21,31 @@ export function ProfileContent({ user }: { user: UserType }) {
   });
   const [loading, setLoading] = useState(true);
 
+  async function fetchUser() {
+    try {
+      const res = await fetch(`http://localhost:4000/profile/${userId}`, {
+        method: "GET",
+        credentials: "include",
+        cache: "no-cache",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUser();
+  }, [userId]);
+
   async function fetchData() {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/${user._id}/${action}`, {
+      const res = await fetch(`http://localhost:4000/${userId}/${action}`, {
         method: "GET",
         credentials: "include",
       });
@@ -72,29 +95,37 @@ export function ProfileContent({ user }: { user: UserType }) {
     });
   }
 
-  const date = moment(user.createdAt).format("MMM YY");
+  const date = user && moment(user.createdAt).format("MMM YY");
 
   useEffect(() => {
+    if (userId) {
+      fetchUser();
+    }
     if (data[action] && data[action].length === 0) {
       fetchData();
     }
   }, [action]);
 
+  if (!user) {
+    return;
+  }
+
   return (
     <section className="profile-page-container">
       <header>
         <BackButton />
-        <h4>{user.name}</h4>
+        <h4>{user?.name}</h4>
       </header>
       <article className="user-content">
-        <img src={user.avatar_url} />
+        <img src={user?.avatar_url} />
         <div className="content">
-          <h5>{user.name}</h5>
-          <p>{user.bio}</p>
+          <h5>{user?.name}</h5>
+          <p>{user?.bio}</p>
           <p>Joined {date}</p>
           <div className="followers-container">
-            <p>{user.following} Following</p>
-            <p>{user.followers} Followers</p>
+            <p>{user?.following} Following</p>
+            <p>{user?.followers} Followers</p>
+            <FollowButton userData={user} />
           </div>
         </div>
       </article>

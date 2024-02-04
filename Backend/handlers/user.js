@@ -22,11 +22,29 @@ const mongoose = require("mongoose");
 
 module.exports = (app) => {
   app.get("/profile/:userId", async (req, res) => {
-    const userId = req.params.userId;
+    const userId = new mongoose.Types.ObjectId(req.params.userId);
+    const loggedUserId = req.user
+      ? new mongoose.Types.ObjectId(req.user?._id)
+      : null;
+
     try {
       const user = await UserModel.findById(userId);
       if (!user) {
         return res.status(404).send({ message: "User not Found" });
+      }
+
+      const isFollowing = await FollowersModel.findOne({
+        parentId: loggedUserId,
+        follows: userId,
+      });
+
+      console.log(isFollowing, "parentId: ", loggedUserId, "follows: ", userId);
+
+      if (isFollowing) {
+        const userObject = user.toObject();
+        delete userObject.password;
+        userObject.isFollowing = true;
+        return res.status(200).send(userObject);
       } else {
         const userObject = user.toObject();
         delete userObject.password;
@@ -40,7 +58,7 @@ module.exports = (app) => {
 
   app.get("/:user/posts", async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.user);
-    const loggedUserId = req.user?._id
+    const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user?._id)
       : null;
 
@@ -76,7 +94,6 @@ module.exports = (app) => {
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
       : null;
-
     try {
       if (loggedUserId) {
         const obj = await LikesModel.aggregate(

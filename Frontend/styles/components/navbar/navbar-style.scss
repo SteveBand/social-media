@@ -1,3 +1,5 @@
+@import "../../mixin.scss";
+
 .navbar-wrapper {
   width: 30%;
   box-sizing: border-box;
@@ -59,13 +61,36 @@
     justify-content: flex-start;
     position: relative;
     cursor: pointer;
-    img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+
+    .user-field-logged {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+      p {
+        margin: 0;
+      }
     }
-    p {
-      margin: 0;
+
+    .login-button {
+      font-size: 1rem;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 5px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 1px solid gray;
+      transition: 200ms ease;
+      letter-spacing: 1px;
+
+      &:hover {
+        background-color: rgb(107, 106, 106);
+        color: white;
+      }
     }
 
     .logged-user-modal {
@@ -111,7 +136,7 @@
 
 @media screen and (max-width: 900px) {
   .navbar-wrapper {
-    width: 60px;
+    width: 100px;
     display: flex;
     padding: 20px 0;
 
@@ -123,18 +148,22 @@
         display: none;
       }
     }
-  }
 
-  .navbar-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
+    .navbar-links-wrapper .navbar-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
   }
 
   .navbar-wrapper .navbar-links-wrapper .navbar-link-active {
-    background-color: transparent;
-    color: #6c9bc9;
+    align-self: center;
+    padding: 4px 6px;
   }
   .navbar-link-name {
     display: none;
