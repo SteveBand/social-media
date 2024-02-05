@@ -1,9 +1,9 @@
-import { ProfileImage } from "@/components/ProfileImage";
-import { PostType } from "../../types";
+import { ProfileImage } from "@/components/common/ProfileImage";
+import { PostType } from "../../../types";
 import { SlOptions } from "react-icons/sl";
-import { PostLike } from "@/components/action-buttons/PostLike";
+import { PostLike } from "@/components/common/action-buttons/PostLike";
 import { IoIosShareAlt } from "react-icons/io";
-import { CommentModal } from "@/components/commentModal/CommentModal";
+import { CommentModal } from "@/components/common/commentModal/CommentModal";
 import { createPortal } from "react-dom";
 import { useState } from "react";
 import Link from "next/link";

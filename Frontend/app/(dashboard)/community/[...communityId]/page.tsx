@@ -1,7 +1,7 @@
 "use client";
 import { SetStateAction, useEffect, useState } from "react";
 import { CommunityType, PostType } from "../../../../../types";
-import { BackButton } from "@/components/action-buttons/BackButton";
+import { BackButton } from "@/components/common/action-buttons/BackButton";
 import { CommunitySummary } from "./components/communitySummary";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { CommunityForm } from "./components/CommunityForm";

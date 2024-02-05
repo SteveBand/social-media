@@ -1,10 +1,10 @@
-import { PostLike } from "@/components/action-buttons/PostLike";
+import { PostLike } from "@/components/common/action-buttons/PostLike";
 import { IoIosShareAlt } from "react-icons/io";
 import { SlOptions } from "react-icons/sl";
 import { PostType } from "../../../../../../types";
 import moment from "moment";
-import { FollowButton } from "@/components/action-buttons/FollowButton";
-import { CommentButton } from "@/components/action-buttons/CommentButton";
+import { FollowButton } from "@/components/common/action-buttons/FollowButton";
+import { CommentButton } from "@/components/common/action-buttons/CommentButton";
 import { SetStateAction, useState } from "react";
 
 type Props = {

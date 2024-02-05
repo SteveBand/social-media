@@ -1,6 +1,6 @@
 import "@/styles/follower/follower-style.scss";
 import Link from "next/link";
-import { FollowerSkeleton } from "./loaders/FollowersSkeleton";
+import { FollowerSkeleton } from "../loaders/FollowersSkeleton";
 import { FollowButton } from "./action-buttons/FollowButton";
 import { SlOptions } from "react-icons/sl";
 import { useState } from "react";

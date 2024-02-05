@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CommunityModerator, UserType } from "../../../types";
+import { CommunityModerator, UserType } from "../../../../types";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { follow, unfollow } from "@/redux/features/communityMembers-slice";
 import { activate } from "@/redux/features/loginModal-slice";

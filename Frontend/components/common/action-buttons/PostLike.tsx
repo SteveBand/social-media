@@ -1,7 +1,7 @@
 "use client";
 
 import { BsHeartFill } from "react-icons/bs";
-import { PostType } from "../../../types";
+import { PostType } from "../../../../types";
 import { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { NotLoggedModal } from "../notLoggedModal/NotLoggedModal";

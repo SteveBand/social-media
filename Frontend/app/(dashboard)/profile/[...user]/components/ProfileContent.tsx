@@ -2,12 +2,12 @@
 
 import { PostType, UserType } from "../../../../../../types";
 import { useEffect, useState } from "react";
-import { Post } from "@/components/Post";
-import { User } from "@/components/User";
-import { Comment } from "@/app/(dashboard)/post/[...postId]/components/Comment";
-import { BackButton } from "@/components/action-buttons/BackButton";
+import { Post } from "@/components/common/Post";
+import { User } from "@/components/common/User";
+import { Comment } from "@/components/common/Comment";
+import { BackButton } from "@/components/common/action-buttons/BackButton";
 import moment from "moment";
-import { FollowButton } from "@/components/action-buttons/FollowButton";
+import { FollowButton } from "@/components/common/action-buttons/FollowButton";
 
 export function ProfileContent({ userId }: { userId: string }) {
   const [action, setAction] = useState<Action>("posts");

@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/hooks";
-import { PostType } from "../../types";
+import { PostType } from "../../../types";
 
 export function PostModal({ post, path }: { post: PostType; path: string }) {
   const user = useAppSelector((state) => state.userReducer);

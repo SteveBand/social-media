@@ -1,6 +1,6 @@
 import { SetStateAction, useState } from "react";
 import { IoChatboxOutline } from "react-icons/io5";
-import { PostType } from "../../../types";
+import { PostType } from "../../../../types";
 import { createPortal } from "react-dom";
 import { CommentModal } from "../commentModal/CommentModal";
 import { useAppDispatch, useAppSelector } from "@/hooks";

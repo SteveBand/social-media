@@ -1,4 +1,4 @@
-import { User } from "@/components/User";
+import { User } from "@/components/common/User";
 
 export function CommunityMembers({ members }: { members: any }) {
   return (

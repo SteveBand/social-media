@@ -1,11 +1,11 @@
 import { IoIosShareAlt } from "react-icons/io";
-import { PostType } from "../../../../../../types";
+import { PostType } from "../../../types";
 import { SlOptions } from "react-icons/sl";
 import { SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PostLike } from "@/components/action-buttons/PostLike";
-import { ProfileImage } from "@/components/ProfileImage";
-import { CommentButton } from "@/components/action-buttons/CommentButton";
+import { PostLike } from "@/components/common/action-buttons/PostLike";
+import { ProfileImage } from "@/components/common/ProfileImage";
+import { CommentButton } from "@/components/common/action-buttons/CommentButton";
 
 type Props = {
   comment: PostType;

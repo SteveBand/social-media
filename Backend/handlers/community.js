@@ -49,14 +49,8 @@ module.exports = (app) => {
       : null;
 
     try {
-      if (!id) {
-        return res.send({ message: "Bad Request" }).status(400);
-      }
-
-      const community = await Community.findById(
-        new mongoose.Types.ObjectId(id)
-      );
-
+      const community = await Community.findById(id);
+      console.log(community.membership);
       if (!community) {
         return res.status(404).send({ message: "Community does not exist" });
       }
@@ -72,16 +66,7 @@ module.exports = (app) => {
           .status(403)
           .send({ message: "Community is Private, You need to be a member" });
       }
-    } catch (err) {
-      console.log(
-        "An error has occured at /community/:id/posts at data verification",
-        err
-      );
-      return res.status(500).send({ message: "An error has Occured!" });
-    }
 
-    try {
-      if (!isMember) return res.status(401).send({ message: "Unauthorized" });
       if (!userId) {
         const posts = await Post.aggregate([
           { $match: { communityId: id } },
@@ -101,8 +86,11 @@ module.exports = (app) => {
         return res.send(postsArr).status(200);
       }
     } catch (err) {
-      console.log("An error has occured at /community/:id/posts", err);
-      return res.send({ message: "An error has occured" }).status(500);
+      console.log(
+        "An error has occured at /community/:id/posts at data verification",
+        err
+      );
+      return res.status(500).send({ message: "An error has Occured!" });
     }
   });
 

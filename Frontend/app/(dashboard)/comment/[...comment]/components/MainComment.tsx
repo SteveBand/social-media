@@ -2,14 +2,14 @@ import { IoIosShareAlt } from "react-icons/io";
 import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
 import { PostType } from "../../../../../../types";
-import { PostLike } from "@/components/action-buttons/PostLike";
+import { PostLike } from "@/components/common/action-buttons/PostLike";
 import moment from "moment";
-import { FollowButton } from "@/components/action-buttons/FollowButton";
+import { FollowButton } from "@/components/common/action-buttons/FollowButton";
 import { useAppSelector } from "@/hooks";
-import { CommentButton } from "@/components/action-buttons/CommentButton";
+import { CommentButton } from "@/components/common/action-buttons/CommentButton";
 import { SetStateAction, useState } from "react";
 import { createPortal } from "react-dom";
-import { CommentModal } from "@/components/commentModal/CommentModal";
+import { CommentModal } from "@/components/common/commentModal/CommentModal";
 
 type Props = {
   content: PostType | null;
@@ -47,11 +47,7 @@ export function MainComment({ content, setComments }: Props) {
           <PostLike post={content} />
 
           <div className="button-container">
-            <CommentButton
-             
-              content={content}
-              setComments={setComments}
-            />
+            <CommentButton content={content} setComments={setComments} />
           </div>
           <div className="button-container">
             <IoIosShareAlt className="icon" />

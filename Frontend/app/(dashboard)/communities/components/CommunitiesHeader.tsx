@@ -1,6 +1,6 @@
 "use client";
 
-import { BackButton } from "@/components/action-buttons/BackButton";
+import { BackButton } from "@/components/common/action-buttons/BackButton";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { useAppSelector } from "@/hooks";

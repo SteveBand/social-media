@@ -3,7 +3,7 @@ import { CommunityMember, CommunityType } from "../../../../../../../types";
 // import { CommunityMember } from "../CommnityContent";
 import "@/styles/community/communityAdminPanel.scss";
 import { CommunityEditForm } from "./CommunityEditForm";
-import { User } from "@/components/User";
+import { User } from "@/components/common/User";
 
 export function CommunityAdminPanel({ data, members, setData }: Props) {
   const [section, setSection] = useState("edit");

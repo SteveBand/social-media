@@ -1,8 +1,8 @@
 "use client";
 
 import { Footer } from "@/components/footer";
-import Navbar from "@/components/navbar/Navbar";
-import { NotLoggedModal } from "@/components/notLoggedModal/NotLoggedModal";
+import Navbar from "@/components/common/navbar/Navbar";
+import { NotLoggedModal } from "@/components/common/notLoggedModal/NotLoggedModal";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";

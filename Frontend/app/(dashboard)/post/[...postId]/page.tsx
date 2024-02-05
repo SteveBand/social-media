@@ -5,7 +5,7 @@ import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { PostType } from "../../../../../types";
 import { MainPost } from "./components/MainPost";
-import { Comment } from "./components/Comment";
+import { Comment } from "../../../../components/common/Comment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks";

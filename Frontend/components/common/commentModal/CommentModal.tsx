@@ -1,4 +1,4 @@
-import { CommentType, PostType } from "../../../types";
+import { CommentType, PostType } from "../../../../types";
 import { IoIosClose } from "react-icons/io";
 import { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";

@@ -1,4 +1,4 @@
-import { UserType } from "../../types";
+import { UserType } from "../../../types";
 import { useRouter } from "next/navigation";
 import "@/styles/components/profileImage.scss";
 

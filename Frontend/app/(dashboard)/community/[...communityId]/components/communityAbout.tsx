@@ -1,5 +1,5 @@
 import { CommunityMember, CommunityType } from "../../../../../../types";
-import { User } from "@/components/User";
+import { User } from "@/components/common/User";
 import { useMemo } from "react";
 export function CommunityAbout({ data }: { data: CommunityType }) {
   return (

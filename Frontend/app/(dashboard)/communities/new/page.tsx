@@ -1,5 +1,5 @@
 "use client";
-import { BackButton } from "@/components/action-buttons/BackButton";
+import { BackButton } from "@/components/common/action-buttons/BackButton";
 import { useState } from "react";
 import { NewCommunityForm } from "./components/NewCommunityForm";
 export default function NewCommunity() {

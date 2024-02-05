@@ -1,6 +1,5 @@
-
 import { PostType } from "../../../../../../types";
-import { Post } from "@/components/Post";
+import { Post } from "@/components/common/Post";
 
 export function CommunityPosts({ posts, handlePostLikeFunction }: Props) {
   return (

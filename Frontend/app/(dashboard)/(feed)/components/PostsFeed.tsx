@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
-import { Post } from "../../../../components/Post";
+import { Post } from "../../../../components/common/Post";
 import { PostType } from "../../../../../types";
 
 export function PostsFeed() {
