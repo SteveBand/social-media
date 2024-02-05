@@ -45,10 +45,13 @@ export function ProfileContent({ userId }: { userId: string }) {
   async function fetchData() {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:4000/${userId}/${action}`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `http://localhost:4000/user/${userId}/${action}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         const fetchedData = await res.json();
         setData((prev) => {

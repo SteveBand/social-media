@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { UsersResults } from "@/components/search/UsersResults";
 import { CommunitiesResults } from "@/components/search/CommunitiesResults";
 import { PostsResults } from "@/components/search/PostsResults";
+import { CommentsResults } from "@/components/search/CommentsResults";
 
 export default function Page() {
   const [query, setQuery] = useState("");
@@ -24,9 +25,6 @@ export default function Page() {
         `http://localhost:4000/search/${action}?q=${query}`,
         {
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
       if (res.ok) {
@@ -39,10 +37,12 @@ export default function Page() {
   }
 
   useEffect(() => {
-    if (query.length > 0) {
+    if (query.length > 2 && action) {
       handleSearchRequest();
     }
-    console.log(query);
+    if (query.length <= 0) {
+      setSearchedData([]);
+    }
   }, [query, action]);
 
   return (
@@ -78,6 +78,9 @@ export default function Page() {
         <CommunitiesResults searchResults={searchedData} />
       )}
       {action === "posts" && <PostsResults searchResults={searchedData} />}
+      {action === "comments" && (
+        <CommentsResults searchResults={searchedData} />
+      )}
     </section>
   );
 }

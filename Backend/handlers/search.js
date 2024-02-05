@@ -58,4 +58,139 @@ module.exports = (app) => {
       return res.status(500).send({ message: "Server error occured" });
     }
   });
+
+  app.get("/search/posts", async (req, res) => {
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
+    const query = req.query.q;
+    const regex = new RegExp(query, "i");
+
+    try {
+      if (userId) {
+        const postsArr = await Post.aggregate([
+          { $match: { content: regex } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "parentId",
+              foreignField: "_id",
+              as: "user_info",
+            },
+          },
+          { $unwind: "$user_info" },
+          {
+            $lookup: {
+              from: "likes",
+              let: { userId: userId, postId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$parentId", "$$postId"] },
+                        { $eq: ["$userId", "$$userId"] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "likedPost",
+            },
+          },
+
+          {
+            $addFields: {
+              liked: { $gt: [{ $size: "$likedPost" }, 0] },
+            },
+          },
+
+          {
+            $project: {
+              likedPost: 0,
+            },
+          },
+        ]);
+        console.log(postsArr);
+        return res.status(200).send(postsArr);
+      } else {
+        const postsArr = await Post.find({ content: regex });
+        return res.status(200).send(postsArr);
+      }
+    } catch (error) {
+      console.log("/search/posts error path", error);
+      return res.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+
+  app.get("/search/comments", async (req, res) => {
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
+    const query = req.query.q;
+    const regex = new RegExp(query, "i");
+    try {
+      if (userId) {
+        const commentsArr = await CommentModel.aggregate([
+          {
+            $match: { content: regex },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user_info",
+            },
+          },
+          { $unwind: "$user_info" },
+          {
+            $lookup: {
+              from: "likes",
+              let: { userId: userId, parentId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$userId", "$$userId"] },
+                        { $eq: ["$parentId", "$$parentId"] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "likes",
+            },
+          },
+          {
+            $addFields: {
+              liked: { $gt: [{ $size: "$likes" }, 0] },
+            },
+          },
+
+          {
+            $project: {
+              likes: 0,
+              "user_info.password": 0,
+            },
+          },
+        ]);
+        return res.status(200).send(commentsArr);
+      } else {
+        const commentsArr = await CommentModel.aggregate([
+          { $match: { content: regex } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user_info",
+            },
+          },
+          { $unwind: "$user_info" },
+        ]);
+        return res.status(200).send(commentsArr);
+      }
+    } catch (error) {
+      console.log("An error has occurred at /search/comments", error);
+      return res.status(500).send({ message: "Internal Server Error" });
+    }
+  });
 };

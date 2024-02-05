@@ -56,8 +56,8 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/:user/posts", async (req, res) => {
-    const userId = new mongoose.Types.ObjectId(req.params.user);
+  app.get("/user/:userId/posts", async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.userId);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user?._id)
       : null;
@@ -89,7 +89,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/:user/likes", async (req, res) => {
+  app.get("/user/:user/likes", async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -110,7 +110,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/:user/comments", async (req, res) => {
+  app.get("/user/:user/comments", async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -142,7 +142,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/:user/followers", async (req, res) => {
+  app.get("/user/:user/followers", async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -166,7 +166,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/:user/following", async (req, res) => {
+  app.get("/user/:user/following", async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
