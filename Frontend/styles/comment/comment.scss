@@ -5,9 +5,34 @@
   border-bottom: 1px solid rgb(198, 196, 196);
   cursor: pointer;
   transition: 200ms ease;
+  position: relative;
 
   &:hover {
     background-color: rgb(214, 211, 211);
+  }
+
+  .options-modal {
+    position: absolute;
+    top: 40%;
+    right: 0;
+    background-color: rgba(225, 225, 225, 1);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    div {
+      flex: 1;
+      letter-spacing: 1px;
+      padding: 5px 15px;
+      width: 100%;
+      text-align: center;
+
+      &:hover {
+        background-color: whitesmoke;
+      }
+    }
   }
   .comment-container {
     display: flex;

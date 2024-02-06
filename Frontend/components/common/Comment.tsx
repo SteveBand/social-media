@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { PostLike } from "@/components/common/action-buttons/PostLike";
 import { ProfileImage } from "@/components/common/ProfileImage";
 import { CommentButton } from "@/components/common/action-buttons/CommentButton";
+import { useAppSelector } from "@/hooks";
 
 type Props = {
   comment: PostType;
@@ -21,7 +22,10 @@ export function Comment({
   handlePostLikeFunction,
   setComments,
 }: Props) {
+  const [optionsModal, setOptionsModal] = useState(false);
   const router = useRouter();
+  const user = useAppSelector((state) => state.userReducer);
+
   if (!comment || comment === undefined) {
     return <div>No Comments</div>;
   }
@@ -33,6 +37,28 @@ export function Comment({
       return;
     } else {
       console.log(router.push(attribute));
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      const res = await fetch(
+        `http://localhost:4000/comment/${comment._id}/delete`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (res.ok) {
+        setComments &&
+          setComments((prev) => {
+            const newArr = prev.filter((el) => el._id !== comment._id);
+            return newArr;
+          });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -56,7 +82,12 @@ export function Comment({
             {comment.content}
           </p>
         </div>
-        {comment.isAuthor && <SlOptions className="options-btn" />}
+        {(comment.isAuthor || user.user_info.admin) && (
+          <SlOptions
+            className="options-btn"
+            onClick={() => setOptionsModal((prev) => !prev)}
+          />
+        )}
       </div>
       <footer
         data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
@@ -73,6 +104,12 @@ export function Comment({
           <p>{comment.sharesCount > 0 && comment.sharesCount}</p>
         </div>
       </footer>
+      {optionsModal && (
+        <article className="options-modal">
+          <div onClick={() => handleDelete()}>Delete</div>
+          <div>Edit</div>
+        </article>
+      )}
     </article>
   );
 }

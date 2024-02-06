@@ -102,4 +102,27 @@ module.exports = (app) => {
       return res.send({ message: "An error has Occured", ErrorMessage: err });
     }
   });
+
+  app.delete("/comment/:commentId/delete", authGuard, async (req, res) => {
+    const user = req.user;
+    const commentId = new mongoose.Types.ObjectId(req.params.commentId);
+
+    try {
+      const comment = await CommentModel.findById(commentId);
+
+      if (
+        !comment.userId.equals(
+          new mongoose.Types.ObjectId(user._id) || !user.admin
+        )
+      ) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      await CommentModel.findOneAndDelete({ _id: commentId });
+      return res.status(200).send({ message: "Delete Success" });
+    } catch (error) {
+      console.log("An error has occurred at /post/:postId/delete", error);
+      return res.status(500).send({ message: "An error has occurred" });
+    }
+  });
 };

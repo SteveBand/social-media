@@ -36,7 +36,7 @@ export function Post({
   async function handleDelete() {
     try {
       const res = await fetch(`http://localhost:4000/post/${post._id}/delete`, {
-        method: "POST",
+        method: "DELETE",
         credentials: "include",
       });
 

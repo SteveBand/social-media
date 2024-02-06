@@ -71,7 +71,7 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/post/:postId/delete", authGuard, async (req, res) => {
+  app.delete("/post/:postId/delete", authGuard, async (req, res) => {
     const user = req.user;
     const postId = new mongoose.Types.ObjectId(req.params.postId);
 
