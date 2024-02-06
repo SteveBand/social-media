@@ -14,8 +14,10 @@ export default function Page() {
   const [action, setAction] = useState("posts");
   const [searchedData, setSearchedData] = useState([]);
   const [loading, setLoading] = useState(false);
+
   function handleAction(e: React.MouseEvent<HTMLLIElement>) {
     const target = e.target as HTMLLIElement;
+    setSearchedData([]);
     const attr = target.getAttribute("data-fetch");
     attr && setAction(attr);
   }
@@ -46,12 +48,13 @@ export default function Page() {
     }
     if (query.length <= 0) {
       setSearchedData([]);
+      setLoading(false);
     }
 
     if (query.length >= 1 && searchedData.length <= 0) {
       setLoading(true);
-      console.log(searchedData.length);
     }
+    console.log(action, searchedData);
   }, [query, action]);
 
   return (
@@ -66,7 +69,7 @@ export default function Page() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <SlOptions />
+        <div></div>
       </header>
       <ul className="actions">
         <li

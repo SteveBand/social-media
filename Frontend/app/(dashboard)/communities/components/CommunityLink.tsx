@@ -3,7 +3,7 @@ import { CommunityType } from "../../../../../types";
 
 export function CommunityLink({ community }: { community: CommunityType }) {
   return (
-    <Link href={`/community/${community._id}`}>
+    <Link className="community-link" href={`/community/${community._id}`}>
       <img src={community.image} />
       <div className="details">
         <p>{community.title}</p>

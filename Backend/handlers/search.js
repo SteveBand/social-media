@@ -213,10 +213,14 @@ module.exports = (app) => {
   });
 
   app.get("/search/communities", async (req, res) => {
-    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
     const query = req.query.q;
     const regex = new RegExp(query, "i");
-
-    const communitiesArr = Community.find({ title: regex });
+    try {
+      const communitiesArr = await Community.find({ title: regex });
+      return res.status(200).send(communitiesArr);
+    } catch (error) {
+      console.log("An error has Occurred at /search/communities", error);
+      return res.status(500).send({ message: "Internal Server Error" });
+    }
   });
 };

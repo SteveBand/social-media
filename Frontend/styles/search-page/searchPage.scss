@@ -5,12 +5,11 @@
 
   header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     height: 70px;
     box-sizing: border-box;
     padding: 0 10px;
-
+    justify-content: space-between;
     .input-container {
       display: flex;
       justify-content: center;
@@ -32,6 +31,10 @@
         flex: 1;
         cursor: pointer;
       }
+    }
+
+    .back-button {
+      cursor: pointer;
     }
   }
 
@@ -57,6 +60,24 @@
 
     li.active {
       background-color: rgb(208, 208, 208);
+    }
+  }
+
+  a.community-link {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid rgb(204, 204, 204);
+    padding: 5px 0;
+    img {
+      height: 100px;
+      width: 100px;
+      border-radius: 5px;
+    }
+
+    .details {
+      p {
+        margin: 0;
+      }
     }
   }
 
