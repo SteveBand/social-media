@@ -12,6 +12,9 @@ module.exports = (app) => {
     const query = req.query.q;
     const regex = new RegExp(query, "i");
     try {
+      if (query.length <= 2) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
       if (userId) {
         const usersArr = await UserModel.aggregate([
           { $match: { name: regex } },
@@ -47,10 +50,9 @@ module.exports = (app) => {
             },
           },
         ]);
-        console.log(usersArr);
         return res.status(200).send(usersArr);
       } else {
-        const usersArr = await UserModel.find({ name: regex });
+        const usersArr = await UserModel.find({ name: regex }, { password: 0 });
         return res.status(200).send(usersArr);
       }
     } catch (error) {
@@ -112,7 +114,23 @@ module.exports = (app) => {
         console.log(postsArr);
         return res.status(200).send(postsArr);
       } else {
-        const postsArr = await Post.find({ content: regex });
+        const postsArr = await Post.aggregate([
+          { $match: { content: regex } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "parentId",
+              foreignField: "_id",
+              as: "user_info",
+            },
+          },
+          { $unwind: "$user_info" },
+          {
+            $project: {
+              "user_info.password": 0,
+            },
+          },
+        ]);
         return res.status(200).send(postsArr);
       }
     } catch (error) {
@@ -192,5 +210,13 @@ module.exports = (app) => {
       console.log("An error has occurred at /search/comments", error);
       return res.status(500).send({ message: "Internal Server Error" });
     }
+  });
+
+  app.get("/search/communities", async (req, res) => {
+    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
+    const query = req.query.q;
+    const regex = new RegExp(query, "i");
+
+    const communitiesArr = Community.find({ title: regex });
   });
 };

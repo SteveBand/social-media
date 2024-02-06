@@ -54,5 +54,40 @@
         background-color: rgb(208, 208, 208);
       }
     }
+
+    li.active {
+      background-color: rgb(208, 208, 208);
+    }
+  }
+
+  .no-results {
+    text-align: center;
+    font-size: 2rem;
+  }
+
+  .loader {
+    margin: 0 auto;
+    width: fit-content;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 30px;
+    background: radial-gradient(circle closest-side, #000 94%, #0000)
+      right/calc(200% - 1em) 100%;
+    animation: l24 1s infinite alternate linear;
+  }
+  .loader::before {
+    content: "Searching...";
+    line-height: 1em;
+    color: #0000;
+    background: inherit;
+    background-image: radial-gradient(circle closest-side, #fff 94%, #000);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @keyframes l24 {
+    100% {
+      background-position: left;
+    }
   }
 }
