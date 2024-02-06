@@ -70,4 +70,27 @@ module.exports = (app) => {
       return res.send({ message: "Error 404, Page not found!" }).status(404);
     }
   });
+
+  app.post("/post/:postId/delete", authGuard, async (req, res) => {
+    const user = req.user;
+    const postId = new mongoose.Types.ObjectId(req.params.postId);
+
+    try {
+      const post = await Post.findById(postId);
+
+      if (
+        !post.parentId.equals(
+          new mongoose.Types.ObjectId(user._id) || !user.admin
+        )
+      ) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      await Post.findOneAndDelete({ _id: postId });
+      return res.status(200).send({ message: "Delete Success" });
+    } catch (error) {
+      console.log("An error has occurred at /post/:postId/delete", error);
+      return res.status(500).send({ message: "An error has occurred" });
+    }
+  });
 };

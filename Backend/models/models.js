@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema(
     githubId: String,
     facebookId: String,
     googleId: String,
+    admin: Boolean,
   },
   {
     timestamps: true,
@@ -238,7 +239,6 @@ communityMemberSchema.index({ parentId: 1, communityId: 1 });
 const CommunityMember =
   mongoose.models.communityMembers ||
   mongoose.model("communityMembers", communityMemberSchema);
-
 
 exports.LikesModel = LikesModel;
 exports.UserModel = UserModel;

@@ -32,7 +32,7 @@ export function PostsFeed() {
     <>
       {posts &&
         posts.map((post) => {
-          return <Post post={post} key={post._id} />;
+          return <Post post={post} key={post._id} setPosts={setPosts} />;
         })}
     </>
   );

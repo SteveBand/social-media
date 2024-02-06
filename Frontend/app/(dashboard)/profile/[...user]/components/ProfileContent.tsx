@@ -184,6 +184,7 @@ export function ProfileContent({ userId }: { userId: string }) {
                   post={post}
                   key={post._id}
                   handlePostLikeFunction={handlePostLikeFunction}
+                  setData={setData}
                 />
               );
             })

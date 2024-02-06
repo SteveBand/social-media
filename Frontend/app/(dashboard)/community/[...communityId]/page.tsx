@@ -151,6 +151,7 @@ export default function CommunityPage({
           <CommunityPosts
             posts={posts}
             handlePostLikeFunction={handlePostLikeFunction}
+            setPosts={setPosts}
           />
         )}
         {action === "about" && <CommunityAbout data={data} />}

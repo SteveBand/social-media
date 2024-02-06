@@ -9,9 +9,34 @@ a.post-wrapper {
   padding: 10px;
   outline: none;
   transition: 300ms ease;
+  position: relative;
 
   &:hover {
     background-color: rgb(214, 211, 211);
+  }
+
+  .options-modal {
+    position: absolute;
+    top: 25%;
+    right: 0;
+    background-color: rgba(225, 225, 225, 1);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    div {
+      flex: 1;
+      letter-spacing: 1px;
+      padding: 5px 15px;
+      width: 100%;
+      text-align: center;
+
+      &:hover {
+        background-color: whitesmoke;
+      }
+    }
   }
 
   .post-container {

@@ -3,17 +3,21 @@ import { PostType } from "../../../types";
 import { SlOptions } from "react-icons/sl";
 import { PostLike } from "@/components/common/action-buttons/PostLike";
 import { IoIosShareAlt } from "react-icons/io";
-import { CommentModal } from "@/components/common/commentModal/CommentModal";
-import { createPortal } from "react-dom";
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@/styles/components/post/post.scss";
 import { CommentButton } from "./action-buttons/CommentButton";
 import { useAppSelector } from "@/hooks";
+import { SetStateAction, useState } from "react";
+import { DataType } from "@/app/(dashboard)/profile/[...user]/components/ProfileContent";
 
-export function Post({ post, handlePostLikeFunction }: Props) {
-  const [showComment, setShowComment] = useState(false);
+export function Post({
+  post,
+  handlePostLikeFunction,
+  setPosts,
+  setData,
+}: Props) {
+  const [optionsModal, setOptionsModal] = useState(false);
   const router = useRouter();
 
   const user = useAppSelector((user) => user.userReducer);
@@ -26,6 +30,35 @@ export function Post({ post, handlePostLikeFunction }: Props) {
     const attribute = target.getAttribute("data-navigate-to");
     if (attribute) {
       router.push(attribute);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      const res = await fetch(`http://localhost:4000/post/${post._id}/delete`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        setPosts &&
+          setPosts((prev) => {
+            const newArr = prev.filter((el) => el._id !== post._id);
+            return newArr;
+          });
+
+        setData &&
+          setData((prev) => {
+            const newPostArr = prev.posts.filter((el) => el._id !== post._id);
+            const newObj = {
+              ...prev,
+              posts: newPostArr,
+            };
+            return newObj;
+          });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -43,7 +76,12 @@ export function Post({ post, handlePostLikeFunction }: Props) {
           <p className="username">{post.user_info.name}</p>
           <p data-navigate-to={`/post/${post._id}`}> {post.content}</p>
         </div>
-        {post.isAuthor && <SlOptions className="post-options-button" />}
+        {(post.isAuthor || user.user_info.admin) && (
+          <SlOptions
+            className="post-options-button"
+            onClick={() => setOptionsModal((prev) => !prev)}
+          />
+        )}
       </div>
       <div className="footer-container" data-navigate-to={`/post/${post._id}`}>
         <PostLike post={post} handlePostLikeFunction={handlePostLikeFunction} />
@@ -54,6 +92,12 @@ export function Post({ post, handlePostLikeFunction }: Props) {
           <IoIosShareAlt className="action-button-icon" />
         </div>
       </div>
+      {optionsModal && (
+        <article className="options-modal">
+          <div onClick={() => handleDelete()}>Delete</div>
+          <div>Edit</div>
+        </article>
+      )}
     </Link>
   );
 }
@@ -64,4 +108,6 @@ type Props = {
     postId: string,
     isLiked: { liked: boolean; likesCount: number }
   ) => void;
+  setPosts?: React.Dispatch<SetStateAction<PostType[]>>;
+  setData?: React.Dispatch<SetStateAction<DataType>>;
 };

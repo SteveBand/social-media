@@ -26,15 +26,26 @@ module.exports = (app) => {
             message: "Username or password are incorrect",
           });
         }
+        if (user.admin) {
+          const userObject = {
+            email: user.email,
+            name: user.name,
+            _id: user._id,
+            avatar_url: user.avatar_url,
+            admin: user.admin,
+          };
 
-        const userObject = {
-          email: user.email,
-          name: user.name,
-          _id: user._id,
-          avatar_url: user.avatar_url,
-        };
+          return done(null, userObject);
+        } else {
+          const userObject = {
+            email: user.email,
+            name: user.name,
+            _id: user._id,
+            avatar_url: user.avatar_url,
+          };
 
-        return done(null, userObject);
+          return done(null, userObject);
+        }
       } catch (err) {
         console.log("An error occured in localProvider.js", err);
         return done(null, false, {

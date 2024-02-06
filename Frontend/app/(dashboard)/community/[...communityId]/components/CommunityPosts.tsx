@@ -1,7 +1,12 @@
+import { SetStateAction } from "react";
 import { PostType } from "../../../../../../types";
 import { Post } from "@/components/common/Post";
 
-export function CommunityPosts({ posts, handlePostLikeFunction }: Props) {
+export function CommunityPosts({
+  posts,
+  handlePostLikeFunction,
+  setPosts,
+}: Props) {
   return (
     <>
       {posts.map((post) => {
@@ -10,6 +15,7 @@ export function CommunityPosts({ posts, handlePostLikeFunction }: Props) {
             post={post}
             key={post._id}
             handlePostLikeFunction={handlePostLikeFunction}
+            setPosts={setPosts}
           />
         );
       })}
@@ -23,4 +29,5 @@ type Props = {
     postId: string,
     isLiked: { liked: boolean; likesCount: number }
   ) => void;
+  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
 };

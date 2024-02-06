@@ -6,6 +6,7 @@ type InitialState = {
     _id: string;
     email: string;
     avatar_url: string;
+    admin?: boolean;
   };
   status: "authenticated" | "unauthenticated";
 };
