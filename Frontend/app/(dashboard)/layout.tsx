@@ -58,9 +58,8 @@ export default function RootLayout({
     if (user.status === "unauthenticated") {
       sessionConnect();
     }
+    document.body.setAttribute("data-theme", "dark");
   }, [user.status]);
-
-  document.body.setAttribute("data-theme", "dark");
 
   return (
     <html lang="en">

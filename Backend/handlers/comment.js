@@ -66,6 +66,7 @@ module.exports = (app) => {
 
       if (!userId) {
         const comments = await CommentModel.aggregate(fetchComments(postId));
+        console.log(comments);
         return res.send(comments).status(200);
       } else {
         const comments = await CommentModel.aggregate(

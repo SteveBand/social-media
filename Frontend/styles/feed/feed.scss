@@ -13,9 +13,12 @@
     width: 100%;
     min-width: 250px;
     padding: 0 0 5px 0;
-    border-bottom: 1px solid rgb(217, 215, 215);
+    border-bottom: 1px solid var(--border-color);
     gap: 5px;
+    box-sizing: border-box;
+    padding: 0 10px;
     .feed-post-input-icon {
+      color: var(--text);
       font-size: 2.2rem;
       flex: 1;
     }
@@ -26,21 +29,10 @@
       background-color: transparent;
       flex: 10;
       cursor: text;
-      color: rgb(147, 146, 146);
-    }
-
-    .feed-post-input-button {
-      border: none;
-      background-color: rgb(163, 161, 161);
-      padding: 10px 15px;
-      border-radius: 30px;
-      cursor: not-allowed;
-      color: white;
-      letter-spacing: 1px;
-      font-size: 0.75rem;
-      flex: 1;
+      color: var(--text);
     }
   }
+
   /////////
   .feed-container {
     max-width: 570px;

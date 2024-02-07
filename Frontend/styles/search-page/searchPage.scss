@@ -15,9 +15,10 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-      background-color: rgb(192, 193, 193);
+      background-color: var(--search-bar-color);
       border-radius: 15px;
       padding: 5px 15px;
+      color: var(--text);
       input {
         border: none;
         outline: none;
@@ -25,6 +26,7 @@
         font-size: 1rem;
         letter-spacing: 1px;
         flex: 5;
+        color: var(--text);
       }
       .icon {
         font-size: 1rem;
@@ -35,6 +37,7 @@
 
     .back-button {
       cursor: pointer;
+      color: var(--text);
     }
   }
 
@@ -53,13 +56,14 @@
       transition: 200ms ease;
       padding: 5px 0;
       border-radius: 2px;
+      color: var(--text);
       &:hover {
-        background-color: rgb(208, 208, 208);
+        background-color: var(--nav-link-background-color);
       }
     }
 
     li.active {
-      background-color: rgb(208, 208, 208);
+      background-color: var(--nav-link-background-color);
     }
   }
 

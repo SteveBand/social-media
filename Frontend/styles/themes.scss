@@ -3,7 +3,14 @@
 :root {
   --background-color: rgb(235, 233, 233);
   --nav-link-background-color: #ced5ea;
-
+  --border-color: rgb(218, 218, 218);
+  --options-background-color: rgba(225, 225, 225, 1);
+  --options-hover: whitesmoke;
+  --modals-wrapper-color: rgba(0, 0, 0, 0.45);
+  --modal-color: white;
+  --action-button-color: rgba(0, 0, 0, 0.5);
+  --search-bar-color: rgb(192, 193, 193);
+  --text: black;
   .action-button {
     @include darkButtons;
   }
@@ -12,6 +19,15 @@
 [data-theme="dark"] {
   --background-color: #252526;
   --nav-link-background-color: #3e3e42;
+  --border-color: #3e3e42;
+  --post-background-color: #3e3e42;
+  --options-background-color: #181717;
+  --options-hover: rgb(67, 62, 62);
+  --modals-wrapper-color: rgba(36, 45, 54, 0.35);
+  --modal-color: black;
+  --action-button-color: rgb(165, 165, 165);
+  --search-bar-color: transparent;
+  --text: white;
 
   .action-button {
     @include lightButtons;

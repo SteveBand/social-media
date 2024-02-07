@@ -10,7 +10,7 @@ export default function Page() {
   const [modal, setModal] = useState(false);
   return (
     <>
-      {modal && createPortal(<PostModal />, document.body)}
+      {modal && createPortal(<PostModal setModal={setModal} />, document.body)}
       <section className="feed-wrapper">
         <PostInput setModal={setModal} />
         <section className="feed-container">

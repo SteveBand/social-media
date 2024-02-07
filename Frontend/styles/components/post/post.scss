@@ -3,28 +3,30 @@
 a.post-wrapper {
   width: 100%;
   display: block;
-  border-bottom: 1px solid rgb(198, 196, 196);
+  border-bottom: 1px solid var(--border-color);
   border-top: none;
   box-sizing: border-box;
   padding: 10px;
   outline: none;
   transition: 300ms ease;
   position: relative;
+  color: var(--text);
 
   &:hover {
-    background-color: rgb(214, 211, 211);
+    background-color: var(--post-background-color);
   }
 
   .options-modal {
     position: absolute;
     top: 25%;
     right: 0;
-    background-color: rgba(225, 225, 225, 1);
+    background-color: var(--options-background-color);
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    border-radius: 10px;
 
     div {
       flex: 1;
@@ -32,9 +34,10 @@ a.post-wrapper {
       padding: 5px 15px;
       width: 100%;
       text-align: center;
+      color: var(--text);
 
       &:hover {
-        background-color: whitesmoke;
+        background-color: var(--options-hover);
       }
     }
   }
@@ -59,8 +62,8 @@ a.post-wrapper {
 
     .post-options-button {
       margin: 0 auto;
-      fill: rgba(0, 0, 0, 0.5);
       cursor: pointer;
+      fill: var(--text);
     }
   }
 
@@ -81,7 +84,7 @@ a.post-wrapper {
       .action-button-icon {
         cursor: pointer;
         transition: 200ms ease;
-        color: rgba(0, 0, 0, 0.5);
+        color: var(--action-button-color);
         &:hover {
           scale: 1.05;
         }

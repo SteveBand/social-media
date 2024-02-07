@@ -1,6 +1,6 @@
-import { BsHouse, BsHeart, BsSearch } from "react-icons/bs";
-import { RiAdminLine } from "react-icons/ri";
-import { GrGroup } from "react-icons/gr";
+import { BsHouse, BsSearch } from "react-icons/bs";
+
+import { BsPeople } from "react-icons/bs";
 
 export const navLinks = [
   {
@@ -16,6 +16,6 @@ export const navLinks = [
   {
     path: "/communities",
     name: "Communities",
-    icon: <GrGroup className="navbar-link-icon" />,
+    icon: <BsPeople className="navbar-link-icon" />,
   },
 ];

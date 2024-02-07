@@ -52,7 +52,7 @@ function fetchComments(postId) {
       $lookup: {
         from: "users",
         localField: "userId",
-        foreignField: "email",
+        foreignField: "_id",
         as: "user_info",
       },
     },

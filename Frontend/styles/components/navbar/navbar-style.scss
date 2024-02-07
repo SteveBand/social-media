@@ -10,6 +10,7 @@
   top: 0;
   left: 0;
   height: 100vh;
+  color: var(--text);
   .navbar-links-wrapper {
     display: flex;
     flex-direction: column;
@@ -33,7 +34,7 @@
       }
 
       &:hover {
-        background-color: #ced5ea;
+        background-color: var(--nav-link-background-color);
       }
     }
 
@@ -41,7 +42,7 @@
       display: flex;
       align-items: center;
       gap: 50px;
-      background-color: #ced5ea;
+      background-color: var(--nav-link-background-color);
       padding: 2px 20px;
       border-radius: 15px;
       .navbar-link-icon {
@@ -105,7 +106,8 @@
       justify-content: space-evenly;
       letter-spacing: 1px;
       transition: 300ms ease;
-      background-color: white;
+      background-color: var(--modal-color);
+      color: var(--text);
       box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.435);
       -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.435);
       -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.435);
@@ -113,17 +115,21 @@
         text-decoration: none;
         padding: 10px 0;
         transition: 200ms ease;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
 
         &:hover {
-          background-color: rgb(206, 205, 205);
+          background-color: var(--nav-link-background-color);
         }
       }
 
       .signout {
         padding: 10px 0;
         transition: 200ms ease;
+        border-bottom-right-radius: 15px;
+        border-bottom-left-radius: 15px;
         &:hover {
-          background-color: rgb(206, 205, 205);
+          background-color: var(--nav-link-background-color);
         }
       }
     }

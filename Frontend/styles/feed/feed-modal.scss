@@ -5,7 +5,7 @@
   z-index: 10;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.45);
+  background-color: var(--modals-wrapper-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,13 +14,14 @@
     min-width: 475px;
     width: 650px;
     min-height: 240px;
-    background-color: white;
+    background-color: var(--modal-color);
     border-radius: 15px;
     box-sizing: border-box;
     padding: 10px 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    color: var(--text);
 
     .profile-content {
       display: flex;
@@ -41,33 +42,23 @@
       }
     }
 
-    .inputs {
-      display: flex;
-      gap: 20px;
-      flex-direction: column;
-
-      .icon {
-        font-size: 30px;
-        cursor: pointer;
-      }
-
-      .hidden-input {
-        display: none;
-      }
-    }
-
     textarea {
       border: none;
       outline: none;
       width: 70%;
       max-width: 90%;
       min-width: 300px;
-      border-bottom: 0.5px solid gray;
+      border: 0.5px solid var(--border-color);
       padding-bottom: 10px;
       overflow: hidden;
       max-height: 40vh;
       margin-bottom: 20px;
       min-height: 50px;
+      background-color: transparent;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      padding: 5px;
+      color: var(--text);
     }
 
     .feed-post-modal-button {

@@ -1,15 +1,16 @@
 "use client";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
 import { PostSchema } from "@/lib/schemas";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { IoMdClose } from "react-icons/io";
 
-type Props = {};
+type Props = {
+  setModal: React.Dispatch<SetStateAction<boolean>>;
+};
 
-export default function PostModal({}: Props) {
+export default function PostModal({ setModal }: Props) {
   const user = useAppSelector((state) => state.userReducer);
-  const dispatch = useAppDispatch();
   const [params, setParams] = useState({
     content: "",
   });
@@ -55,7 +56,10 @@ export default function PostModal({}: Props) {
             <PiUserCircle className="icon" />
           )}
           <p>{`${user.user_info.name}`}</p>
-          <IoMdClose className="modal-close-icon" />
+          <IoMdClose
+            className="modal-close-icon"
+            onClick={() => setModal((prev) => !prev)}
+          />
         </div>
         <div className="inputs">
           <textarea

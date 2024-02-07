@@ -1,3 +1,5 @@
+// @import "./themes.scss";
+
 @mixin darkButtons {
   background-color: rgb(71, 70, 70);
   transition: 300ms ease;
@@ -33,7 +35,7 @@
   max-width: 570px;
   min-width: 300px;
   min-height: 100vh;
-  border: 1px solid rgb(218, 218, 218);
+  border: 1px solid var(--border-color);
   padding-bottom: 2vh;
 
   @media screen and (max-width: 475px) {

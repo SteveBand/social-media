@@ -10,7 +10,7 @@ export default function PostInput({
     <div className="feed-post-input-container" onClick={() => setModal(true)}>
       <PiUserCircle className="feed-post-input-icon" />
       <p className="feed-post-input">Start a post...</p>
-      <button className="feed-post-input-button">Post</button>
+      <button className="feed-post-input-button action-button">Post</button>
     </div>
   );
 }

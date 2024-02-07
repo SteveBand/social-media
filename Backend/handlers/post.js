@@ -93,4 +93,28 @@ module.exports = (app) => {
       return res.status(500).send({ message: "An error has occurred" });
     }
   });
+
+  app.put("/post/:postId", authGuard, async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+    const postId = new mongoose.Types.ObjectId(req.params.postId);
+    const content = req.body.content;
+    try {
+      const post = await Post.findById(postId);
+
+      if (!post) {
+        return res.status(404).send({ message: "Post not found!" });
+      }
+
+      if (!post.parentId.equals(userId)) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      await Post.findOneAndUpdate({ _id: postId }, { content: content });
+
+      return res.status(200).send({ message: "success" });
+    } catch (error) {
+      console.log("An error has occurred at /post/:postId method put", error);
+      return res.status(500).send({ message: "Something went wrong" });
+    }
+  });
 };
