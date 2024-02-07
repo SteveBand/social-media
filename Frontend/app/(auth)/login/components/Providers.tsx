@@ -1,43 +1,47 @@
-import { BuiltInProviderType } from "next-auth/providers/index";
-import { ClientSafeProvider, LiteralUnion, signIn } from "next-auth/react";
 import { PiGithubLogoFill } from "react-icons/pi";
-import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { useMemo } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-type Props = {
-  providers: Record<
-    LiteralUnion<BuiltInProviderType, string>,
-    ClientSafeProvider
-  > | null;
-};
+export function Providers() {
+  const router = useRouter();
+  const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID as string;
 
-export function Providers({ providers }: Props) {
-  const providersList = useMemo(() => {
-    if (!providers) return [];
-    const obj = Object.values(providers);
-    return obj;
-  }, [providers]);
+  function githubProvider() {
+    router.push(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${"http://localhost:4000/auth/github/callback"}`
+    );
+  }
 
+  function googleProvider() {
+    router.push("http://localhost:4000/auth/google/");
+  }
   return (
     <div className="providers-wrapper">
-      {providersList !== undefined &&
-        providersList.map((provider: any) => {
-          return (
-            <div
-              key={provider.id}
-              onClick={() => signIn(provider.id)}
-              className={`provider-container ${provider.id}`}
-            >
-              {provider.id === "github" && (
-                <PiGithubLogoFill className="icon" />
-              )}
-              {provider.id === "facebook" && <FaFacebook className="icon" />}
-              {provider.id === "google" && <FcGoogle className="icon" />}
-              {`Sign in with ${provider.name}`}
-            </div>
-          );
-        })}
+      <div
+        className={`provider-container github`}
+        onClick={() => githubProvider()}
+        key={"github"}
+      >
+        {<PiGithubLogoFill className="icon" />}
+        {`Sign in with Github`}
+      </div>
+
+      <div
+        className={`provider-container google`}
+        onClick={() => googleProvider()}
+        key={"google"}
+      >
+        {<FcGoogle className="icon" />}
+        {`Sign in with Google`}
+      </div>
+
+      <div className="create-account">
+        <span>Don't have an Account ?</span>
+        <Link className="create-account-btn" href="/signup">
+          Create an Account
+        </Link>
+      </div>
     </div>
   );
 }

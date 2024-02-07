@@ -54,7 +54,6 @@ export default function Page() {
     if (query.length >= 1 && searchedData.length <= 0) {
       setLoading(true);
     }
-    console.log(action, searchedData);
   }, [query, action]);
 
   return (

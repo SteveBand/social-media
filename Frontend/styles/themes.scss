@@ -1,0 +1,19 @@
+@import "./mixin.scss";
+
+:root {
+  --background-color: rgb(235, 233, 233);
+  --nav-link-background-color: #ced5ea;
+
+  .action-button {
+    @include darkButtons;
+  }
+}
+
+[data-theme="dark"] {
+  --background-color: #252526;
+  --nav-link-background-color: #3e3e42;
+
+  .action-button {
+    @include lightButtons;
+  }
+}

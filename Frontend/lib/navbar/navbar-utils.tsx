@@ -14,18 +14,8 @@ export const navLinks = [
     icon: <BsSearch className="navbar-link-icon" />,
   },
   {
-    path: "/activity",
-    name: "Activity",
-    icon: <BsHeart className="navbar-link-icon" />,
-  },
-  {
     path: "/communities",
     name: "Communities",
     icon: <GrGroup className="navbar-link-icon" />,
-  },
-  {
-    path: "/admin",
-    name: "Admin Panel",
-    icon: <RiAdminLine className="navbar-link-icon" />,
   },
 ];

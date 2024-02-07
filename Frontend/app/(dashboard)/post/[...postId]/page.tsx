@@ -84,44 +84,42 @@ export default function PostPage({ params }: { params: { postId: any } }) {
     return <div>no Content</div>;
   }
   return (
-    <section className="post-page-wrapper">
-      <section className="post-page-container">
-        <header>
-          <FaArrowLeft className="back-button" onClick={() => router.back()} />
-          <p>Post</p>
-        </header>
-        <MainPost content={content} setComments={setComments} />
-        {user.status === "authenticated" && (
-          <form>
-            <p>
-              Replying to <Link href={"/"}>{content.user_info.name}</Link>
-            </p>
-            <div className="content">
-              {user?.user_info.avatar_url ? (
-                <img src={user?.user_info.avatar_url} />
-              ) : (
-                <CgProfile />
-              )}
-              <textarea
-                placeholder="Post your Reply"
-                onChange={(e) => setTextAreaValue(e.target.value)}
-                maxLength={100}
-              />
-            </div>
-            <button onClick={PostReply}>Reply</button>
-          </form>
-        )}
-        <section className="comments-section">
-          {comments?.map((comment) => {
-            return (
-              <Comment
-                comment={comment}
-                key={comment._id}
-                setComments={setComments}
-              />
-            );
-          })}
-        </section>
+    <section className="post-page-container">
+      <header>
+        <FaArrowLeft className="back-button" onClick={() => router.back()} />
+        <p>Post</p>
+      </header>
+      <MainPost content={content} setComments={setComments} />
+      {user.status === "authenticated" && (
+        <form>
+          <p>
+            Replying to <Link href={"/"}>{content.user_info.name}</Link>
+          </p>
+          <div className="content">
+            {user?.user_info.avatar_url ? (
+              <img src={user?.user_info.avatar_url} />
+            ) : (
+              <CgProfile />
+            )}
+            <textarea
+              placeholder="Post your Reply"
+              onChange={(e) => setTextAreaValue(e.target.value)}
+              maxLength={100}
+            />
+          </div>
+          <button onClick={PostReply}>Reply</button>
+        </form>
+      )}
+      <section className="comments-section">
+        {comments?.map((comment) => {
+          return (
+            <Comment
+              comment={comment}
+              key={comment._id}
+              setComments={setComments}
+            />
+          );
+        })}
       </section>
     </section>
   );

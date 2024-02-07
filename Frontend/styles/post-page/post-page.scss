@@ -1,169 +1,157 @@
 @import "./mixin.scss";
 
-.post-page-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 10px;
-  .post-page-container {
-    width: 600px;
-    min-width: 280px;
-    min-height: 100vh;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
-    box-sizing: border-box;
-    position: relative;
+.post-page-container {
+  @include PageContainer;
 
-    header {
+  header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 10px;
+    backdrop-filter: blur(10px);
+    position: sticky;
+    left: 0;
+    top: 0;
+
+    p {
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .back-button {
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 50%;
+      box-sizing: content-box;
+      padding: 2px 5px;
+      transition: 200ms ease;
+
+      &:hover {
+        background-color: rgb(212, 212, 212);
+      }
+    }
+  }
+
+  .main-post {
+    padding: 15px 15px 0 15px;
+    .upper-post {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-      padding: 10px;
-      backdrop-filter: blur(10px);
-      position: sticky;
-      left: 0;
-      top: 0;
-
-      p {
-        font-size: 1.2rem;
-        letter-spacing: 1px;
-        margin: 0;
-      }
-
-      .back-button {
-        font-size: 1.2rem;
-        cursor: pointer;
-        border-radius: 50%;
-        box-sizing: content-box;
-        padding: 2px 5px;
-        transition: 200ms ease;
-
-        &:hover {
-          background-color: rgb(212, 212, 212);
-        }
-      }
-    }
-
-    .main-post {
-      padding: 15px 15px 0 15px;
-      .upper-post {
-        display: flex;
-        align-items: center;
-        box-sizing: border-box;
-        justify-content: space-between;
-
-        .user-details {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          img {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-          }
-        }
-        .action-buttons {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-
-          .follow-button {
-            @include darkButtons;
-          }
-
-          .options-btn {
-            cursor: pointer;
-          }
-        }
-      }
-
-      .post-content {
-        p {
-          margin-top: 5px;
-          font-size: 1.15rem;
-          letter-spacing: 0.5px;
-        }
-      }
-      footer {
-        .post-details {
-          color: rgb(83, 83, 83);
-          font-size: 0.8rem;
-          letter-spacing: 0.8px;
-        }
-        .post-action-buttons {
-          display: flex;
-          align-items: center;
-          justify-content: space-around;
-          border-top: 1px solid gray;
-          border-bottom: 1px solid gray;
-          max-height: 40px;
-
-          .icon {
-            cursor: pointer;
-            transition: 200ms ease;
-            &:hover {
-              scale: 1.1;
-            }
-          }
-
-          .button-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            gap: 7px;
-
-            .post-like-button {
-              fill: gray;
-            }
-
-            .post-like-button-active {
-              fill: rgb(197, 38, 38);
-              scale: 1.1;
-            }
-          }
-        }
-      }
-    }
-    form {
-      border-bottom: 1px solid gray;
       box-sizing: border-box;
-      padding: 10px;
+      justify-content: space-between;
 
-      p {
-        font-size: 0.85rem;
-
-        a {
-          color: #248bd8;
-          letter-spacing: 0.5px;
-        }
-      }
-      .content {
+      .user-details {
         display: flex;
-        gap: 10px;
         align-items: center;
+        gap: 15px;
         img {
-          width: 50px;
-          height: 50px;
+          width: 65px;
+          height: 65px;
           border-radius: 50%;
         }
+      }
+      .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 15px;
 
-        textarea {
-          border: none;
-          resize: none;
-          background-color: transparent;
-          width: 70%;
-          outline: none;
-          letter-spacing: 0.8px;
-          font-size: 0.85rem;
+        .follow-button {
+          @include darkButtons;
+        }
+
+        .options-btn {
+          cursor: pointer;
         }
       }
+    }
 
-      button {
-        @include darkButtons;
-        display: block;
-        margin-left: auto;
-        margin-right: 0;
+    .post-content {
+      p {
+        margin-top: 5px;
+        font-size: 1.15rem;
+        letter-spacing: 0.5px;
       }
+    }
+    footer {
+      .post-details {
+        color: rgb(83, 83, 83);
+        font-size: 0.8rem;
+        letter-spacing: 0.8px;
+      }
+      .post-action-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        border-top: 1px solid gray;
+        border-bottom: 1px solid gray;
+        max-height: 40px;
+
+        .icon {
+          cursor: pointer;
+          transition: 200ms ease;
+          &:hover {
+            scale: 1.1;
+          }
+        }
+
+        .button-container {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          gap: 7px;
+
+          .post-like-button {
+            fill: gray;
+          }
+
+          .post-like-button-active {
+            fill: rgb(197, 38, 38);
+            scale: 1.1;
+          }
+        }
+      }
+    }
+  }
+  form {
+    border-bottom: 1px solid gray;
+    box-sizing: border-box;
+    padding: 10px;
+
+    p {
+      font-size: 0.85rem;
+
+      a {
+        color: #248bd8;
+        letter-spacing: 0.5px;
+      }
+    }
+    .content {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
+
+      textarea {
+        border: none;
+        resize: none;
+        background-color: transparent;
+        width: 70%;
+        outline: none;
+        letter-spacing: 0.8px;
+        font-size: 0.85rem;
+      }
+    }
+
+    button {
+      @include darkButtons;
+      display: block;
+      margin-left: auto;
+      margin-right: 0;
     }
   }
 }

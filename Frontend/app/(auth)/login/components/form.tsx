@@ -6,20 +6,11 @@ import { LoginParams } from "@/lib/auth-utilis/authTypes";
 import { loginSchema } from "@/lib/auth-utilis/authSchemas";
 import Link from "next/link";
 import { Providers } from "./Providers";
-import { BuiltInProviderType } from "next-auth/providers/index";
-import { ClientSafeProvider, LiteralUnion, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 
-type Props = {
-  providers: Record<
-    LiteralUnion<BuiltInProviderType, string>,
-    ClientSafeProvider
-  > | null;
-};
-
-export default function LoginForm({ providers }: Props) {
+export default function LoginForm() {
   const [loginParams, setLoginParams] = useState<LoginParams>({
     email: "",
     password: "",
@@ -111,13 +102,7 @@ export default function LoginForm({ providers }: Props) {
         <p className="login-method-paragraph">
           Or Login using diffrent method :
         </p>
-        <Providers providers={providers} />
-        <div className="create-account">
-          <span>Don't have an Account ?</span>
-          <Link className="create-account-btn" href="/signup">
-            Create an Account
-          </Link>
-        </div>
+        <Providers />
       </form>
     </article>
   );

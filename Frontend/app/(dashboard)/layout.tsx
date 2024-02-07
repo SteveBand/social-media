@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";
 import { useEffect } from "react";
+import { EditModal } from "@/components/common/EditModal";
 
 export default function RootLayout({
   children,
@@ -58,6 +59,8 @@ export default function RootLayout({
       sessionConnect();
     }
   }, [user.status]);
+
+  document.body.setAttribute("data-theme", "dark");
 
   return (
     <html lang="en">

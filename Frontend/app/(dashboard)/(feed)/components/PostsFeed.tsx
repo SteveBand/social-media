@@ -15,7 +15,6 @@ export function PostsFeed() {
       if (res.status === 200) {
         const data = await res.json();
         data && setPosts(data);
-        console.log(data);
       }
     } catch (err) {
       console.log(err);

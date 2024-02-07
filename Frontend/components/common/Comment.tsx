@@ -7,6 +7,8 @@ import { PostLike } from "@/components/common/action-buttons/PostLike";
 import { ProfileImage } from "@/components/common/ProfileImage";
 import { CommentButton } from "@/components/common/action-buttons/CommentButton";
 import { useAppSelector } from "@/hooks";
+import { createPortal } from "react-dom";
+import { EditModal } from "./EditModal";
 
 type Props = {
   comment: PostType;
@@ -23,6 +25,7 @@ export function Comment({
   setComments,
 }: Props) {
   const [optionsModal, setOptionsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const router = useRouter();
   const user = useAppSelector((state) => state.userReducer);
 
@@ -63,53 +66,62 @@ export function Comment({
   }
 
   return (
-    <article
-      key={comment._id}
-      className="comment-wrapper"
-      onClick={handleNavigation}
-    >
-      <div
-        className="comment-container"
-        data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
+    <>
+      {editModal &&
+        createPortal(
+          <EditModal currentPost={comment} setEditModal={setEditModal} />,
+          document.body
+        )}
+      <article
+        key={comment._id}
+        className="comment-wrapper"
+        onClick={handleNavigation}
       >
-        <ProfileImage userInfo={comment.user_info} />
         <div
-          className="content"
+          className="comment-container"
           data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
         >
-          <p>{comment.user_info.name}</p>
-          <p data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}>
-            {comment.content}
-          </p>
+          <ProfileImage userInfo={comment.user_info} />
+          <div
+            className="content"
+            data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
+          >
+            <p>{comment.user_info.name}</p>
+            <p
+              data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
+            >
+              {comment.content}
+            </p>
+          </div>
+          {(comment.isAuthor || user.user_info.admin) && (
+            <SlOptions
+              className="options-btn"
+              onClick={() => setOptionsModal((prev) => !prev)}
+            />
+          )}
         </div>
-        {(comment.isAuthor || user.user_info.admin) && (
-          <SlOptions
-            className="options-btn"
-            onClick={() => setOptionsModal((prev) => !prev)}
+        <footer
+          data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
+        >
+          <PostLike
+            post={comment}
+            handlePostLikeFunction={handlePostLikeFunction}
           />
+          <div className="button-container" id="">
+            <CommentButton content={comment} setComments={setComments} />
+          </div>
+          <div className="button-container">
+            <IoIosShareAlt className="icon" />
+            <p>{comment.sharesCount > 0 && comment.sharesCount}</p>
+          </div>
+        </footer>
+        {optionsModal && (
+          <article className="options-modal">
+            <div onClick={() => handleDelete()}>Delete</div>
+            <div onClick={() => setEditModal((prev) => !prev)}>Edit</div>
+          </article>
         )}
-      </div>
-      <footer
-        data-navigate-to={`/comment/${comment._id}?postId=${comment._id}`}
-      >
-        <PostLike
-          post={comment}
-          handlePostLikeFunction={handlePostLikeFunction}
-        />
-        <div className="button-container" id="">
-          <CommentButton content={comment} setComments={setComments} />
-        </div>
-        <div className="button-container">
-          <IoIosShareAlt className="icon" />
-          <p>{comment.sharesCount > 0 && comment.sharesCount}</p>
-        </div>
-      </footer>
-      {optionsModal && (
-        <article className="options-modal">
-          <div onClick={() => handleDelete()}>Delete</div>
-          <div>Edit</div>
-        </article>
-      )}
-    </article>
+      </article>
+    </>
   );
 }

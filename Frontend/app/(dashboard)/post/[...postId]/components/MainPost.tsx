@@ -28,7 +28,6 @@ export function MainPost({ content, setComments }: Props) {
         </div>
         <div className="action-buttons">
           <FollowButton userData={content.user_info} />
-          <SlOptions className="options-btn" />
         </div>
       </div>
       <div className="post-content">

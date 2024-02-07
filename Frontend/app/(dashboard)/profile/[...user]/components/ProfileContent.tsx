@@ -8,6 +8,7 @@ import { Comment } from "@/components/common/Comment";
 import { BackButton } from "@/components/common/action-buttons/BackButton";
 import moment from "moment";
 import { FollowButton } from "@/components/common/action-buttons/FollowButton";
+import { useAppSelector } from "@/hooks";
 
 export function ProfileContent({ userId }: { userId: string }) {
   const [action, setAction] = useState<Action>("posts");
@@ -20,6 +21,7 @@ export function ProfileContent({ userId }: { userId: string }) {
     followers: [],
   });
   const [loading, setLoading] = useState(true);
+  const loggedUser = useAppSelector((state) => state.userReducer.user_info);
 
   async function fetchUser() {
     try {
@@ -128,7 +130,7 @@ export function ProfileContent({ userId }: { userId: string }) {
           <div className="followers-container">
             <p>{user?.following} Following</p>
             <p>{user?.followers} Followers</p>
-            <FollowButton userData={user} />
+            {loggedUser._id !== user._id && <FollowButton userData={user} />}
           </div>
         </div>
       </article>
@@ -178,6 +180,7 @@ export function ProfileContent({ userId }: { userId: string }) {
                 <Comment
                   comment={post}
                   handlePostLikeFunction={handlePostLikeFunction}
+                  key={post._id}
                 />
               ) : (
                 <Post
@@ -192,7 +195,9 @@ export function ProfileContent({ userId }: { userId: string }) {
 
         {action === "followers" || action === "following"
           ? data[action].map((content) => {
-              return <User content={content} loading={loading} />;
+              return (
+                <User content={content} loading={loading} key={content._id} />
+              );
             })
           : null}
       </section>
