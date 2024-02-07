@@ -12,6 +12,11 @@
     position: sticky;
     top: 0;
     left: 0;
+    color: var(--text);
+
+    .back-button {
+      cursor: pointer;
+    }
 
     h4 {
       letter-spacing: 0.5px;

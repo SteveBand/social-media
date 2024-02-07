@@ -7,6 +7,7 @@ header {
   top: 0;
   left: 0;
   z-index: 100;
+  color: var(--text);
 
   .title {
     display: flex;
@@ -39,7 +40,7 @@ header {
         font-size: 1.2rem;
       }
       &:hover {
-        background-color: #d0dfeb;
+        background-color: var(--nav-link-background-color);
       }
     }
   }

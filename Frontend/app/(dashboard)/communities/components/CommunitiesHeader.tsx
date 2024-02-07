@@ -17,9 +17,6 @@ export function CommunitiesPageHeader() {
           <h4>Communities</h4>
         </div>
         <div className="action-buttons">
-          <button>
-            <HiMagnifyingGlass className="icon" />
-          </button>
           <Link
             href={"/communities/new"}
             onClick={(e) => {
