@@ -59,7 +59,9 @@ export function CommunitySummary({
       <footer>
         <p>{membersCount} Members</p>
         {!isMember && !data.isAdmin && (
-          <button onClick={handleJoin}>Join</button>
+          <button onClick={handleJoin} className="action-button">
+            Join
+          </button>
         )}
         {isMember && !data.isAdmin && (
           <button onClick={handleJoin} className="is-member">

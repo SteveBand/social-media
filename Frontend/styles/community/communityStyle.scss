@@ -48,10 +48,6 @@
       display: flex;
       justify-content: space-between;
 
-      button {
-        @include darkButtons;
-      }
-
       button.is-member {
         transition: 200ms ease;
         span.leave {

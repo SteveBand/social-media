@@ -51,10 +51,6 @@ export function CommentModal({
     }
   }
 
-  // if (user.status === "unauthenticated") {
-  //   return <NotLoggedModal />;
-  // }
-
   return (
     <section className="comment-modal-wrapper">
       <section className="container">
@@ -85,7 +81,9 @@ export function CommentModal({
           </div>
         </article>
         <footer>
-          <button onClick={postComment}>Comment</button>
+          <button onClick={postComment} className="action-button">
+            Comment
+          </button>
         </footer>
       </section>
     </section>

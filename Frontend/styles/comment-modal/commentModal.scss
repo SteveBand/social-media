@@ -2,7 +2,7 @@
   position: fixed;
   width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--modals-wrapper-color);
   z-index: 10;
   top: 0;
   left: 0;
@@ -13,15 +13,18 @@
   align-items: center;
 
   .container {
-    min-width: 500px;
+    min-width: 475px;
+    width: 500px;
+    max-width: 600px;
     min-height: 200px;
     border-radius: 15px;
-    background-color: white;
+    background-color: var(--modal-color);
     box-sizing: border-box;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    color: var(--text);
 
     header {
       width: 100%;
@@ -34,7 +37,7 @@
         border-radius: 50%;
         transition: 300ms ease;
         &:hover {
-          background-color: rgb(214, 212, 212);
+          background-color: var(--nav-link-background-color);
         }
       }
     }
@@ -76,12 +79,17 @@
         textarea {
           border: none;
           outline: none;
-          resize: none;
-
-          width: 50%;
-          height: 50px;
+          background-color: var(--search-bar-color);
+          border: 1px solid var(--border-color);
+          width: 80%;
+          max-width: 90%;
+          min-width: 50%;
+          height: 80px;
+          max-height: 120px;
+          min-height: 50px;
           letter-spacing: 0.7px;
           font-size: 0.85rem;
+          color: var(--text);
         }
       }
     }
@@ -89,9 +97,16 @@
     footer {
       display: flex;
       justify-content: flex-end;
-      button {
-        @include darkButtons;
-      }
+    }
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .comment-modal-wrapper {
+    .container {
+      width: 100%;
+      min-width: 300px;
+      min-height: 300px;
     }
   }
 }
