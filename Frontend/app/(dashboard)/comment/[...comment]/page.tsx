@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks";
 
 export default function CommentPage({ params }: { params: any }) {
-  const [content, setContent] = useState<PostType | null>();
+  const [content, setContent] = useState<PostType | null>(null);
   const [comments, setComments] = useState<PostType[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
+
   const user = useAppSelector((state) => state.userReducer);
   const router = useRouter();
   const postId = params.comment[0];
@@ -69,6 +70,14 @@ export default function CommentPage({ params }: { params: any }) {
           const arr = [data];
           return arr;
         }
+      });
+      setContent((prev) => {
+        if (!prev) return null;
+        const updatedCount = (content?.commentsCount ?? 0) + 1;
+        return {
+          ...prev,
+          commentsCount: updatedCount,
+        };
       });
     }
   }

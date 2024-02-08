@@ -7,6 +7,7 @@ import { FollowButton } from "@/components/common/action-buttons/FollowButton";
 import { useAppSelector } from "@/hooks";
 import { CommentButton } from "@/components/common/action-buttons/CommentButton";
 import { SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   content: PostType | null;
@@ -15,9 +16,10 @@ type Props = {
 
 export function MainComment({ content, setComments }: Props) {
   const user = useAppSelector((state) => state.userReducer);
+  const router = useRouter();
 
   if (!content) {
-    return <div>None</div>;
+    return <div>ERROR 404</div>;
   }
 
   const date = moment(content.createdAt).format("h:mm a · MMM Do YY");
@@ -26,7 +28,10 @@ export function MainComment({ content, setComments }: Props) {
   return (
     <article className="main-post">
       <div className="upper-post">
-        <div className="user-details">
+        <div
+          className="user-details"
+          onClick={() => router.push(`/profile/${content.user_info._id}`)}
+        >
           <img src={content.user_info?.avatar_url} />
           <p>{content.user_info?.name}</p>
         </div>

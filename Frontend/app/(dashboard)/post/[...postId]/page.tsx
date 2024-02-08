@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks";
 export default function PostPage({ params }: { params: { postId: any } }) {
-  const [content, setContent] = useState<PostType | null>();
+  const [content, setContent] = useState<PostType | null>(null);
   const [comments, setComments] = useState<PostType[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
   const router = useRouter();
@@ -55,7 +55,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ params: textAreaValue }),
+      body: JSON.stringify({ target: "post", params: textAreaValue }),
     });
     if (res.ok) {
       const data = await res.json();
@@ -83,6 +83,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
   if (!content) {
     return <div>no Content</div>;
   }
+
   return (
     <section className="post-page-container">
       <header>

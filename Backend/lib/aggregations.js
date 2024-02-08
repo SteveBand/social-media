@@ -102,6 +102,9 @@ function fetchCommentsLogged(postId, userId) {
             else: false,
           },
         },
+        isAuthor: {
+          $eq: [userId, "$user_info._id"],
+        },
       },
     },
     {
