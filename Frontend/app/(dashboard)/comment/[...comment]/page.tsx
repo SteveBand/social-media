@@ -50,14 +50,13 @@ export default function CommentPage({ params }: { params: any }) {
 
   async function PostReply(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    console.log(postId);
     const res = await fetch(`http://localhost:4000/new/comment/${postId}`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ params: textAreaValue }),
+      body: JSON.stringify({ target: "comment", params: textAreaValue }),
     });
     if (res.ok) {
       const data = await res.json();
@@ -91,13 +90,13 @@ export default function CommentPage({ params }: { params: any }) {
   }
 
   return (
-    <section className="post-page-wrapper">
-      <section className="post-page-container">
-        <header>
-          <FaArrowLeft className="back-button" onClick={() => router.back()} />
-          <p>Post</p>
-        </header>
-        <MainComment content={content} setComments={setComments} />
+    <section className="post-page-container">
+      <header>
+        <FaArrowLeft className="back-button" onClick={() => router.back()} />
+        <p>Post</p>
+      </header>
+      <MainComment content={content} setComments={setComments} />
+      {user.status === "authenticated" && (
         <form>
           <p>
             Replying to <Link href={"/"}>{content.user_info.name}</Link>
@@ -115,19 +114,21 @@ export default function CommentPage({ params }: { params: any }) {
               maxLength={100}
             />
           </div>
-          <button onClick={PostReply}>Reply</button>
+          <button onClick={PostReply} className="action-button">
+            Reply
+          </button>
         </form>
-        <section className="comments-section">
-          {comments?.map((comment) => {
-            return (
-              <Comment
-                comment={comment}
-                key={comment._id}
-                setComments={setComments}
-              />
-            );
-          })}
-        </section>
+      )}
+      <section className="comments-section">
+        {comments?.map((comment) => {
+          return (
+            <Comment
+              comment={comment}
+              key={comment._id}
+              setComments={setComments}
+            />
+          );
+        })}
       </section>
     </section>
   );

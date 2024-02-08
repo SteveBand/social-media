@@ -1,5 +1,4 @@
 import { IoIosShareAlt } from "react-icons/io";
-import { IoChatboxOutline } from "react-icons/io5";
 import { SlOptions } from "react-icons/sl";
 import { PostType } from "../../../../../../types";
 import { PostLike } from "@/components/common/action-buttons/PostLike";
@@ -7,9 +6,7 @@ import moment from "moment";
 import { FollowButton } from "@/components/common/action-buttons/FollowButton";
 import { useAppSelector } from "@/hooks";
 import { CommentButton } from "@/components/common/action-buttons/CommentButton";
-import { SetStateAction, useState } from "react";
-import { createPortal } from "react-dom";
-import { CommentModal } from "@/components/common/commentModal/CommentModal";
+import { SetStateAction } from "react";
 
 type Props = {
   content: PostType | null;

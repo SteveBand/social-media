@@ -12,6 +12,7 @@
     position: sticky;
     left: 0;
     top: 0;
+    color: var(--text);
 
     p {
       font-size: 1.2rem;
@@ -26,15 +27,12 @@
       box-sizing: content-box;
       padding: 2px 5px;
       transition: 200ms ease;
-
-      &:hover {
-        background-color: rgb(212, 212, 212);
-      }
     }
   }
 
   .main-post {
     padding: 15px 15px 0 15px;
+    color: var(--text);
     .upper-post {
       display: flex;
       align-items: center;
@@ -56,10 +54,6 @@
         align-items: center;
         gap: 15px;
 
-        .follow-button {
-          @include darkButtons;
-        }
-
         .options-btn {
           cursor: pointer;
         }
@@ -75,7 +69,7 @@
     }
     footer {
       .post-details {
-        color: rgb(83, 83, 83);
+        color: var(--date-color);
         font-size: 0.8rem;
         letter-spacing: 0.8px;
       }
@@ -117,7 +111,7 @@
     border-bottom: 1px solid gray;
     box-sizing: border-box;
     padding: 10px;
-
+    color: var(--text);
     p {
       font-size: 0.85rem;
 
@@ -144,11 +138,11 @@
         outline: none;
         letter-spacing: 0.8px;
         font-size: 0.85rem;
+        color: var(--text);
       }
     }
 
     button {
-      @include darkButtons;
       display: block;
       margin-left: auto;
       margin-right: 0;

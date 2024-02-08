@@ -31,17 +31,19 @@ module.exports = (app) => {
           { $inc: { __v: 1, commentsCount: 1 } }
         );
       } else if (req.body.target === "comment") {
+        console.log(req.body.target);
         const existingComment = await CommentModel.findById(parentId);
 
         if (!existingComment) {
           return res.send({ message: "404 Comment not Found" }).status(404);
         }
 
-        await CommentModel.findOneAndUpdate(
+        const newCommentos = await CommentModel.findOneAndUpdate(
           { _id: parentId },
           { $inc: { __v: 1, commentsCount: 1 } }
         );
       }
+
       const newComment = await new CommentModel(comment).save();
       const user_info = await UserModel.findById(userId);
 

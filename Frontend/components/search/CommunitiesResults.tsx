@@ -7,10 +7,10 @@ export function CommunitiesResults({
   searchResults: CommunityType[];
 }) {
   return (
-    <section className="results-contianer">
+    <>
       {searchResults.map((community) => {
         return <CommunityLink community={community} key={community._id} />;
       })}
-    </section>
+    </>
   );
 }

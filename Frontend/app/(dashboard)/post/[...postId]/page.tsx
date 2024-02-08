@@ -107,7 +107,9 @@ export default function PostPage({ params }: { params: { postId: any } }) {
               maxLength={100}
             />
           </div>
-          <button onClick={PostReply}>Reply</button>
+          <button onClick={PostReply} className="action-button">
+            Reply
+          </button>
         </form>
       )}
       <section className="comments-section">

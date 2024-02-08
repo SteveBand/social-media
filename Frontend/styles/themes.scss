@@ -10,6 +10,7 @@
   --modal-color: white;
   --action-button-color: rgba(0, 0, 0, 0.5);
   --search-bar-color: rgb(192, 193, 193);
+  --date-color: rgb(83, 83, 83);
   --text: black;
   .action-button {
     @include darkButtons;
@@ -27,6 +28,7 @@
   --modal-color: black;
   --action-button-color: rgb(165, 165, 165);
   --search-bar-color: transparent;
+  --date-color: rgb(193, 192, 192);
   --text: white;
 
   .action-button {

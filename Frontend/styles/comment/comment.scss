@@ -2,20 +2,21 @@
   display: block;
   box-sizing: border-box;
   justify-content: center;
-  border-bottom: 1px solid rgb(198, 196, 196);
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: 200ms ease;
   position: relative;
+  color: var(--text);
 
   &:hover {
-    background-color: rgb(214, 211, 211);
+    background-color: var(--post-background-color);
   }
 
   .options-modal {
     position: absolute;
     top: 40%;
     right: 0;
-    background-color: rgba(225, 225, 225, 1);
+    background-color: var(--options-background-color);
     box-sizing: border-box;
     display: flex;
     justify-content: center;
@@ -30,7 +31,7 @@
       text-align: center;
 
       &:hover {
-        background-color: whitesmoke;
+        background-color: var(--options-hover);
       }
     }
   }
@@ -76,17 +77,8 @@
         margin: 0;
       }
 
-      svg {
-        padding: 3.5px;
-        box-sizing: content-box;
-        border-radius: 50%;
-        &:hover {
-          background-color: rgb(196, 193, 193);
-        }
-      }
-
       .post-like-button {
-        fill: black;
+        color: var(--text);
       }
 
       .post-like-button-active {

@@ -47,7 +47,7 @@ export function FollowButton({ userData }: { userData: Partial<UserType> }) {
   }
 
   return (
-    <button className="follow-button" onClick={handleFollow}>
+    <button className="follow-button action-button" onClick={handleFollow}>
       {!following && <span className="follow">Follow</span>}
       {following && <span className="unfollow">Unfollow</span>}
     </button>

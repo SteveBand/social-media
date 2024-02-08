@@ -22,9 +22,6 @@ export function CommentButton({
   const dispatch = useAppDispatch();
   const loginModal = useAppSelector((state) => state.loginReducer.isModal);
   const user = useAppSelector((state) => state.userReducer.status);
-  // if (user === "unauthenticated") {
-  //   dispatch(activate());
-  // }
 
   function handleModal() {
     if (user === "unauthenticated") {

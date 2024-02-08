@@ -4,13 +4,14 @@ a.follower-wrapper {
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
-  border-bottom: 1px solid rgb(198, 196, 196);
+  border-bottom: 1px solid var(--border-color);
   display: block;
   transition: 200ms ease;
   position: relative;
+  color: var(--text);
 
   &:hover {
-    background-color: rgb(212, 212, 212);
+    background-color: var(--post-background-color);
   }
   .upper {
     width: 100%;
