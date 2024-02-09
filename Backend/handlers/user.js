@@ -253,4 +253,28 @@ module.exports = (app) => {
       return res.status(500).send({ message: "Server Error" });
     }
   });
+
+  app.delete("/user/:userId", authGuard, async (req, res) => {
+    const loggedUser = req.user;
+    const userId = new mongoose.Types.ObjectId(req.params.userId);
+
+    try {
+      const user = await UserModel.findById(userId);
+      if (!user) return res.status(404).send({ message: "User not found" });
+
+      if (!loggedUser.admin && !loggedUser._id.equals(userId)) {
+        return res.status(401).send({ message: "Unauthorized" });
+      }
+
+      await UserModel.findOneAndDelete({ _id: userId });
+      await Post.deleteMany({ parentId: userId });
+      await CommentModel.deleteMany({ userId: userId });
+      await LikesModel.deleteMany({ userId: userId });
+      await LikesModel.deleteMany({ authorId: userId });
+      return res.status(200).send({ message: "User deleted successfuly" });
+    } catch (error) {
+      console.log("An error occured at /user/:userId delete method", error);
+      return res.status(500).send({ message: "Server error" });
+    }
+  });
 };

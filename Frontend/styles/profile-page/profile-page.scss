@@ -20,6 +20,21 @@
     button {
       margin-left: auto;
     }
+
+    .delete-user-button {
+      padding: 5px 10px;
+      border-radius: 15px;
+      outline: none;
+      border: none;
+      background-color: rgba(255, 0, 0, 0.628);
+      color: var(--text);
+      cursor: pointer;
+      transition: 200ms ease;
+      &:hover {
+        background-color: rgba(255, 0, 0, 0.45);
+        scale: 0.95;
+      }
+    }
   }
 
   .user-content {

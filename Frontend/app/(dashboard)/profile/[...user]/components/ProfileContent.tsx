@@ -9,6 +9,7 @@ import { BackButton } from "@/components/common/action-buttons/BackButton";
 import moment from "moment";
 import { FollowButton } from "@/components/common/action-buttons/FollowButton";
 import { useAppSelector } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 export function ProfileContent({
   setEdit,
@@ -18,7 +19,6 @@ export function ProfileContent({
   user: Partial<UserType>;
 }) {
   const [action, setAction] = useState<Action>("posts");
-
   const [data, setData] = useState<DataType>({
     posts: [],
     likes: [],
@@ -26,9 +26,10 @@ export function ProfileContent({
     following: [],
     followers: [],
   });
-
   const [loading, setLoading] = useState(true);
   const loggedUser = useAppSelector((state) => state.userReducer.user_info);
+
+  const router = useRouter();
 
   async function fetchData() {
     setLoading(true);
@@ -88,6 +89,29 @@ export function ProfileContent({
 
   const date = user && moment(user.createdAt).format("MMM YY");
 
+  function confirmDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    if (window.confirm("Are you sure you want to delete this User?")) {
+      handleDeleteUser();
+    } else {
+      console.log("Cancelled");
+    }
+  }
+
+  async function handleDeleteUser() {
+    try {
+      const res = await fetch(`http://localhost:4000/user/${user._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if (data[action] && data[action].length === 0) {
       fetchData();
@@ -105,6 +129,11 @@ export function ProfileContent({
             onClick={() => setEdit((prev) => !prev)}
           >
             Edit Profile
+          </button>
+        )}
+        {loggedUser.admin && loggedUser._id !== user._id && (
+          <button className="delete-user-button" onClick={confirmDelete}>
+            DELETE ACCOUNT
           </button>
         )}
       </header>
