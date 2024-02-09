@@ -10,7 +10,7 @@ export default function ProfilePage({
 }: {
   params: { user: [string] };
 }) {
-  const [edit, setEdit] = useState(true);
+  const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<Partial<UserType> | undefined>();
   const userId = params.user[0];
 
