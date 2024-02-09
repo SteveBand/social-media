@@ -19,6 +19,8 @@ const {
   CommentModel,
 } = require("../models/models");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const { authGuard } = require("../middlewares/authGuard");
 
 module.exports = (app) => {
   app.get("/profile/:userId", async (req, res) => {
@@ -185,6 +187,64 @@ module.exports = (app) => {
     } catch (err) {
       console.log("An error has occured at /:user/following", err);
       return res.send({ message: "something went wrong" });
+    }
+  });
+
+  app.put("/user/edit/password", authGuard, async (req, res) => {
+    const user = req.user;
+
+    try {
+      const userInfo = await UserModel.findById(user._id);
+      const { newPassword, oldPassword } = req.body;
+
+      if (!userInfo)
+        return res.status(401).message({ message: "Unauthorized" });
+
+      const validateOldPassword = await bcrypt.compare(
+        oldPassword,
+        userInfo.password
+      );
+
+      if (!validateOldPassword)
+        return res.status(403).send({ message: "Bad Request" });
+
+      const validateDifferentPasswords = await bcrypt.compare(
+        newPassword,
+        userInfo.password
+      );
+
+      if (validateDifferentPasswords) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
+
+      const hashedNewPass = await bcrypt.hash(newPassword, 10);
+
+      const changed = await UserModel.findOneAndUpdate(
+        { _id: user._id },
+        { password: hashedNewPass }
+      );
+
+      console.log(changed);
+      return res.status(200).send({ message: "Success" });
+    } catch (error) {
+      console.log("An error has occurred at /use/edit/password", error);
+      return res.status(500).send({ message: "Server Error" });
+    }
+  });
+
+  app.put("/user/edit/info", authGuard, async (req, res) => {
+    const loggedUser = req.user;
+    const userId = req.query.userId;
+    const userChangedInfo = req.body;
+
+    try {
+      if (userId !== loggedUser._id)
+        return res.status(401).send({ message: "Unauthorized" });
+
+      await UserModel.findOneAndUpdate({ _id: userId }, { userChangedInfo });
+    } catch (error) {
+      console.log("An error has occurred at /user/edit/info", error);
+      return res.status(500).send({ message: "Server Error" });
     }
   });
 };

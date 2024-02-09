@@ -36,7 +36,7 @@ export default function ProfilePage({
   }, [userId]);
 
   if (!user) {
-    return <h1>No user</h1>;
+    return;
   }
 
   return (
@@ -44,7 +44,7 @@ export default function ProfilePage({
       {!edit ? (
         <ProfileContent setEdit={setEdit} user={user} />
       ) : (
-        <EditProfile user={user} />
+        <EditProfile user={user} setEdit={setEdit} />
       )}
     </>
   );
