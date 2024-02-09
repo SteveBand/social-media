@@ -30,17 +30,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
     password: String,
-    name: {
-      type: String,
-      index: { text: true },
-      lowercase: true,
-    },
+    name: String,
     phoneNumber: String,
     gender: String,
-    bio: {
-      type: String,
-      index: { text: true },
-    },
+    bio: String,
     avatar_url: String,
     followers: {
       type: Number,

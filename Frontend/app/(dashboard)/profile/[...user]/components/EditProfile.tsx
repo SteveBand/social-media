@@ -6,9 +6,11 @@ import { PasswordForm } from "./forms/PasswordForm";
 export function EditProfile({
   user,
   setEdit,
+  setUser,
 }: {
   user: Partial<UserType>;
   setEdit: React.Dispatch<SetStateAction<boolean>>;
+  setUser: React.Dispatch<SetStateAction<Partial<UserType> | undefined>>;
 }) {
   const [section, setSection] = useState<FormSection>("userInfo");
 
@@ -48,7 +50,7 @@ export function EditProfile({
           Change Password
         </li>
       </ul>
-      {section === "userInfo" && <UserInfoForm user={user} />}
+      {section === "userInfo" && <UserInfoForm user={user} setUser={setUser} />}
       {section === "password" && <PasswordForm />}
     </section>
   );

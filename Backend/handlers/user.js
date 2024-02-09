@@ -234,14 +234,20 @@ module.exports = (app) => {
 
   app.put("/user/edit/info", authGuard, async (req, res) => {
     const loggedUser = req.user;
-    const userId = req.query.userId;
+    const userId = new mongoose.Types.ObjectId(req.query.userId);
     const userChangedInfo = req.body;
-
+    console.log(req.body);
     try {
-      if (userId !== loggedUser._id)
+      if (!userId.equals(loggedUser._id))
         return res.status(401).send({ message: "Unauthorized" });
 
-      await UserModel.findOneAndUpdate({ _id: userId }, { userChangedInfo });
+      const updatedUser = await UserModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: userChangedInfo },
+        { new: true, upsert: false }
+      );
+      console.log(updatedUser);
+      return res.status(200).send(updatedUser);
     } catch (error) {
       console.log("An error has occurred at /user/edit/info", error);
       return res.status(500).send({ message: "Server Error" });

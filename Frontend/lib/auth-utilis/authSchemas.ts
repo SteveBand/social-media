@@ -39,3 +39,12 @@ export const passwordSchema = Joi.string()
       "Password must contain atleast 1 Uppercase letter 1 Lowercase letter a number and min length of 6",
   })
   .required();
+
+export const editUserSchema = Joi.object({
+  email: Joi.string().email({ tlds: { allow: false } }),
+  name: Joi.string().min(3),
+  phoneNumber: Joi.number().min(6),
+  gender: Joi.string().valid("male", "female"),
+  bio: Joi.string().min(3).max(150),
+  avatar_url: Joi.string().max(100),
+});

@@ -11,7 +11,7 @@ export default function ProfilePage({
   params: { user: [string] };
 }) {
   const [edit, setEdit] = useState(true);
-  const [user, setUser] = useState<Partial<UserType>>();
+  const [user, setUser] = useState<Partial<UserType> | undefined>();
   const userId = params.user[0];
 
   async function fetchUser() {
@@ -44,7 +44,7 @@ export default function ProfilePage({
       {!edit ? (
         <ProfileContent setEdit={setEdit} user={user} />
       ) : (
-        <EditProfile user={user} setEdit={setEdit} />
+        <EditProfile user={user} setEdit={setEdit} setUser={setUser} />
       )}
     </>
   );
