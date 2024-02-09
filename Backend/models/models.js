@@ -5,13 +5,14 @@ const mongoose = require("mongoose");
 const likesSchema = new mongoose.Schema({
   parentId: {
     type: mongoose.Types.ObjectId,
-    lowercase: true,
     index: true,
   },
   userId: {
     type: mongoose.Types.ObjectId,
-    lowercase: true,
     index: true,
+  },
+  origin: {
+    type: mongoose.Types.ObjectId,
   },
   authorId: mongoose.Types.ObjectId,
 });
@@ -144,6 +145,7 @@ const commentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    origin: mongoose.Types.ObjectId,
     authorId: mongoose.Types.ObjectId,
   },
   { timestamps: true }

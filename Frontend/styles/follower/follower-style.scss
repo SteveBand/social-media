@@ -36,7 +36,6 @@ a.follower-wrapper {
 
     button {
       margin-left: auto;
-      @include darkButtons;
     }
 
     .options-icon {
@@ -50,7 +49,5 @@ a.follower-wrapper {
     padding: 5px;
     top: 50px;
     right: -5px;
-
-    @include darkButtons;
   }
 }

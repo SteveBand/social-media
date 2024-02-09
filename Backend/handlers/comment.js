@@ -3,7 +3,7 @@ const {
   fetchCommentsLogged,
   fetchCommentPost,
   fetchPost,
-} = require("../lib/aggregations");
+} = require("../lib/aggregations/comments/aggregations");
 const { authGuard } = require("../middlewares/authGuard");
 const { CommentModel, Post, UserModel } = require("../models/models");
 const mongoose = require("mongoose");
@@ -12,7 +12,7 @@ module.exports = (app) => {
   app.post("/new/comment/:parentId", authGuard, async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.user._id);
     const parentId = new mongoose.Types.ObjectId(req.params.parentId);
-
+    const target = req.body.target;
     const comment = {
       content: req.body.params,
       parentId,
@@ -20,7 +20,9 @@ module.exports = (app) => {
     };
 
     try {
-      if (req.body.target === "post") {
+      if (target === "post") {
+        comment.origin = parentId;
+
         const existingPost = await Post.findById(parentId);
         if (!existingPost) {
           return res.send({ message: "404 Post not Found" }).status(404);
@@ -30,15 +32,14 @@ module.exports = (app) => {
           { _id: parentId },
           { $inc: { __v: 1, commentsCount: 1 } }
         );
-      } else if (req.body.target === "comment") {
-        console.log(req.body.target);
+      } else if (target === "comment") {
         const existingComment = await CommentModel.findById(parentId);
 
         if (!existingComment) {
           return res.send({ message: "404 Comment not Found" }).status(404);
         }
-
-        const newCommentos = await CommentModel.findOneAndUpdate(
+        comment.origin = existingComment.origin;
+        await CommentModel.findOneAndUpdate(
           { _id: parentId },
           { $inc: { __v: 1, commentsCount: 1 } }
         );

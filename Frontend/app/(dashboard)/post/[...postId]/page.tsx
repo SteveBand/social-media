@@ -94,7 +94,10 @@ export default function PostPage({ params }: { params: { postId: any } }) {
       {user.status === "authenticated" && (
         <form>
           <p>
-            Replying to <Link href={"/"}>{content.user_info.name}</Link>
+            Replying to{" "}
+            <Link href={`/profile/${content.user_info._id}`}>
+              {content.user_info.name}
+            </Link>
           </p>
           <div className="content">
             {user?.user_info.avatar_url ? (

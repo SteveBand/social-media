@@ -44,6 +44,10 @@ export default function PostModal({ setModal }: Props) {
       },
       body: JSON.stringify(params),
     });
+
+    if (res.ok) {
+      setModal(false);
+    }
   }
 
   return (

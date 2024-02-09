@@ -27,6 +27,8 @@ module.exports = (app) => {
         { $inc: { __v: 1, likesCount: 1 } }
       );
 
+      likeBody.origin = postId;
+
       const newLike = await new LikesModel(likeBody).save();
 
       return res.status(200).send({ message: "Success" });
@@ -59,6 +61,8 @@ module.exports = (app) => {
         { _id: postId },
         { $inc: { __v: 1, likesCount: 1 } }
       );
+
+      likeBody.origin = existingPost.origin;
 
       await new LikesModel(likeBody).save();
       return res.status(200).send({ message: "Success" });

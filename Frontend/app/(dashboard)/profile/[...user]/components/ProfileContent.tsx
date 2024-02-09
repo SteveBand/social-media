@@ -1,7 +1,7 @@
 "use client";
 
 import { PostType, UserType } from "../../../../../../types";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Post } from "@/components/common/Post";
 import { User } from "@/components/common/User";
 import { Comment } from "@/components/common/Comment";
@@ -10,9 +10,15 @@ import moment from "moment";
 import { FollowButton } from "@/components/common/action-buttons/FollowButton";
 import { useAppSelector } from "@/hooks";
 
-export function ProfileContent({ userId }: { userId: string }) {
+export function ProfileContent({
+  setEdit,
+  user,
+}: {
+  setEdit: React.Dispatch<SetStateAction<boolean>>;
+  user: Partial<UserType>;
+}) {
   const [action, setAction] = useState<Action>("posts");
-  const [user, setUser] = useState<Partial<UserType>>();
+
   const [data, setData] = useState<DataType>({
     posts: [],
     likes: [],
@@ -20,35 +26,15 @@ export function ProfileContent({ userId }: { userId: string }) {
     following: [],
     followers: [],
   });
+
   const [loading, setLoading] = useState(true);
   const loggedUser = useAppSelector((state) => state.userReducer.user_info);
-
-  async function fetchUser() {
-    try {
-      const res = await fetch(`http://localhost:4000/profile/${userId}`, {
-        method: "GET",
-        credentials: "include",
-        cache: "no-cache",
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    fetchUser();
-  }, [userId]);
 
   async function fetchData() {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:4000/user/${userId}/${action}`,
+        `http://localhost:4000/user/${user._id}/${action}`,
         {
           method: "GET",
           credentials: "include",
@@ -103,23 +89,24 @@ export function ProfileContent({ userId }: { userId: string }) {
   const date = user && moment(user.createdAt).format("MMM YY");
 
   useEffect(() => {
-    if (userId) {
-      fetchUser();
-    }
     if (data[action] && data[action].length === 0) {
       fetchData();
     }
   }, [action]);
-
-  if (!user) {
-    return;
-  }
 
   return (
     <section className="profile-page-container">
       <header>
         <BackButton />
         <h4>{user?.name}</h4>
+        {loggedUser._id === user._id && (
+          <button
+            className="action-button"
+            onClick={() => setEdit((prev) => !prev)}
+          >
+            Edit Profile
+          </button>
+        )}
       </header>
       <article className="user-content">
         <img src={user?.avatar_url} />

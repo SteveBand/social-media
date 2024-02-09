@@ -1,0 +1,94 @@
+.edit-profile-container {
+  @include PageContainer;
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    padding: 0 20px;
+    color: var(--text);
+
+    svg {
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    button {
+      margin-left: auto;
+    }
+  }
+
+  ul {
+    width: 70%;
+    margin: auto;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    color: var(--text);
+    padding: 0;
+
+    li {
+      flex: 1;
+      text-align: center;
+      transition: 200ms ease;
+      cursor: pointer;
+      border-radius: 5px;
+      border-bottom: 2px solid var(--border-color);
+      &:hover {
+        background-color: var(--nav-link-background-color);
+      }
+    }
+
+    li.active {
+      background-color: var(--nav-link-background-color);
+    }
+  }
+
+  .change-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    gap: 20px;
+    color: var(--text);
+
+    .input-container {
+      width: 100%;
+      text-align: center;
+      label {
+        display: block;
+      }
+
+      input,
+      textarea {
+        outline: none;
+        border: none;
+        background-color: transparent;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text);
+        width: 70%;
+      }
+
+      textarea {
+        max-width: 85%;
+        min-width: 70%;
+        max-height: 250px;
+        min-height: 30px;
+      }
+    }
+
+    .profile-image {
+      width: 150px;
+      border-radius: 50%;
+    }
+  }
+
+  button.submit-button {
+    margin-top: 50px;
+  }
+}

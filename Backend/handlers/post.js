@@ -9,7 +9,7 @@ const {
   fetchDashboardPostsUnLogged,
   fetchPostUnLogged,
 } = require("../lib/aggregations/posts/unlogged");
-const { Post } = require("../models/models");
+const { Post, LikesModel, CommentModel } = require("../models/models");
 
 module.exports = (app) => {
   app.post("/new/post", authGuard, async (req, res) => {
@@ -87,6 +87,8 @@ module.exports = (app) => {
       }
 
       await Post.findOneAndDelete({ _id: postId });
+      await LikesModel.deleteMany({ origin: postId });
+      await CommentModel.deleteMany({ origin: postId });
       return res.status(200).send({ message: "Delete Success" });
     } catch (error) {
       console.log("An error has occurred at /post/:postId/delete", error);

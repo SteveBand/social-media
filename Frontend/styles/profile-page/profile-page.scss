@@ -10,17 +10,22 @@
     top: 0;
     left: 0;
     box-sizing: border-box;
-    margin-left: 20px;
+    padding: 0 20px;
+    color: var(--text);
 
-    .icon {
+    svg {
       font-size: 1.25rem;
       cursor: pointer;
+    }
+    button {
+      margin-left: auto;
     }
   }
 
   .user-content {
     display: block;
     justify-content: center;
+    color: var(--text);
 
     img {
       width: 250px;
@@ -49,7 +54,6 @@
 
         .follow-button {
           margin-left: auto;
-          @include darkButtons;
         }
       }
     }
@@ -58,7 +62,8 @@
   .profile-navbar-container {
     overflow-x: auto;
     white-space: nowrap;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text);
 
     &::-webkit-scrollbar {
       width: 5px;

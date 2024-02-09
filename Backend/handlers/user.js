@@ -38,8 +38,6 @@ module.exports = (app) => {
         follows: userId,
       });
 
-      console.log(isFollowing, "parentId: ", loggedUserId, "follows: ", userId);
-
       if (isFollowing) {
         const userObject = user.toObject();
         delete userObject.password;
