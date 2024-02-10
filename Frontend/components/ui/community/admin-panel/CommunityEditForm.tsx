@@ -1,13 +1,14 @@
 import { NewCommunityCheckBox } from "@/components/ui/communities/new/NewCommunityCheckBox";
 import { IoIosClose } from "react-icons/io";
 import { SetStateAction, useState } from "react";
-import { CommunityType } from "../../../../../../../types";
+import { CommunityType } from "../../../../../types";
 import {
   addRule,
   handleInputs,
   handleRemoveRules,
   handleSubmit,
-} from "@/lib/community/adminPanel";
+} from "@/app/utils/community/communityEditForm";
+
 export function CommunityEditForm({ data, setData }: Props) {
   const [numOfLetters, setNumOfLetters] = useState({
     purpose: 0,
@@ -17,6 +18,7 @@ export function CommunityEditForm({ data, setData }: Props) {
   const [formData, setFormData] = useState<Partial<CommunityType>>({
     rules: data.rules,
   });
+
   return (
     <form onChange={(e) => handleInputs(e, setFormData)}>
       <article className="admin-panel-container">

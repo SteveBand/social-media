@@ -1,7 +1,7 @@
 import { PostLike } from "@/components/action-buttons/PostLike";
 import { IoIosShareAlt } from "react-icons/io";
 import { SlOptions } from "react-icons/sl";
-import { PostType } from "../../../../../../types";
+import { PostType } from "../../../../types";
 import moment from "moment";
 import { FollowButton } from "@/components/action-buttons/FollowButton";
 import { CommentButton } from "@/components/action-buttons/CommentButton";

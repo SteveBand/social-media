@@ -10,6 +10,7 @@ import moment from "moment";
 import { FollowButton } from "@/components/action-buttons/FollowButton";
 import { useAppSelector } from "@/hooks";
 import { useRouter } from "next/navigation";
+import { confirmDelete, fetchData } from "@/app/utils/profile-page";
 
 export function ProfileContent({
   setEdit,
@@ -30,34 +31,6 @@ export function ProfileContent({
   const loggedUser = useAppSelector((state) => state.userReducer.user_info);
 
   const router = useRouter();
-
-  async function fetchData() {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `http://localhost:4000/user/${user._id}/${action}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      if (res.ok) {
-        const fetchedData = await res.json();
-        setData((prev) => {
-          return {
-            ...prev,
-            [action]: fetchedData,
-          };
-        });
-        setLoading(false);
-      }
-    } catch (err) {
-      console.log(
-        "An error has Occured at ProfileContent.tsx fetching function",
-        err
-      );
-    }
-  }
 
   function handleButtons(e: React.MouseEvent<HTMLElement, MouseEvent>) {
     const target = e.target as HTMLElement;
@@ -89,34 +62,11 @@ export function ProfileContent({
 
   const date = user && moment(user.createdAt).format("MMM YY");
 
-  function confirmDelete(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    if (window.confirm("Are you sure you want to delete this User?")) {
-      handleDeleteUser();
-    } else {
-      console.log("Cancelled");
-    }
-  }
-
-  async function handleDeleteUser() {
-    try {
-      const res = await fetch(`http://localhost:4000/user/${user._id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (res.ok) {
-        router.push("/");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   const isFromDifferentSocial = user.googleId || user.githubId ? true : false;
 
   useEffect(() => {
     if (data[action] && data[action].length === 0) {
-      fetchData();
+      fetchData(setLoading, setData, user._id, action);
     }
   }, [action]);
 
@@ -134,7 +84,10 @@ export function ProfileContent({
           </button>
         )}
         {loggedUser.admin && loggedUser._id !== user._id && (
-          <button className="delete-user-button" onClick={confirmDelete}>
+          <button
+            className="delete-user-button"
+            onClick={(e) => confirmDelete(e, user._id, router)}
+          >
             DELETE ACCOUNT
           </button>
         )}

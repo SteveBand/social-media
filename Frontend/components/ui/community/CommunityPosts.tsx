@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import { PostType } from "../../../../../../types";
+import { PostType } from "../../../../types";
 import { Post } from "@/components/ui/Post";
 
 export function CommunityPosts({

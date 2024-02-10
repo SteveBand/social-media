@@ -8,6 +8,7 @@ import { CommunitiesResults } from "@/components/search/CommunitiesResults";
 import { PostsResults } from "@/components/search/PostsResults";
 import { CommentsResults } from "@/components/search/CommentsResults";
 import { useDebouncedCallback } from "use-debounce";
+import { serverUrl } from "@/app/utils/common";
 
 export default function Page() {
   const [query, setQuery] = useState("");
@@ -25,12 +26,9 @@ export default function Page() {
   const handleSearchRequest = useDebouncedCallback(async () => {
     if (query.length > 2) {
       try {
-        const res = await fetch(
-          `http://localhost:4000/search/${action}?q=${query}`,
-          {
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${serverUrl}/search/${action}?q=${query}`, {
+          credentials: "include",
+        });
         if (res.ok) {
           const data = await res.json();
           setSearchedData(data);

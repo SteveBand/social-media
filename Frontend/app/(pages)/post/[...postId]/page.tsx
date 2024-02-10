@@ -4,84 +4,38 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { PostType } from "../../../../../types";
-import { MainPost } from "./components/MainPost";
+import { MainPost } from "../../../../components/ui/post/MainPost";
 import { Comment } from "../../../../components/ui/Comment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks";
+import {
+  fetchPostData,
+  fetchCommentsData,
+  postReply,
+} from "@/app/utils/post-page";
+
 export default function PostPage({ params }: { params: { postId: any } }) {
   const [content, setContent] = useState<PostType | null>(null);
   const [comments, setComments] = useState<PostType[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
+
   const router = useRouter();
   const user = useAppSelector((state) => state.userReducer);
 
-  async function fetchPostData() {
-    try {
-      const postId = params?.postId?.[0];
-      await fetch(`http://localhost:4000/post/${postId}`, {
-        credentials: "include",
-        method: "GET",
-      })
-        .then((data) => data.json())
-        .then((content) => {
-          setContent(content);
-        });
-    } catch (err: any) {
-      console.log("Fetch post Data Error", err.name);
-    }
-  }
-
-  async function fetchCommentsData() {
-    try {
-      const postId = params?.postId?.[0];
-      await fetch(`http://localhost:4000/comments/${postId}`, {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((data) => data.json())
-        .then((comments) => setComments(comments));
-    } catch (err: any) {
-      console.log(err);
-    }
-  }
-
-  async function PostReply(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault();
-    const postId = params?.postId?.[0];
-    const res = await fetch(`http://localhost:4000/new/comment/${postId}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ target: "post", params: textAreaValue }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setTextAreaValue("");
-      setComments((prev) => {
-        if (prev) {
-          const arr = [data, ...prev];
-          return arr;
-        } else {
-          const arr = [data];
-          return arr;
-        }
-      });
-    }
-  }
-
   useEffect(() => {
     if (!content) {
-      Promise.all([fetchPostData(), fetchCommentsData()]).catch((err: any) => {
+      Promise.all([
+        fetchPostData(params.postId[0], setContent),
+        fetchCommentsData(params.postId[0], setComments),
+      ]).catch((err: any) => {
         console.log(err);
       });
     }
-  }, []);
+  }, [params.postId]);
 
   if (!content) {
-    return <div>no Content</div>;
+    return;
   }
 
   return (
@@ -111,7 +65,18 @@ export default function PostPage({ params }: { params: { postId: any } }) {
               maxLength={100}
             />
           </div>
-          <button onClick={PostReply} className="action-button">
+          <button
+            onClick={(e) =>
+              postReply(
+                e,
+                textAreaValue,
+                params.postId[0],
+                setTextAreaValue,
+                setComments
+              )
+            }
+            className="action-button"
+          >
             Reply
           </button>
         </form>

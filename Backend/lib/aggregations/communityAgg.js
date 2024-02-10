@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 function fetchCommunity(id, userId) {
   return [
     { $match: { _id: id } },
+    // fetching community and if loggedUser is member with $lookup
     {
       $lookup: {
         from: "communitymembers",
@@ -22,58 +23,13 @@ function fetchCommunity(id, userId) {
       },
     },
     {
-      $lookup: {
-        from: "communitymoderators",
-        // let: { communityId: id },
-        // pipeline: [
-        //   {
-        //     $match: {
-        //       $expr: {
-        //         $and: [
-        //           {
-        //             $eq: ["$$communityId", "$communityId"],
-        //           },
-        //         ],
-        //       },
-        //     },
-        //   },
-        // ],
-        localField: "communityId",
-        foreignField: "communityId",
-        as: "moderatorsInfo",
-      },
-    },
-    {
-      $lookup: {
-        from: "communitymoderators",
-        let: { communityId: id, userId: userId },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $eq: ["$$communityId", "$communityId"],
-                  },
-                  { $eq: ["$$userId", "$userId"] },
-                ],
-              },
-            },
-          },
-        ],
-        as: "moderator",
-      },
-    },
-    {
       $addFields: {
-        isMember: { $gt: [{ $size: "$members" }, 0] },
-        isAdmin: { $eq: ["$admin", userId] },
-        isModerator: { $gt: [{ $size: "$moderator" }, 0] },
+        isMember: { $gt: [{ $size: "$members" }, 0] }, // adding boolean field if user is member
+        isAdmin: { $eq: ["$admin", userId] }, /// checks if loggedUser is admin and creating new field
       },
     },
     {
       $project: {
-        moderator: 0,
         members: 0,
       },
     },
@@ -83,6 +39,7 @@ function fetchCommunity(id, userId) {
 function fetchCommunityPosts(id, userId) {
   return [
     { $match: { communityId: id } },
+    //fetching each post its creator user info
     {
       $lookup: {
         from: "users",
@@ -92,6 +49,8 @@ function fetchCommunityPosts(id, userId) {
       },
     },
     { $unwind: "$user_info" },
+
+    // checking if loggedUser liked the post by searching for specific document
     {
       $lookup: {
         from: "likes",
@@ -116,29 +75,10 @@ function fetchCommunityPosts(id, userId) {
       },
     },
     {
-      $lookup: {
-        from: "communitymoderators",
-        let: { userId: userId, communityId: id },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$$userId", "$parentId"] },
-                  { $eq: ["$$communityId", "$communityId"] },
-                ],
-              },
-            },
-          },
-        ],
-        as: "moderator",
-      },
-    },
-    {
       $addFields: {
-        liked: { $gt: [{ $size: "$likes" }, 0] },
-        isModerator: { $gt: [{ $size: "$moderator" }, 0] },
+        liked: { $gt: [{ $size: "$likes" }, 0] }, /// adding liked boolean field to each post
         isAuthor: {
+          ///adding isAuthor if the loggedUser is the creator of post
           $cond: {
             if: { $eq: [userId, "$parentId"] },
             then: true,
@@ -151,77 +91,7 @@ function fetchCommunityPosts(id, userId) {
       $project: {
         likes: 0,
         moderator: 0,
-      },
-    },
-  ];
-}
-
-function fetchModerators(loggedUserId, id) {
-  return [
-    { $match: { communityId: id } },
-    {
-      $lookup: {
-        from: "users",
-        let: { parentId: "$parentId" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$_id", "$$parentId"],
-              },
-            },
-          },
-        ],
-        as: "moderators",
-      },
-    },
-    { $unwind: "$moderators" },
-    {
-      $lookup: {
-        from: "followers",
-        let: { loggedUserId: loggedUserId, userId: "$moderators.email" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $eq: [
-                      { $toString: "$parentId" },
-                      { $toString: "$$loggedUserId" },
-                    ],
-                  },
-                  {
-                    $eq: [{ $toString: "$follows" }, { $toString: "$$userId" }],
-                  },
-                ],
-              },
-            },
-          },
-        ],
-        as: "followers",
-      },
-    },
-    {
-      $addFields: {
-        "moderators.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
-      },
-    },
-    {
-      $project: {
-        followers: 0,
-        members: 0,
-        moderatorsInfo: 0,
-        _id: 0,
-        communityId: 0,
-        __v: 0,
-        parentId: 0,
-      },
-    },
-
-    {
-      $replaceRoot: {
-        newRoot: "$moderators",
+        "user_info.password": 0, /// removing user password from object
       },
     },
   ];
@@ -230,6 +100,7 @@ function fetchModerators(loggedUserId, id) {
 function fetchCommunityMembers(id, userId) {
   return [
     { $match: { communityId: id } },
+    /// Gets all community members user info
     {
       $lookup: {
         from: "users",
@@ -239,7 +110,7 @@ function fetchCommunityMembers(id, userId) {
       },
     },
     { $unwind: "$users" },
-
+    /// checks if logged user is following them by checking for existing document of logged User and fetched member
     {
       $lookup: {
         from: "followers",
@@ -261,7 +132,7 @@ function fetchCommunityMembers(id, userId) {
     },
     {
       $addFields: {
-        "users.isFollowing": { $gt: [{ $size: "$followers" }, 0] },
+        "users.isFollowing": { $gt: [{ $size: "$followers" }, 0] }, // adding isFollowing boolean field
       },
     },
     {
@@ -269,10 +140,14 @@ function fetchCommunityMembers(id, userId) {
         newRoot: "$users",
       },
     },
+    {
+      $project: {
+        password: 0, // removing user password from sent data
+      },
+    },
   ];
 }
 
 exports.fetchCommunity = fetchCommunity;
 exports.fetchCommunityPosts = fetchCommunityPosts;
-exports.fetchModerators = fetchModerators;
 exports.fetchCommunityMembers = fetchCommunityMembers;

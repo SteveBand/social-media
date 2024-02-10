@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CommunityType } from "../../../../../../types";
+import { CommunityType } from "../../../../types";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { activate } from "@/redux/features/loginModal-slice";
 
@@ -16,6 +16,9 @@ export function CommunitySummary({
   const [membersCount, setMembersCount] = useState(data.membersCount);
   const user = useAppSelector((state) => state.userReducer);
   const dispatch = useAppDispatch();
+
+  // Sends request to the server which created new document at model Followers and update states to see it live
+  // then fetches the data again
 
   async function handleJoin(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>

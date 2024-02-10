@@ -1,8 +1,10 @@
 function fetchDashboardPostsLogged(userId) {
   return [
-    { $match: { communityId: { $exists: false } } },
-    { $sort: { date: -1 } },
-    { $limit: 10 },
+    { $match: { communityId: { $exists: false } } }, /// Checks if community Id exist and if false then return it if not then skip
+    { $sort: { date: -1 } }, /// getting from descending order
+    { $limit: 20 }, /// limit of how many documents
+
+    /// Gets Creator info
     {
       $lookup: {
         from: "users",
@@ -14,6 +16,8 @@ function fetchDashboardPostsLogged(userId) {
     {
       $unwind: "$user_info",
     },
+
+    ///checks for loggedUser likes on posts
     {
       $lookup: {
         from: "likes",
@@ -24,7 +28,7 @@ function fetchDashboardPostsLogged(userId) {
               $expr: {
                 $and: [
                   {
-                    $eq: ["$parentId", "$$postId"], /// Changed It MAYBE IT WILL CAUSE PROBLEMS
+                    $eq: ["$parentId", "$$postId"],
                   },
                   { $eq: ["$userId", "$$userId"] },
                 ],
@@ -35,6 +39,7 @@ function fetchDashboardPostsLogged(userId) {
         as: "likes",
       },
     },
+    /// adding liked and is Author fields
     {
       $addFields: {
         liked: { $gt: [{ $size: "$likes" }, 0] },
@@ -42,14 +47,15 @@ function fetchDashboardPostsLogged(userId) {
           $cond: {
             if: { $eq: [userId, "$parentId"] },
             then: true,
-            else: "$$REMOVE",
+            else: "$$REMOVE", /// if is not author then remove the fields and don't send it
           },
         },
       },
     },
     {
       $project: {
-        likes: 0,
+        likes: 0, /// removing likes object
+        "user_info.password": 0,
       },
     },
   ];
@@ -58,6 +64,8 @@ function fetchDashboardPostsLogged(userId) {
 const fetchPostLogged = (postId, userId) => {
   return [
     { $match: { _id: postId } },
+
+    /// Gets Creator info
     {
       $lookup: {
         from: "users",
@@ -67,6 +75,8 @@ const fetchPostLogged = (postId, userId) => {
       },
     },
     { $unwind: "$user_info" },
+
+    //Checks if the user liked the post
     {
       $lookup: {
         from: "likes",
@@ -86,10 +96,11 @@ const fetchPostLogged = (postId, userId) => {
         as: "like",
       },
     },
+    /// checks if the logged user is following the creator of the post
     {
       $lookup: {
         from: "followers",
-        let: { userId: userId, postUserId: "$user_info._id" }, /////// STOPPED HERE !!!! NEED TO CHECK IF LOGGED USER FOLLOWS THE USER WHO POSTED!
+        let: { userId: userId, postUserId: "$user_info._id" },
         pipeline: [
           {
             $match: {
@@ -105,6 +116,8 @@ const fetchPostLogged = (postId, userId) => {
         as: "followers",
       },
     },
+
+    ///adding isFollowing and liked to the returned object
     {
       $addFields: {
         liked: {
@@ -127,6 +140,7 @@ const fetchPostLogged = (postId, userId) => {
       $project: {
         like: 0,
         followers: 0,
+        "user_info.password": 0,
       },
     },
   ];

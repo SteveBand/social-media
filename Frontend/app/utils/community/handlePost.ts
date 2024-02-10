@@ -1,7 +1,6 @@
-import { useAppSelector } from "@/hooks";
 import { SetStateAction } from "react";
-import { PostType } from "../../../../../types";
-
+import { PostType } from "../../../../types";
+import { serverUrl } from "../common";
 
 export async function handlePost(
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -13,7 +12,7 @@ export async function handlePost(
   e.preventDefault();
   try {
     const res = await fetch(
-      `http://localhost:4000/community/${communityId}/new/post?content=${content}`,
+      `${serverUrl}/community/${communityId}/new/post?content=${content}`,
       {
         method: "POST",
         credentials: "include",

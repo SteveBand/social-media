@@ -15,11 +15,13 @@ module.exports = (app) => {
   app.post("/new/post", authGuard, async (req, res) => {
     const postBody = req.body;
     const user = req.user;
-
+    // Creating new object with post info and user Id as parentId
     const obj = {
       ...postBody,
       parentId: new mongoose.Types.ObjectId(user._id),
     };
+
+    // validating and checking if its valid if not return code 400
 
     const validation = postSchema.validate(postBody, { abortEarly: true });
 
@@ -51,6 +53,10 @@ module.exports = (app) => {
   });
 
   app.get("/post/:postId", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const postId = new mongoose.Types.ObjectId(req.params.postId);
     const userId = req.user?._id
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -71,11 +77,17 @@ module.exports = (app) => {
   });
 
   app.delete("/post/:postId/delete", authGuard, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const user = req.user;
     const postId = new mongoose.Types.ObjectId(req.params.postId);
 
     try {
       const post = await Post.findById(postId);
+
+      ///if niether of conditions is true, user is creator of post or is admin then return 401 Unauthorized
 
       if (
         !post.parentId.equals(
@@ -84,6 +96,8 @@ module.exports = (app) => {
       ) {
         return res.status(401).send({ message: "Unauthorized" });
       }
+
+      /// Deletes anything that connected to the deleted post
 
       await Post.findOneAndDelete({ _id: postId });
       await LikesModel.deleteMany({ origin: postId });
@@ -96,19 +110,29 @@ module.exports = (app) => {
   });
 
   app.put("/post/:postId", authGuard, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.postId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.user._id);
     const postId = new mongoose.Types.ObjectId(req.params.postId);
     const content = req.body.content;
     try {
       const post = await Post.findById(postId);
 
+      //if post does not exist return 404
+
       if (!post) {
         return res.status(404).send({ message: "Post not found!" });
       }
 
+      //if loggedUser is not the creator then return 401 Unauthorized, checks to see post.parentId and logged user id
+
       if (!post.parentId.equals(userId)) {
         return res.status(401).send({ message: "Unauthorized" });
       }
+
+      // updates the post
 
       await Post.findOneAndUpdate({ _id: postId }, { content: content });
 

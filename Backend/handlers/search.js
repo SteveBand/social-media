@@ -1,4 +1,13 @@
 const {
+  fetchPostsLogged,
+  fetchUsersLogged,
+  fetchCommentsLogged,
+} = require("../lib/aggregations/search/logged");
+const {
+  fetchPostsUnLogged,
+  fetchCommentsUnLogged,
+} = require("../lib/aggregations/search/unLogged");
+const {
   Post,
   UserModel,
   CommentModel,
@@ -16,40 +25,9 @@ module.exports = (app) => {
         return res.status(400).send({ message: "Bad Request" });
       }
       if (userId) {
-        const usersArr = await UserModel.aggregate([
-          { $match: { name: regex } },
-          {
-            $lookup: {
-              from: "followers",
-              let: { userId: userId, follows: "$_id" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$parentId", "$$userId"] },
-                        { $eq: ["$follows", "$$follows"] },
-                      ],
-                    },
-                  },
-                },
-              ],
-              as: "following",
-            },
-          },
-          {
-            $addFields: {
-              isFollowing: { $gt: [{ $size: ["$following"] }, 0] },
-            },
-          },
-          {
-            $project: {
-              password: 0,
-              updatedAt: 0,
-              following: 0,
-            },
-          },
-        ]);
+        const usersArr = await UserModel.aggregate(
+          fetchUsersLogged(regex, userId)
+        );
         return res.status(200).send(usersArr);
       } else {
         const usersArr = await UserModel.find({ name: regex }, { password: 0 });
@@ -68,68 +46,10 @@ module.exports = (app) => {
 
     try {
       if (userId) {
-        const postsArr = await Post.aggregate([
-          { $match: { content: regex } },
-          {
-            $lookup: {
-              from: "users",
-              localField: "parentId",
-              foreignField: "_id",
-              as: "user_info",
-            },
-          },
-          { $unwind: "$user_info" },
-          {
-            $lookup: {
-              from: "likes",
-              let: { userId: userId, postId: "$_id" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$parentId", "$$postId"] },
-                        { $eq: ["$userId", "$$userId"] },
-                      ],
-                    },
-                  },
-                },
-              ],
-              as: "likedPost",
-            },
-          },
-
-          {
-            $addFields: {
-              liked: { $gt: [{ $size: "$likedPost" }, 0] },
-            },
-          },
-
-          {
-            $project: {
-              likedPost: 0,
-            },
-          },
-        ]);
+        const postsArr = await Post.aggregate(fetchPostsLogged(regex, userId));
         return res.status(200).send(postsArr);
       } else {
-        const postsArr = await Post.aggregate([
-          { $match: { content: regex } },
-          {
-            $lookup: {
-              from: "users",
-              localField: "parentId",
-              foreignField: "_id",
-              as: "user_info",
-            },
-          },
-          { $unwind: "$user_info" },
-          {
-            $project: {
-              "user_info.password": 0,
-            },
-          },
-        ]);
+        const postsArr = await Post.aggregate(fetchPostsUnLogged(regex));
         return res.status(200).send(postsArr);
       }
     } catch (error) {
@@ -144,65 +64,14 @@ module.exports = (app) => {
     const regex = new RegExp(query, "i");
     try {
       if (userId) {
-        const commentsArr = await CommentModel.aggregate([
-          {
-            $match: { content: regex },
-          },
-          {
-            $lookup: {
-              from: "users",
-              localField: "userId",
-              foreignField: "_id",
-              as: "user_info",
-            },
-          },
-          { $unwind: "$user_info" },
-          {
-            $lookup: {
-              from: "likes",
-              let: { userId: userId, parentId: "$_id" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$userId", "$$userId"] },
-                        { $eq: ["$parentId", "$$parentId"] },
-                      ],
-                    },
-                  },
-                },
-              ],
-              as: "likes",
-            },
-          },
-          {
-            $addFields: {
-              liked: { $gt: [{ $size: "$likes" }, 0] },
-            },
-          },
-
-          {
-            $project: {
-              likes: 0,
-              "user_info.password": 0,
-            },
-          },
-        ]);
+        const commentsArr = await CommentModel.aggregate(
+          fetchCommentsLogged(regex, userId)
+        );
         return res.status(200).send(commentsArr);
       } else {
-        const commentsArr = await CommentModel.aggregate([
-          { $match: { content: regex } },
-          {
-            $lookup: {
-              from: "users",
-              localField: "userId",
-              foreignField: "_id",
-              as: "user_info",
-            },
-          },
-          { $unwind: "$user_info" },
-        ]);
+        const commentsArr = await CommentModel.aggregate(
+          fetchCommentsUnLogged(regex)
+        );
         return res.status(200).send(commentsArr);
       }
     } catch (error) {

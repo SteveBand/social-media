@@ -1,8 +1,8 @@
 import { SetStateAction, useState } from "react";
 import { CgProfile } from "react-icons/cg";
-import { CommunityType, PostType } from "../../../../../../types";
+import { CommunityType, PostType } from "../../../../types";
 import { useAppSelector } from "@/hooks";
-import { handlePost } from "../../utils/handlePost";
+import { handlePost } from "@/app/utils/community";
 
 export function CommunityForm({ data, setPosts }: Props) {
   const [content, setContent] = useState("");

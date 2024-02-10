@@ -3,10 +3,19 @@ const { FollowersModel, UserModel } = require("../models/models");
 const mongoose = require("mongoose");
 module.exports = (app) => {
   app.post("/new/follow", authGuard, async (req, res) => {
+    // two conditions to check if query is not malware
+    if (!mongoose.Types.ObjectId.isValid(req.query.parentId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(req.query.follows)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     const parentId = new mongoose.Types.ObjectId(req.query.parentId);
     const follows = new mongoose.Types.ObjectId(req.query.follows);
 
     try {
+      ///checks for existing follow to avoid duplicates
       const existingFollow = await FollowersModel.findOne({
         parentId,
         follows,
@@ -17,12 +26,12 @@ module.exports = (app) => {
           .status(400)
           .send({ message: "Already following this User!" });
       }
-
+      // creates new follow document and saves it in DB
       const newFollow = await new FollowersModel({
         parentId: parentId,
         follows: follows,
       }).save();
-
+      /// updates both users fields
       await UserModel.findOneAndUpdate(
         { _id: parentId },
         { $inc: { following: 1 } }
@@ -43,10 +52,18 @@ module.exports = (app) => {
   });
 
   app.post("/delete/follow", authGuard, async (req, res) => {
+    //two conditions to check query isn't malware
+    if (!mongoose.Types.ObjectId.isValid(req.query.parentId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(req.query.follows)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     const parentId = new mongoose.Types.ObjectId(req.query.parentId);
     const follows = new mongoose.Types.ObjectId(req.query.follows);
 
     try {
+      //deleting specific follower document and updating users following and followers fields
       await FollowersModel.deleteOne({ parentId, follows });
       await UserModel.findOneAndUpdate(
         { _id: parentId },

@@ -1,5 +1,5 @@
-import BackgroundFiller from "./components/BackgroundFiller";
-import Form from "./components/form";
+import BackgroundFiller from "../../../components/ui/login/BackgroundFiller";
+import Form from "../../../components/ui/login/form";
 
 export default async function Page() {
   return (

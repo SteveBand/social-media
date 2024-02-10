@@ -6,6 +6,9 @@ import { SlOptions } from "react-icons/sl";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { removeMember } from "@/redux/features/communityMembers-slice";
+import { CgProfile } from "react-icons/cg";
+import { UserType } from "../../../types";
+import { serverUrl } from "@/app/utils/common";
 
 export function User({ content, loading, path, communityId }: Props) {
   const [isOptions, setIsOptions] = useState(false);
@@ -31,7 +34,7 @@ export function User({ content, loading, path, communityId }: Props) {
     e.preventDefault();
     try {
       const res = await fetch(
-        `http://localhost:4000/community/${communityId}/remove/member?memberId=${content._id}`,
+        `${serverUrl}/community/${communityId}/remove/member?memberId=${content._id}`,
         {
           method: "POST",
           credentials: "include",
@@ -46,6 +49,12 @@ export function User({ content, loading, path, communityId }: Props) {
     }
   }
 
+  const image = content.avatar_url ? (
+    <img src={content.avatar_url} data-navigate={true} />
+  ) : (
+    <CgProfile data-navigate={true} className="user-icon" />
+  );
+
   return (
     <Link
       href={`/profile/${content._id}`}
@@ -53,7 +62,7 @@ export function User({ content, loading, path, communityId }: Props) {
       onClick={navigation}
     >
       <div className="upper">
-        <img src={content.avatar_url} data-navigate={true} />
+        {image}
         <div className="user-content" data-navigate={true}>
           <h5 data-navigate={true}>{content.name}</h5>
           <p data-navigate={true}>{content.bio}</p>
@@ -82,7 +91,7 @@ export function User({ content, loading, path, communityId }: Props) {
 }
 
 type Props = {
-  content: any;
+  content: Partial<UserType>;
   loading?: boolean;
   path?: string;
   communityId?: string;

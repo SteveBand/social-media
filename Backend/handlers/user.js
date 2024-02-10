@@ -25,6 +25,7 @@ const { authGuard } = require("../middlewares/authGuard");
 module.exports = (app) => {
   app.post("/signup", async (req, res) => {
     try {
+      /// creating an object of the user content and hashing the password before saving to DB
       const obj = {
         ...req.body,
         password: await bcrypt.hash(req.body.password, 10),
@@ -40,6 +41,10 @@ module.exports = (app) => {
   });
 
   app.get("/profile/:userId", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.params.userId);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user?._id)
@@ -50,6 +55,7 @@ module.exports = (app) => {
       if (!user) {
         return res.status(404).send({ message: "User not Found" });
       }
+      // Check if logged user is following the current User
 
       const isFollowing = await FollowersModel.findOne({
         parentId: loggedUserId,
@@ -57,6 +63,7 @@ module.exports = (app) => {
       });
 
       if (isFollowing) {
+        /// if is following add field to object with isFollowing and deleting passwords on both conditions
         const userObject = user.toObject();
         delete userObject.password;
         userObject.isFollowing = true;
@@ -73,6 +80,10 @@ module.exports = (app) => {
   });
 
   app.get("/user/:userId/posts", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.params.userId);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user?._id)
@@ -96,6 +107,11 @@ module.exports = (app) => {
             },
           },
           { $unwind: "$user_info" },
+          {
+            $project: {
+              "user_info.password": 0, // removing password from object
+            },
+          },
         ]);
         return res.status(200).send(postArr);
       }
@@ -106,10 +122,15 @@ module.exports = (app) => {
   });
 
   app.get("/user/:user/likes", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.user)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
       : null;
+
     try {
       if (loggedUserId) {
         const obj = await LikesModel.aggregate(
@@ -127,6 +148,10 @@ module.exports = (app) => {
   });
 
   app.get("/user/:user/comments", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.user)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -149,6 +174,11 @@ module.exports = (app) => {
               user_info: user_info,
             },
           },
+          {
+            $project: {
+              "user_info.password": 0, /// removing user password from object
+            },
+          },
         ]);
         return res.status(200).send(obj);
       }
@@ -159,6 +189,10 @@ module.exports = (app) => {
   });
 
   app.get("/user/:user/followers", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.user)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -183,6 +217,10 @@ module.exports = (app) => {
   });
 
   app.get("/user/:user/following", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.user)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.params.user);
     const loggedUserId = req.user
       ? new mongoose.Types.ObjectId(req.user._id)
@@ -215,7 +253,7 @@ module.exports = (app) => {
 
       if (!userInfo)
         return res.status(401).message({ message: "Unauthorized" });
-
+      /// Checks if the user knows the password, if not it breaks here and sends back code 403
       const validateOldPassword = await bcrypt.compare(
         oldPassword,
         userInfo.password
@@ -223,6 +261,8 @@ module.exports = (app) => {
 
       if (!validateOldPassword)
         return res.status(403).send({ message: "Bad Request" });
+
+      /// checks if new password is the same as old one, if it is then its a bad request and nothing need to change
 
       const validateDifferentPasswords = await bcrypt.compare(
         newPassword,
@@ -234,6 +274,8 @@ module.exports = (app) => {
       }
 
       const hashedNewPass = await bcrypt.hash(newPassword, 10);
+
+      // updates user password after bcrypt hash in DB
 
       const changed = await UserModel.findOneAndUpdate(
         { _id: user._id },
@@ -248,14 +290,20 @@ module.exports = (app) => {
   });
 
   app.put("/user/edit/info", authGuard, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.query.userId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
     const loggedUser = req.user;
     const userId = new mongoose.Types.ObjectId(req.query.userId);
     const userChangedInfo = req.body;
 
     try {
+      // Checks if the loggedUser is the editor, if not it breaks and sends 401
       if (!userId.equals(loggedUser._id))
         return res.status(401).send({ message: "Unauthorized" });
 
+      // Searches for the user , and updates it. $set means that if some fields does not exist it will add them.
       const updatedUser = await UserModel.findOneAndUpdate(
         { _id: userId },
         { $set: userChangedInfo },
@@ -270,16 +318,23 @@ module.exports = (app) => {
   });
 
   app.delete("/user/:userId", authGuard, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     const loggedUser = req.user;
     const userId = new mongoose.Types.ObjectId(req.params.userId);
 
     try {
+      //Checks if user exists before the action to break or continue.
+
       const user = await UserModel.findById(userId);
       if (!user) return res.status(404).send({ message: "User not found" });
 
       if (!loggedUser.admin && !loggedUser._id.equals(userId)) {
         return res.status(401).send({ message: "Unauthorized" });
       }
+
+      // Deletes User from DB and all posts and likes that connected to him as well as comments
 
       await UserModel.findOneAndDelete({ _id: userId });
       await Post.deleteMany({ parentId: userId });

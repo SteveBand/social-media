@@ -1,15 +1,16 @@
 "use client";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CommunityType, PostType } from "../../../../../types";
 import { BackButton } from "@/components/action-buttons/BackButton";
-import { CommunitySummary } from "./components/communitySummary";
+import { CommunitySummary } from "../../../../components/ui/community/communitySummary";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { CommunityForm } from "./components/CommunityForm";
-import { CommunityPosts } from "./components/CommunityPosts";
-import { CommunityAbout } from "./components/CommunityAbout";
-import { CommunityMembers } from "./components/CommunityMembers";
-import { CommunityAdminPanel } from "./components/CommunityAdminPanel/CommunityAdminPanel";
+import { CommunityForm } from "../../../../components/ui/community/CommunityForm";
+import { CommunityPosts } from "../../../../components/ui/community/CommunityPosts";
+import { CommunityAbout } from "../../../../components/ui/community/CommunityAbout";
+import { CommunityMembers } from "../../../../components/ui/community/CommunityMembers";
+import { CommunityAdminPanel } from "../../../../components/ui/community/admin-panel/CommunityAdminPanel";
 import { fetchMembers } from "@/redux/features/communityMembers-slice";
+import { fetchPosts, handleFetch } from "@/app/utils/community";
 
 export default function CommunityPage({
   params,
@@ -28,36 +29,6 @@ export default function CommunityPage({
 
   const dispatch = useAppDispatch();
   const id = params.communityId[0];
-
-  async function fetchPosts() {
-    if (action === "adminPanel") return;
-    const res = await fetch(
-      `http://localhost:4000/community/${data?._id}/${action}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      setPosts(data);
-    }
-  }
-
-  async function handleFetch() {
-    const res = await fetch(
-      `http://localhost:4000/community/${id}
-`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
-    if (res.ok) {
-      const content = await res.json();
-      setData(content);
-    }
-  }
 
   function handlePostLikeFunction(
     postId: string,
@@ -84,17 +55,17 @@ export default function CommunityPage({
 
   useEffect(() => {
     if (!data) {
-      handleFetch();
+      handleFetch(id, setData);
     }
 
     if (data) {
-      fetchPosts();
+      fetchPosts(id, action, setPosts);
       dispatch(fetchMembers(data._id));
     }
   }, [data, id]);
 
   if (!data) {
-    return <h1>ERROR 404</h1>;
+    return;
   }
 
   return (
@@ -106,8 +77,8 @@ export default function CommunityPage({
       <img className="community-logo" src={data.image} />
       <CommunitySummary
         data={data}
-        fetchPosts={fetchPosts}
-        handleFetch={handleFetch}
+        fetchPosts={() => fetchPosts(id, action, setPosts)}
+        handleFetch={() => handleFetch(id, setData)}
       />
       <div className="actions-wrapper">
         <ul className="actions">
@@ -150,7 +121,7 @@ export default function CommunityPage({
         {action === "posts" && (
           <CommunityPosts
             posts={posts}
-            handlePostLikeFunction={handlePostLikeFunction}
+            handlePostLikeFunction={() => handlePostLikeFunction}
             setPosts={setPosts}
           />
         )}

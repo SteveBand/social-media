@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProfileContent } from "../../../../components/ui/profile/ProfileContent";
 import { UserType } from "../../../../../types";
 import { EditProfile } from "../../../../components/ui/profile/EditProfile";
+import { serverUrl } from "@/app/utils/common";
 
 export default function ProfilePage({
   params,
@@ -16,7 +17,7 @@ export default function ProfilePage({
 
   async function fetchUser() {
     try {
-      const res = await fetch(`http://localhost:4000/profile/${userId}`, {
+      const res = await fetch(`${serverUrl}/profile/${userId}`, {
         method: "GET",
         credentials: "include",
         cache: "no-cache",

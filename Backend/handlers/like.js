@@ -4,24 +4,36 @@ const mongoose = require("mongoose");
 
 module.exports = (app) => {
   app.post("/new/post/like", authGuard, async (req, res) => {
+    /// checks if the query is valid and not a malware
+
+    if (!mongoose.Types.ObjectId.isValid(req.query.postId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(req.query.author)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     try {
       const postId = new mongoose.Types.ObjectId(req.query.postId);
       const userId = new mongoose.Types.ObjectId(req.user._id);
       const authorId = new mongoose.Types.ObjectId(req.query.author);
-
+      /// creating the like document body
       const likeBody = { parentId: postId, userId, authorId };
-      const existingLike = await LikesModel.findOne(likeBody);
 
+      // checks if a like already exists to avoid duplicates
+      const existingLike = await LikesModel.findOne(likeBody);
+      // if like already exists return code 400 bad request
       if (existingLike) {
         return res.status(400).send({ message: "Already Liked" });
       }
-
+      // check if liked Post exists if not return code 404
       const existingPost = await Post.findById(postId);
 
       if (!existingPost) {
         return res.status(404).send({ message: "404 Posts doesnt exist" });
       }
 
+      /// update post likesCount field whenever liked
       await Post.updateOne(
         { _id: postId },
         { $inc: { __v: 1, likesCount: 1 } }
@@ -29,6 +41,7 @@ module.exports = (app) => {
 
       likeBody.origin = postId;
 
+      // creates new like
       const newLike = await new LikesModel(likeBody).save();
 
       return res.status(200).send({ message: "Success" });
@@ -73,21 +86,29 @@ module.exports = (app) => {
   });
 
   app.post("/delete/post/like", authGuard, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.query.postId)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     try {
       const userId = new mongoose.Types.ObjectId(req.user._id);
       const postId = new mongoose.Types.ObjectId(req.query.postId);
+
+      //updating post and lessering likesCount by 1
 
       const post = await Post.updateOne(
         { _id: postId },
         { $inc: { __v: 1, likesCount: -1 } }
       );
+      // if 0 documents changed it means an error/didnt find the document then return code 400
       if (post.modifiedCount < 0) {
         return res.status(400).send({ message: "Bad Request" });
       }
+      /// Deletes like
       const like = await LikesModel.deleteOne({
         parentId: postId,
         userId: userId,
       });
+      ///Checks if like actually deleted
       if (like.deletedCount < 0) {
         return res.status(400).send({ message: "Bad Request" });
       }

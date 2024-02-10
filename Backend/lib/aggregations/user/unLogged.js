@@ -3,6 +3,7 @@ function getUserFollowingUnlogged(userId) {
     {
       $match: { parentId: userId },
     },
+    //Iterating and fetching every user Data
     {
       $lookup: {
         from: "users",
@@ -12,12 +13,13 @@ function getUserFollowingUnlogged(userId) {
       },
     },
     { $unwind: "$user_info" },
-
+    // filtering unneccessery or sensitive content
     {
       $project: {
         _id: 0,
         parentId: 0,
         follows: 0,
+        "user_info.password": 0,
       },
     },
     {
@@ -32,6 +34,7 @@ function getUserFollowingUnlogged(userId) {
 function getUserFollowersUnLogged(userId) {
   return [
     { $match: { follows: userId } },
+    //Iterating and fetching every user Data
     {
       $lookup: {
         from: "users",
@@ -41,12 +44,14 @@ function getUserFollowersUnLogged(userId) {
       },
     },
     { $unwind: "$user_info" },
+    // filtering unneccessery or sensitive content
     {
       $project: {
         _id: 0,
         parentId: 0,
         follows: 0,
         following: 0,
+        "user_info.password": 0,
       },
     },
     {
@@ -62,6 +67,7 @@ function getUserFollowersUnLogged(userId) {
 function userAllLikedUnLogged(userId) {
   return [
     { $match: { userId: userId } },
+    //Iterating and fetching every user Data
     {
       $lookup: {
         from: "users",
@@ -103,6 +109,7 @@ function userAllLikedUnLogged(userId) {
         as: "comments",
       },
     },
+    // filtering unneccessery or sensitive content and combinging 2 Arrays of posts and comments together to a single array
     {
       $project: {
         resultArray: {
@@ -117,7 +124,13 @@ function userAllLikedUnLogged(userId) {
 
     {
       $addFields: {
-        "resultArray.user_info": "$user_info",
+        "resultArray.user_info": "$user_info", /// pushing user_info into resultArray.user_info field
+      },
+    },
+
+    {
+      $project: {
+        "resultArray.user_info.password": 0,
       },
     },
 
@@ -129,9 +142,6 @@ function userAllLikedUnLogged(userId) {
   ];
 }
 
-function userPostsUnLogged() {}
-
 exports.getUserFollowingUnlogged = getUserFollowingUnlogged;
 exports.getUserFollowersUnLogged = getUserFollowersUnLogged;
 exports.userAllLikedUnLogged = userAllLikedUnLogged;
-exports.userPostsUnLogged = userPostsUnLogged;

@@ -16,14 +16,15 @@ const {
 
 module.exports = (app) => {
   app.get("/community/:id", async (req, res) => {
-    if (!req.params.id) {
-      return res.status(400).send({ message: "Bad Request" });
-    }
-
-    const id = new mongoose.Types.ObjectId(req.params.id);
-    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
-
     try {
+      if (!req.params.id) {
+        return res.status(400).send({ message: "Bad Request" });
+      }
+
+      const id = new mongoose.Types.ObjectId(req.params.id);
+      const userId = req.user
+        ? new mongoose.Types.ObjectId(req.user._id)
+        : null;
       const community = await Community.aggregate(fetchCommunity(id, userId));
 
       if (!community) {
@@ -213,6 +214,9 @@ module.exports = (app) => {
   });
 
   app.get("/community/:id/members", async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     const id = new mongoose.Types.ObjectId(req.params.id);
     const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
 
@@ -240,11 +244,13 @@ module.exports = (app) => {
   app.post("/community/new", authGuard, async (req, res) => {
     const { membership, title, about, image, rules } = req.body;
     const userId = req.user._id;
+    ///Checks for core fields if not then return code 400 Bad Request
     if (!membership || !title || !about) {
-      return res.send({ message: "Bad Request" }).status(400);
+      return res.status(400).send({ message: "Bad Request" });
     }
 
     try {
+      ///Checking if a community with the same title already exists , if it does then return code 400
       const exisitingTitle = await Community.findOne({ title });
       if (exisitingTitle) {
         return res
@@ -254,6 +260,8 @@ module.exports = (app) => {
           })
           .status(400);
       }
+
+      // creating new community with admin field which is the logged user id
 
       const obj = {
         membership,
@@ -266,6 +274,8 @@ module.exports = (app) => {
 
       const newCommunity = await new Community(obj);
       newCommunity.save();
+
+      // adding the admin is member
 
       const newMember = await new CommunityMember({
         parentId: new mongoose.Types.ObjectId(admin._id),
@@ -281,10 +291,13 @@ module.exports = (app) => {
   });
 
   app.put("/community/:id/edit", authGuard, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).send({ message: "Bad Request" });
+    }
     const id = new mongoose.Types.ObjectId(req.params.id);
     const userId = new mongoose.Types.ObjectId(req.user._id);
     const body = req.body;
-
+    // if neither body or id exist or = null then return 400
     if (!body || !id) {
       return res.send({ message: "Bad Request" }).status(400);
     }
@@ -292,10 +305,11 @@ module.exports = (app) => {
     const community = await Community.findById(id);
 
     try {
+      //checks if logged user is admin , if not then return 401 unAuthorized
       if (!community.admin.equals(userId)) {
-        return res.send({ message: "Unauthorized" }).status(401);
+        return res.status(401).send({ message: "Unauthorized" });
       }
-
+      ///if is admin update community document in Db
       const updatedCommunity = await Community.findOneAndUpdate(
         { _id: id },
         body,

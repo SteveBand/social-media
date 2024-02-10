@@ -3,6 +3,7 @@ function getUserFollowingLogged(userId, loggedUserId) {
     {
       $match: { parentId: userId },
     },
+    //On each iteration getting the user information from DB
     {
       $lookup: {
         from: "users",
@@ -15,6 +16,7 @@ function getUserFollowingLogged(userId, loggedUserId) {
     {
       $addFields: {
         "user_info.isFollowing": {
+          // Adds new fields that checks if the logged user is following the user
           $and: [
             { $eq: ["$parentId", loggedUserId] },
             { $eq: ["$follows", "$user_info._id"] },
@@ -22,11 +24,13 @@ function getUserFollowingLogged(userId, loggedUserId) {
         },
       },
     },
+    // Hiding unneccessry info
     {
       $project: {
         _id: 0,
         parentId: 0,
         follows: 0,
+        "user_info.password": 0,
       },
     },
     {
@@ -41,7 +45,9 @@ function getUserFollowingLogged(userId, loggedUserId) {
 
 function getUserFollowersLogged(userId, loggedUserId) {
   return [
-    { $match: { follows: userId } },
+    { $match: { follows: userId } }, /// Gets all followers the user Have
+
+    //On each iteration getting the user information from DB
     {
       $lookup: {
         from: "users",
@@ -54,7 +60,7 @@ function getUserFollowersLogged(userId, loggedUserId) {
     {
       $lookup: {
         from: "followers",
-        let: { userId: "$user_info._id", parentId: loggedUserId },
+        let: { userId: "$user_info._id", parentId: loggedUserId }, /// Checks if the loggedUser is following the current user in the iteration
         pipeline: [
           {
             $match: {
@@ -81,12 +87,14 @@ function getUserFollowersLogged(userId, loggedUserId) {
         },
       },
     },
+    /// Filtering unneccessery Information
     {
       $project: {
         _id: 0,
         parentId: 0,
         follows: 0,
         following: 0,
+        "user_info.password": 0,
       },
     },
     {
@@ -103,7 +111,7 @@ function userAllLikedLogged(userId, loggedUserId) {
     {
       $lookup: {
         from: "users",
-        localField: "authorId",
+        localField: "authorId", //On each iteration getting the user information from DB
         foreignField: "_id",
         as: "user_info",
       },
@@ -117,6 +125,7 @@ function userAllLikedLogged(userId, loggedUserId) {
         as: "posts",
       },
     },
+    /// Iterating through Posts and Comments models to pull all connected document to likes
     {
       $lookup: {
         from: "comments",
@@ -125,19 +134,20 @@ function userAllLikedLogged(userId, loggedUserId) {
         as: "comments",
       },
     },
-
+    /// filtering  unneccessery or Sensitive Information
     {
       $project: {
         _id: 0,
         parentId: 0,
         userId: 0,
         __v: 0,
+        "user_info.password": 0,
       },
     },
     {
       $project: {
         resultArray: {
-          $concatArrays: ["$posts", "$comments"],
+          $concatArrays: ["$posts", "$comments"], /// Combining both posts and comments arrays as a result from both $lookups
         },
         user_info: "$user_info",
       },
@@ -145,6 +155,8 @@ function userAllLikedLogged(userId, loggedUserId) {
     {
       $unwind: "$resultArray",
     },
+
+    /// Checking is loggedUser liked one of them as well
     {
       $lookup: {
         from: "likes",
@@ -164,6 +176,8 @@ function userAllLikedLogged(userId, loggedUserId) {
         as: "likes",
       },
     },
+
+    /// adding new field to every post or comment if user has liked it
     {
       $addFields: {
         "resultArray.liked": {
@@ -187,6 +201,8 @@ function userAllLikedLogged(userId, loggedUserId) {
 function userCommentsLogged(userId, loggedUserId, user_info) {
   return [
     { $match: { userId: userId } },
+
+    //Checking if logged User has liked the comment using $lookup
     {
       $lookup: {
         from: "likes",
@@ -212,7 +228,7 @@ function userCommentsLogged(userId, loggedUserId, user_info) {
       $addFields: {
         liked: {
           $cond: {
-            if: { $gt: [{ $size: "$likes" }, 0] },
+            if: { $gt: [{ $size: "$likes" }, 0] }, ///if user liked then true if not then false
             then: true,
             else: false,
           },
@@ -226,6 +242,8 @@ function userCommentsLogged(userId, loggedUserId, user_info) {
 const userPostsLogged = (userId, loggedUserId) => {
   return [
     { $match: { parentId: userId } },
+
+    /// Fetching user data from DB
     {
       $lookup: {
         from: "users",
@@ -235,6 +253,8 @@ const userPostsLogged = (userId, loggedUserId) => {
       },
     },
     { $unwind: "$user_info" },
+
+    // Iterating through likes model to check if logged user Has liked
     {
       $lookup: {
         from: "likes",
@@ -256,15 +276,23 @@ const userPostsLogged = (userId, loggedUserId) => {
         as: "likes",
       },
     },
+
+    // adding liked field
     {
       $addFields: {
         liked: {
           $cond: {
-            if: { $gt: [{ $size: "$likes" }, 0] },
+            if: { $gt: [{ $size: "$likes" }, 0] }, /// if user like then true if not then fale
             then: true,
             else: false,
           },
         },
+      },
+    },
+    {
+      $project: {
+        "user_info.password": 0,
+        likes: 0,
       },
     },
   ];
