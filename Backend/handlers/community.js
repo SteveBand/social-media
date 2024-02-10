@@ -50,7 +50,6 @@ module.exports = (app) => {
 
     try {
       const community = await Community.findById(id);
-      console.log(community.membership);
       if (!community) {
         return res.status(404).send({ message: "Community does not exist" });
       }
@@ -99,11 +98,6 @@ module.exports = (app) => {
     const userId = new mongoose.Types.ObjectId(req.user._id);
 
     const community = Community.findById(id);
-    if (community.admin.equals(userId)) {
-      return res.status(400).send({
-        message: "You the admin of this community no member needed :D",
-      });
-    }
 
     try {
       const newMember = await new CommunityMember({
@@ -319,12 +313,3 @@ module.exports = (app) => {
     }
   });
 };
-
-//   {
-// "parentId": {
-//   "$oid": "65957d3fc9b437a6ed6f5c00"
-// },
-// "communityId": {
-//   "$oid": "65ae8ee9db04703ed46bc180"
-// }
-// }

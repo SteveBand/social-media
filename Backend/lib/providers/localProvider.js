@@ -2,7 +2,6 @@ const passport = require("passport");
 const { UserModel } = require("../../models/models");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 module.exports = (app) => {

@@ -2,45 +2,42 @@
 @import "./global.scss";
 
 //login page //
-@import "./login-page/login-style.scss";
-@import "./login-page/login-background-filler.scss";
-@import "./login-page/login-form.scss";
-@import "./login-page/login-media-queries.scss";
+@import "./pages/login-page/login-style.scss";
+@import "./pages/login-page/login-background-filler.scss";
+@import "./pages/login-page/login-form.scss";
+@import "./pages/login-page/login-media-queries.scss";
 
 // Signup Page //
-@import "./signup-page/signup-style.scss";
-@import "./signup-page/signup-media-query.scss";
+@import "./pages/signup-page/signup-style.scss";
+@import "./pages/signup-page/signup-media-query.scss";
 
 // Navbar //
-@import "./components/navbar/navbar-style.scss";
-
-// Header //
-@import "./components/header/header.scss";
+@import "./layout/navbar/navbar-style.scss";
 
 // Feed //
-@import "./feed/feed.scss";
-@import "./feed/feed-modal.scss";
+@import "./pages/feed-page/feed.scss";
+@import "./modals/feed-modal.scss";
 
 /// Post page ////
-@import "./post-page/post-page.scss";
+@import "./pages/post-page/post-page.scss";
 
 /// Comment Modal ///
-@import "./comment-modal/commentModal.scss";
+@import "./modals/comment-modal/commentModal.scss";
 
 /// Comment ///
-@import "./comment/comment.scss";
+@import "./ui/comment/comment.scss";
 
 //// Profile Page ////
-@import "./profile-page/profile-page.scss";
-@import "./profile-page//edit-profile.scss";
+@import "./pages/profile-page/profile-page.scss";
+@import "./pages/profile-page//edit-profile.scss";
 
 ////Search Page ///
-@import "./search-page/searchPage.scss";
+@import "./pages/search-page/searchPage.scss";
 
 ///Community Page ///
-@import "./community/communityStyle.scss";
+@import "./pages/community-page/communityStyle.scss";
 @import "./mixin.scss";
 
 ///communities Page ///
-@import "./communities/communities-container.scss";
-@import "./communities/new-community/newCommunity.scss";
+@import "./pages/communities-page/communities-container.scss";
+@import "./pages/communities-page/new-community/newCommunity.scss";

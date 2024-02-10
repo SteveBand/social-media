@@ -42,6 +42,12 @@ export function Providers() {
           Create an Account
         </Link>
       </div>
+      <div className="create-account">
+        <span>Create an Admin Account</span>
+        <Link className="create-account-btn" href="/signup/admin">
+          To Create an Admin account click here
+        </Link>
+      </div>
     </div>
   );
 }

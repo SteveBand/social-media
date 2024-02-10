@@ -1,0 +1,38 @@
+.root-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: none;
+  padding: 0px 10px;
+  box-sizing: border-box;
+  height: 40px;
+  z-index: 100;
+  background-color: var(--footer-background-color);
+  align-items: center;
+
+  .icon {
+    font-size: 1.25rem;
+    box-sizing: content-box;
+    padding: 5px 10px;
+    border-radius: 20px;
+  }
+
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: min-content;
+    flex: 1;
+    color: var(--text);
+  }
+
+  .active {
+    background-color: var(--action-button-color);
+  }
+
+  @media screen and (max-width: 475px) {
+    display: flex;
+  }
+}

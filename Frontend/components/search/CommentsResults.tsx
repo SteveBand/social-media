@@ -1,5 +1,5 @@
 import { PostType } from "../../../types";
-import { Comment } from "../common/Comment";
+import { Comment } from "../ui/Comment";
 
 export function CommentsResults({
   searchResults,

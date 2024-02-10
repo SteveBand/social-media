@@ -1,4 +1,4 @@
-import { CommunityLink } from "@/app/(dashboard)/communities/components/CommunityLink";
+import { CommunityLink } from "@/app/(pages)/communities/components/CommunityLink";
 import { CommunityType } from "../../../types";
 
 export function CommunitiesResults({

@@ -1,100 +1,45 @@
 "use client";
 
 import { CiLock, CiMail } from "react-icons/ci";
-import { useState, FormEvent } from "react";
-import { LoginParams } from "@/lib/auth-utilis/authTypes";
-import { loginSchema } from "@/lib/auth-utilis/authSchemas";
-import Link from "next/link";
+import { useState } from "react";
 import { Providers } from "./Providers";
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import { logIn } from "@/redux/features/auth-slice";
+import { useAppDispatch } from "@/hooks";
+import { handleLogin, handleLoginParams } from "@/app/utils/login-page/index";
 
 export default function LoginForm() {
-  const [loginParams, setLoginParams] = useState<LoginParams>({
+  const [loginParams, setLoginParams] = useState<loginParams>({
     email: "",
     password: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
   const router = useRouter();
-  const user = useAppSelector((state) => state.userReducer);
   const dispatch = useAppDispatch();
-
-  const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const event = e.target as HTMLInputElement;
-    const { id, value } = event;
-    const paramsObj: LoginParams = {
-      ...loginParams,
-      [id]: value,
-    };
-    setLoginParams(paramsObj);
-
-    const validation = loginSchema.validate(paramsObj, { abortEarly: false });
-
-    if (validation.error) {
-      const error = validation.error.details.find((e) => e.context?.key === id);
-      if (error) {
-        setIsValid(false);
-      }
-    }
-    if (validation.error === undefined) {
-      setIsValid(true);
-    }
-  };
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const { email, password } = loginParams;
-    try {
-      const res = await fetch(`http://localhost:4000/login`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        dispatch(logIn({ status: "authenticated", user_info: data }));
-        console.log(data);
-        console.log(user);
-        router.push("/");
-      }
-    } catch (err) {
-      console.log("An error occured while trying to login", err);
-    }
-  }
 
   return (
     <article className="login-content">
       <h1>Socilize</h1>
       <h2>Log in to your Account</h2>
-      <form className="login-form">
+      <form
+        className="login-form"
+        onChange={(e) =>
+          handleLoginParams(e, setLoginParams, loginParams, setIsValid)
+        }
+      >
         <div className="input-field">
           <CiMail />
-          <input
-            type="text"
-            id="email"
-            placeholder="Email"
-            onChange={handleInputs}
-          />
+          <input type="text" id="email" placeholder="Email" />
         </div>
         <div className="input-field">
           <CiLock />
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            onChange={handleInputs}
-          />
+          <input type="password" id="password" placeholder="Password" />
         </div>
         <div className="forgot-password-container">
           <button className="forgot-password-button">Forgot Password?</button>
         </div>
         <button
           className={`${isValid ? "login-button" : "invalid-login-button"}`}
-          onClick={handleSubmit}
+          onClick={(e) => handleLogin(e, loginParams, dispatch, router)}
           disabled={!isValid}
         >
           Log in
@@ -107,3 +52,8 @@ export default function LoginForm() {
     </article>
   );
 }
+
+type loginParams = {
+  email: string;
+  password: string;
+};

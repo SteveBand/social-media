@@ -111,7 +111,6 @@ module.exports = (app) => {
             },
           },
         ]);
-        console.log(postsArr);
         return res.status(200).send(postsArr);
       } else {
         const postsArr = await Post.aggregate([

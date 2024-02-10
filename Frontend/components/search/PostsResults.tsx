@@ -1,5 +1,5 @@
 import { PostType } from "../../../types";
-import { Post } from "../common/Post";
+import { Post } from "../ui/Post";
 
 export function PostsResults({ searchResults }: { searchResults: PostType[] }) {
   return (

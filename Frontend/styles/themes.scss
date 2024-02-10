@@ -12,6 +12,8 @@
   --search-bar-color: rgb(192, 193, 193);
   --date-color: rgb(83, 83, 83);
   --text: black;
+  --footer-background-color: rgb(235, 234, 234);
+  --footer-active: #ced5ea;
   .action-button {
     @include darkButtons;
   }
@@ -29,6 +31,8 @@
   --action-button-color: rgb(165, 165, 165);
   --search-bar-color: transparent;
   --date-color: rgb(193, 192, 192);
+  --footer-background-color: #3e3e42;
+  --footer-active: rgb(165, 165, 165);
   --text: white;
 
   .action-button {

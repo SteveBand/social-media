@@ -23,6 +23,22 @@ const bcrypt = require("bcrypt");
 const { authGuard } = require("../middlewares/authGuard");
 
 module.exports = (app) => {
+  app.post("/signup", async (req, res) => {
+    try {
+      const obj = {
+        ...req.body,
+        password: await bcrypt.hash(req.body.password, 10),
+        name: `${req.body.firstName} ${req.body.lastName}`,
+      };
+
+      await new UserModel(obj).save();
+      return res.status(200).send({ message: "success" });
+    } catch (error) {
+      console.log("An error has occurred at /signup", error);
+      return res.status(500).send({ message: "Error message" });
+    }
+  });
+
   app.get("/profile/:userId", async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.userId);
     const loggedUserId = req.user
@@ -224,7 +240,6 @@ module.exports = (app) => {
         { password: hashedNewPass }
       );
 
-      console.log(changed);
       return res.status(200).send({ message: "Success" });
     } catch (error) {
       console.log("An error has occurred at /use/edit/password", error);
@@ -236,7 +251,7 @@ module.exports = (app) => {
     const loggedUser = req.user;
     const userId = new mongoose.Types.ObjectId(req.query.userId);
     const userChangedInfo = req.body;
-    console.log(req.body);
+
     try {
       if (!userId.equals(loggedUser._id))
         return res.status(401).send({ message: "Unauthorized" });
@@ -246,7 +261,7 @@ module.exports = (app) => {
         { $set: userChangedInfo },
         { new: true, upsert: false }
       );
-      console.log(updatedUser);
+
       return res.status(200).send(updatedUser);
     } catch (error) {
       console.log("An error has occurred at /user/edit/info", error);

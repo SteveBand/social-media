@@ -42,7 +42,6 @@ module.exports = (app) => {
         return res.send(posts).status(200);
       } else {
         const posts = await Post.aggregate(fetchDashboardPostsUnLogged());
-        console.log("not Logged");
         return res.status(200).send(posts);
       }
     } catch (error) {

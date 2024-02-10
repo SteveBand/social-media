@@ -1,0 +1,32 @@
+@import "../../mixin.scss";
+
+.communities-page-container {
+  @include PageContainer;
+  @import "./communities-header.scss"; ///Header Container SCSS///
+
+  .communities-list {
+    color: var(--text);
+    a {
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding: 5px 0;
+      box-sizing: border-box;
+      padding: 0 5px;
+      img {
+        height: 100px;
+        width: 100px;
+        border-radius: 10px;
+      }
+
+      .details {
+        p {
+          margin: 0;
+        }
+      }
+      &:hover {
+        background-color: var(--post-background-color);
+      }
+    }
+  }
+}

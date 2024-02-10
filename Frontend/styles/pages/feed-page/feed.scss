@@ -1,0 +1,55 @@
+@import "../../mixin.scss";
+
+.feed-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @include PageContainer;
+  // PostInput component Styles //
+
+  .feed-post-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 250px;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid var(--border-color);
+    gap: 5px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    .feed-post-input-icon {
+      color: var(--text);
+      font-size: 2.2rem;
+      flex: 1;
+    }
+
+    .feed-post-input-image {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      flex: 1;
+    }
+
+    .feed-post-input {
+      border: none;
+      outline: none;
+      background-color: transparent;
+      flex: 10;
+      cursor: text;
+      color: var(--text);
+    }
+  }
+
+  /////////
+  .feed-container {
+    max-width: 570px;
+    width: 100%;
+    min-width: 300px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .homepage-container {
+    gap: 0;
+  }
+}

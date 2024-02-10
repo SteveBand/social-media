@@ -1,4 +1,4 @@
-import { User } from "@/components/common/User";
+import { User } from "@/components/ui/User";
 import { UserType } from "../../../types";
 
 export function UsersResults({ searchResults }: { searchResults: UserType[] }) {
