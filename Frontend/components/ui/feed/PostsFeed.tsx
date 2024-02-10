@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
-import { Post } from "../../../../components/ui/Post";
-import { PostType } from "../../../../../types";
+import { Post } from "../Post";
+import { PostType } from "../../../../types";
 
 export function PostsFeed() {
   const [posts, setPosts] = useState<PostType[]>([]);
+
   async function fetchPosts() {
     try {
       const res = await fetch("http://localhost:4000/posts", {

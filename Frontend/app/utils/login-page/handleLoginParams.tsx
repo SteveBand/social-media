@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import { loginSchema } from "@/lib/auth-utilis/authSchemas";
+import { loginSchema } from "../validations/loginSchema";
 
 // takes the event which is the Html Form element in this case , pulls out the id and value of the inputs inside the form onChange,
 // meaning every change inside an input or textarea Etc... inside the form is being updated to the setLoginParams state.

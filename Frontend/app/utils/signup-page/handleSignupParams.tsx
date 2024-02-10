@@ -1,6 +1,6 @@
 import { SetStateAction } from "react";
 import { UserType } from "../../../../types";
-import { signupSchema } from "@/lib/auth-utilis/authSchemas";
+import { signupSchema } from "../validations/signupSchema";
 
 export function handleSignupParams(
   e: React.FormEvent<HTMLFormElement>,
