@@ -1,6 +1,6 @@
 "use client";
 
-import { PostType, UserType } from "../../../../../../types";
+import { PostType, UserType } from "../../../../types";
 import { SetStateAction, useEffect, useState } from "react";
 import { Post } from "@/components/ui/Post";
 import { User } from "@/components/ui/User";

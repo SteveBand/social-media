@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProfileContent } from "./components/ProfileContent";
+import { ProfileContent } from "../../../../components/ui/profile/ProfileContent";
 import { UserType } from "../../../../../types";
-import { EditProfile } from "./components/EditProfile";
+import { EditProfile } from "../../../../components/ui/profile/EditProfile";
 
 export default function ProfilePage({
   params,

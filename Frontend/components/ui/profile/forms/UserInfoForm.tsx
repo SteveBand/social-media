@@ -1,5 +1,5 @@
 import { SetStateAction, useState } from "react";
-import { UserType } from "../../../../../../../types";
+import { UserType } from "../../../../../types";
 import { editUserSchema } from "@/app/utils/validations/editUserSchema";
 
 export function UserInfoForm({

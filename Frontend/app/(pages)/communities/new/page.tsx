@@ -1,7 +1,6 @@
 "use client";
 import { BackButton } from "@/components/action-buttons/BackButton";
-import { useState } from "react";
-import { NewCommunityForm } from "./components/NewCommunityForm";
+import { NewCommunityForm } from "../../../../components/ui/communities/new/NewCommunityForm";
 export default function NewCommunity() {
   return (
     <section className="new-community-page-container">

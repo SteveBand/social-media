@@ -38,17 +38,17 @@ module.exports = (app) => {
   });
 
   app.get("/community/:id/posts", async (req, res) => {
-    const id = new mongoose.Types.ObjectId(req.params?.id);
-    const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
-
-    const isMember = userId
-      ? await CommunityMember.findOne({
-          parentId: new mongoose.Types.ObjectId(userId),
-          communityId: new mongoose.Types.ObjectId(id),
-        })
-      : null;
-
     try {
+      const id = req.params.id && new mongoose.Types.ObjectId(req.params.id);
+      const userId = req.user ? req.user._id : null;
+
+      const isMember = userId
+        ? await CommunityMember.findOne({
+            parentId: new mongoose.Types.ObjectId(userId),
+            communityId: new mongoose.Types.ObjectId(id),
+          })
+        : null;
+
       const community = await Community.findById(id);
       if (!community) {
         return res.status(404).send({ message: "Community does not exist" });

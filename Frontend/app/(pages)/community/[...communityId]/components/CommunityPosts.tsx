@@ -9,16 +9,17 @@ export function CommunityPosts({
 }: Props) {
   return (
     <>
-      {posts.map((post) => {
-        return (
-          <Post
-            post={post}
-            key={post._id}
-            handlePostLikeFunction={handlePostLikeFunction}
-            setPosts={setPosts}
-          />
-        );
-      })}
+      {posts.length > 0 &&
+        posts.map((post) => {
+          return (
+            <Post
+              post={post}
+              key={post._id}
+              handlePostLikeFunction={handlePostLikeFunction}
+              setPosts={setPosts}
+            />
+          );
+        })}
     </>
   );
 }

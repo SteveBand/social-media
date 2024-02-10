@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CommunityType } from "../../../../../types";
+import { CommunityType } from "../../../../types";
 
 export function CommunityLink({ community }: { community: CommunityType }) {
   return (

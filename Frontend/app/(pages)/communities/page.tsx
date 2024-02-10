@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CommunitiesPageHeader } from "./components/CommunitiesHeader";
+import { CommunitiesPageHeader } from "../../../components/ui/communities/CommunitiesHeader";
 import { CommunityType } from "../../../../types";
-import { CommunityLink } from "./components/CommunityLink";
+import { CommunityLink } from "../../../components/ui/communities/CommunityLink";
+import { serverUrl } from "@/app/utils/common";
 
 export default function CommunitiesPage() {
   const [communitieslist, setCommunitiesList] = useState<CommunityType[]>([]);
 
+  // Fetches and updates comminitiesList state with communities data from the DataBase
   async function fetchCommunities() {
-    const res = await fetch("http://localhost:4000/communities", {
+    const res = await fetch(`${serverUrl}/communities`, {
       method: "GET",
       credentials: "include",
     });
@@ -24,6 +26,7 @@ export default function CommunitiesPage() {
       fetchCommunities();
     }
   }, []);
+
   return (
     <section className="communities-page-container">
       <CommunitiesPageHeader />

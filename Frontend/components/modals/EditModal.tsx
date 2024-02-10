@@ -2,7 +2,7 @@ import { SetStateAction, useState } from "react";
 import { PostType } from "../../../types";
 import { IoMdClose } from "react-icons/io";
 import "@/styles/modals/editModal.scss";
-import { DataType } from "@/app/(pages)/profile/[...user]/components/ProfileContent";
+import { DataType } from "@/components/ui/profile/ProfileContent";
 
 export function EditModal({
   currentPost,

@@ -1,4 +1,4 @@
-import { NewCommunityCheckBox } from "@/app/(pages)/communities/new/components/NewCommunityCheckBox";
+import { NewCommunityCheckBox } from "@/components/ui/communities/new/NewCommunityCheckBox";
 import { IoIosClose } from "react-icons/io";
 import { SetStateAction, useState } from "react";
 import { CommunityType } from "../../../../../../../types";

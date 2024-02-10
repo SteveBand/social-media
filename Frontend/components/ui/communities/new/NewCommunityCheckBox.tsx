@@ -1,4 +1,4 @@
-import "@/styles/communities/new-community/newCommunity-radio.scss";
+import "@/styles/pages/communities-page/new-community/newCommunity-radio.scss";
 
 export function NewCommunityCheckBox() {
   return (

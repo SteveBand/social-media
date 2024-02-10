@@ -1,4 +1,4 @@
-import { passwordSchema } from "@/lib/auth-utilis/authSchemas";
+import { passwordSchema } from "@/app/utils/validations/passwordSchema";
 import { useEffect, useState } from "react";
 
 export function PasswordForm() {

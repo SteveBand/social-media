@@ -2,7 +2,6 @@
 
 import { BackButton } from "@/components/action-buttons/BackButton";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { HiMagnifyingGlass } from "react-icons/hi2";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import Link from "next/link";
 import { activate } from "@/redux/features/loginModal-slice";

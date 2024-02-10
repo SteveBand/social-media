@@ -1,4 +1,4 @@
-import { UserType } from "../../../../../../types";
+import { UserType } from "../../../../types";
 import { SetStateAction, useState } from "react";
 import { UserInfoForm } from "./forms/UserInfoForm";
 import { PasswordForm } from "./forms/PasswordForm";

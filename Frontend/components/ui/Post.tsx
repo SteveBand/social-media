@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { CommentButton } from "../action-buttons/CommentButton";
 import { useAppSelector } from "@/hooks";
 import { SetStateAction, useState } from "react";
-import { DataType } from "@/app/(pages)/profile/[...user]/components/ProfileContent";
+import { DataType } from "@/components/ui/profile/ProfileContent";
 import { createPortal } from "react-dom";
 import { EditModal } from "../modals/EditModal";
 import "@/styles/ui/post/post.scss";
@@ -87,7 +87,7 @@ export function Post({
         <div className="post-container">
           <ProfileImage userInfo={post.user_info} />
           <div className="post-content">
-            <p className="username">{post.user_info.name}</p>
+            <p className="username">{post?.user_info?.name}</p>
             <p data-navigate-to={`/post/${post._id}`}> {post.content}</p>
           </div>
           {(post.isAuthor || user.user_info.admin) && (

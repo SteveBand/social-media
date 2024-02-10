@@ -70,7 +70,10 @@ export function User({ content, loading, path, communityId }: Props) {
       </div>
 
       {isOptions && (
-        <button className="options-button" onClick={handleRemoveMember}>
+        <button
+          className="options-button action-button"
+          onClick={handleRemoveMember}
+        >
           Remove member
         </button>
       )}

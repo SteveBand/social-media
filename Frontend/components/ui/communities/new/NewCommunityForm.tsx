@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { NewCommunityCheckBox } from "./NewCommunityCheckBox";
-import { CommunityType } from "../../../../../../types";
+import { CommunityType } from "../../../../../types";
 import { useRouter } from "next/navigation";
+import { handleForm, handleSubmit } from "@/app/utils/communities/new";
+
 export function NewCommunityForm() {
   const [numOfLetters, setNumOfLetters] = useState({
     title: 0,
@@ -15,41 +17,8 @@ export function NewCommunityForm() {
   });
   const router = useRouter();
 
-  function handleForm(e: React.FormEvent<HTMLFormElement>) {
-    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
-    const { name, value } = target;
-    setFormData((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  }
-
-  async function handleSubmit(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:4000/community/new", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (res.status === 200) {
-        const data = await res.json();
-        data.id && router.push(`/community/${data.id}`);
-      }
-    } catch (error) {
-      console.log("An error occured at Creating community ");
-    }
-  }
-
   return (
-    <form onChange={handleForm}>
+    <form onChange={(e) => handleForm(e, setFormData)}>
       <article className="title article-container">
         <div className="container">
           <div className="upper">
@@ -112,7 +81,10 @@ export function NewCommunityForm() {
         <img src={logo} />
       </article>
       <NewCommunityCheckBox />
-      <button className="create-button" onClick={handleSubmit}>
+      <button
+        className="create-button"
+        onClick={(e) => handleSubmit(e, formData, router)}
+      >
         Create
       </button>
     </form>

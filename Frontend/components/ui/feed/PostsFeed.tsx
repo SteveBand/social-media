@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import React from "react";
 import { Post } from "../Post";
 import { PostType } from "../../../../types";
+import { serverUrl } from "@/app/utils/common";
 
 export function PostsFeed() {
   const [posts, setPosts] = useState<PostType[]>([]);
 
   async function fetchPosts() {
     try {
-      const res = await fetch("http://localhost:4000/posts", {
+      const res = await fetch(`${serverUrl}/posts`, {
         cache: "default",
         method: "GET",
         credentials: "include",

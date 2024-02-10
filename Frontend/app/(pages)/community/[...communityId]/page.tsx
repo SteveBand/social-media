@@ -91,10 +91,10 @@ export default function CommunityPage({
       fetchPosts();
       dispatch(fetchMembers(data._id));
     }
-  }, [data]);
+  }, [data, id]);
 
   if (!data) {
-    return <div>No Community</div>;
+    return <h1>ERROR 404</h1>;
   }
 
   return (
