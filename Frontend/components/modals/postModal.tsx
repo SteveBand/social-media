@@ -4,11 +4,14 @@ import { PiUserCircle } from "react-icons/pi";
 import { useAppSelector } from "@/hooks";
 import { IoMdClose } from "react-icons/io";
 import { handleSubmit, handleParams } from "@/app/utils/feed-page/feed-modal";
+import { PostType } from "../../../types";
+
 type Props = {
   setModal: React.Dispatch<SetStateAction<boolean>>;
+  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
 };
 
-export default function PostModal({ setModal }: Props) {
+export default function PostModal({ setModal, setPosts }: Props) {
   const user = useAppSelector((state) => state.userReducer);
   const [params, setParams] = useState({
     content: "",
@@ -44,7 +47,7 @@ export default function PostModal({ setModal }: Props) {
               ? "feed-post-modal-button"
               : "feed-post-modal-button-invalid"
           }`}
-          onClick={(e) => handleSubmit(e, params, setModal)}
+          onClick={(e) => handleSubmit(e, params, setModal, setPosts)}
           disabled={!isValid}
         >
           Post

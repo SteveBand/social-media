@@ -28,10 +28,16 @@ module.exports = (app) => {
     if (validation.error !== undefined) {
       return res.status(400).send({ message: "malware" });
     }
+    const user_info = {
+      avatar_url: user.avatar_url,
+      name: user.name,
+      email: user.email,
+    };
 
-    await Post(obj).save();
+    const newPost = await Post(obj);
+    await newPost.save();
 
-    return res.status(200).send({ message: "Post successfully created" });
+    return res.status(200).send({ ...newPost._doc, user_info });
   });
 
   app.get("/posts", async (req, res) => {
@@ -65,7 +71,7 @@ module.exports = (app) => {
     try {
       if (userId) {
         const obj = await Post.aggregate(fetchPostLogged(postId, userId));
-     
+
         return res.status(200).send(obj.pop());
       } else {
         const obj = await Post.aggregate(fetchPostUnLogged(postId));

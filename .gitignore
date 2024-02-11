@@ -8,7 +8,7 @@ node_modules/
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-.env/
+# .env/
 # testing
 /coverage
 
@@ -17,8 +17,8 @@ node_modules/
 /out/
 /.next
 Frontend/.next/
-Frontend/.env/
-Backend/.env/
+# Frontend/.env/
+# Backend/.env/
 Backend/node_modules/
 Frontend/node_modules/
 
@@ -37,9 +37,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
-.env
-.env/
+# .env*.local
+# .env
+# .env/
 
 
 .gitignore
@@ -48,4 +48,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+# next-env.d.ts

@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { SetStateAction, useEffect, useMemo, useState } from "react";
 import React from "react";
 import { Post } from "../Post";
 import { PostType } from "../../../../types";
 import { serverUrl } from "@/app/utils/common";
 
-export function PostsFeed() {
-  const [posts, setPosts] = useState<PostType[]>([]);
-
+export function PostsFeed({
+  setPosts,
+  posts,
+}: {
+  setPosts: React.Dispatch<SetStateAction<PostType[]>>;
+  posts: PostType[];
+}) {
   async function fetchPosts() {
     try {
       const res = await fetch(`${serverUrl}/posts`, {

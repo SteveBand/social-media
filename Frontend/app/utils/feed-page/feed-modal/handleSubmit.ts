@@ -1,10 +1,12 @@
 import { SetStateAction } from "react";
 import { serverUrl } from "../../common";
+import { PostType } from "../../../../../types";
 
 export async function handleSubmit(
   e: event,
   params: params,
-  setModal: setModal
+  setModal: setModal,
+  setPosts: setPosts
 ) {
   e.preventDefault();
   const res = await fetch(`${serverUrl}/new/post`, {
@@ -17,7 +19,11 @@ export async function handleSubmit(
   });
 
   if (res.ok) {
+    const data = await res.json();
     setModal(false);
+    setPosts((prev) => {
+      return [data, ...prev];
+    });
   }
 }
 
@@ -26,3 +32,4 @@ type params = {
   content: string;
 };
 type setModal = React.Dispatch<SetStateAction<boolean>>;
+type setPosts = React.Dispatch<SetStateAction<PostType[]>>;
