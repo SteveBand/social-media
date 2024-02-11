@@ -10,6 +10,7 @@
   - Redux Toolkit
   - Sass
   - Moment.js
+  - Joi (for validations)
 - **Backend**:
   - Express.js
   - Mongoose
@@ -18,7 +19,6 @@
   - cors
   - cookie-parser
   - passport.js
-  - Joi (for validations)
   - dotenv (for environment variables)
 
 ## Features
