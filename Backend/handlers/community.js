@@ -172,7 +172,6 @@ module.exports = (app) => {
           parentId: new mongoose.Types.ObjectId(memberId),
           communityId: new mongoose.Types.ObjectId(id),
         });
-        console.log(removedMember);
         return res.status(200).send({ message: "Member successfuly removed" });
       } else {
         return res.status(401).send({ message: "Unauthorized" });

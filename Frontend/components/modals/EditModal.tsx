@@ -9,6 +9,7 @@ export function EditModal({
   setEditModal,
   setPosts,
   setData,
+  setPost,
 }: Props) {
   const [editParams, setEditParams] = useState("");
   const target = currentPost.isPost ? "post" : "comment";
@@ -51,6 +52,13 @@ export function EditModal({
             return { ...prev, posts: updatedPostsArr };
           });
         }
+
+        if (setPost) {
+          setPost((prev) => {
+            if (!prev) return null;
+            return { ...prev, content: editParams };
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -82,4 +90,5 @@ type Props = {
   setEditModal: React.Dispatch<SetStateAction<boolean>>;
   setPosts?: React.Dispatch<SetStateAction<PostType[]>>;
   setData?: React.Dispatch<SetStateAction<DataType>>;
+  setPost?: React.Dispatch<SetStateAction<PostType | null>>;
 };

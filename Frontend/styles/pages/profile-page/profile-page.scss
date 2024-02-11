@@ -17,8 +17,11 @@
       font-size: 1.25rem;
       cursor: pointer;
     }
-    button {
+    .header-buttons {
       margin-left: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .delete-user-button {

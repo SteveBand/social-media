@@ -8,6 +8,7 @@ import { logIn } from "@/redux/features/auth-slice";
 import "@/styles/main.scss";
 import { useEffect } from "react";
 import { EditModal } from "@/components/modals/EditModal";
+import { changeTheme } from "@/redux/features/themes-slice";
 
 export default function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default function RootLayout({
 }) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReducer);
+  const theme = useAppSelector((state) => state.themesSlice.theme);
   const loginModal = useAppSelector((state) => state.loginReducer.isModal);
   // Function to check if user session still up or need to connect again
   // Checks by sending a request to the server and confirming an active session.
@@ -58,8 +60,19 @@ export default function RootLayout({
     if (user.status === "unauthenticated") {
       sessionConnect();
     }
-    document.body.setAttribute("data-theme", "dark");
-  }, [user.status]);
+
+    document.body.setAttribute("data-theme", theme);
+  }, [user.status, theme]);
+
+  useEffect(() => {
+    const localTheme = window.localStorage.getItem("data-theme");
+    if (!localTheme) {
+      window.localStorage.setItem("data-theme", "light");
+      dispatch(changeTheme("light"));
+    }
+
+    document.body.setAttribute("data-theme", theme);
+  }, [theme]);
 
   return (
     <html lang="en">

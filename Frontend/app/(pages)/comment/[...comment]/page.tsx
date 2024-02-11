@@ -32,12 +32,15 @@ export default function CommentPage({ params }: { params: any }) {
       ]);
       setContent(postData);
       setComments(commentsData);
+      if (postData === null) {
+        router.push("/not-found");
+      }
     };
     fetchData();
   }, [postId]);
 
   if (!content) {
-    return <div>no Content</div>;
+    return;
   }
 
   return (
@@ -46,7 +49,11 @@ export default function CommentPage({ params }: { params: any }) {
         <FaArrowLeft className="back-button" onClick={() => router.back()} />
         <p>Post</p>
       </header>
-      <MainComment content={content} setComments={setComments} />
+      <MainComment
+        content={content}
+        setComments={setComments}
+        setContent={setContent}
+      />
       {user.status === "authenticated" && (
         <form>
           <p>

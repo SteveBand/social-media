@@ -8,9 +8,11 @@ import { Comment } from "@/components/ui/Comment";
 import { BackButton } from "@/components/action-buttons/BackButton";
 import moment from "moment";
 import { FollowButton } from "@/components/action-buttons/FollowButton";
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { confirmDelete, fetchData } from "@/app/utils/profile-page";
+import { serverUrl } from "@/app/utils/common";
+import { logIn } from "@/redux/features/auth-slice";
 
 export function ProfileContent({
   setEdit,
@@ -29,7 +31,7 @@ export function ProfileContent({
   });
   const [loading, setLoading] = useState(true);
   const loggedUser = useAppSelector((state) => state.userReducer.user_info);
-
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   function handleButtons(e: React.MouseEvent<HTMLElement, MouseEvent>) {
@@ -64,6 +66,23 @@ export function ProfileContent({
 
   const isFromDifferentSocial = user.googleId || user.githubId ? true : false;
 
+  async function handleLogout() {
+    const res = await fetch(`${serverUrl}/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      dispatch(
+        logIn({
+          status: "unauthenticated",
+          user_info: {},
+        })
+      );
+      router.push("/");
+    }
+  }
+
   useEffect(() => {
     if (data[action] && data[action].length === 0) {
       fetchData(setLoading, setData, user._id, action);
@@ -75,22 +94,35 @@ export function ProfileContent({
       <header>
         <BackButton />
         <h4>{user?.name}</h4>
-        {loggedUser._id === user._id && !isFromDifferentSocial && (
-          <button
-            className="action-button"
-            onClick={() => setEdit((prev) => !prev)}
-          >
-            Edit Profile
-          </button>
-        )}
-        {loggedUser.admin && loggedUser._id !== user._id && (
-          <button
-            className="delete-user-button"
-            onClick={(e) => confirmDelete(e, user._id, router)}
-          >
-            DELETE ACCOUNT
-          </button>
-        )}
+        <div className="header-buttons">
+          {loggedUser._id === user._id && !isFromDifferentSocial && (
+            <button
+              className="action-button"
+              onClick={() => setEdit((prev) => !prev)}
+            >
+              Edit Profile
+            </button>
+          )}
+          {loggedUser._id === user._id && (
+            <button
+              className="action-button"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogout();
+              }}
+            >
+              Logout
+            </button>
+          )}
+          {loggedUser.admin && loggedUser._id !== user._id && (
+            <button
+              className="delete-user-button"
+              onClick={(e) => confirmDelete(e, user._id, router)}
+            >
+              DELETE ACCOUNT
+            </button>
+          )}
+        </div>
       </header>
       <article className="user-content">
         <img src={user?.avatar_url} />

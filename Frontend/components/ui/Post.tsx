@@ -12,6 +12,7 @@ import { DataType } from "@/components/ui/profile/ProfileContent";
 import { createPortal } from "react-dom";
 import { EditModal } from "../modals/EditModal";
 import "@/styles/ui/post/post.scss";
+import { serverUrl } from "@/app/utils/common";
 
 export function Post({
   post,
@@ -38,7 +39,7 @@ export function Post({
 
   async function handleDelete() {
     try {
-      const res = await fetch(`http://localhost:4000/post/${post._id}/delete`, {
+      const res = await fetch(`${serverUrl}/post/${post._id}/delete`, {
         method: "DELETE",
         credentials: "include",
       });

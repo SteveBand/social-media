@@ -1,0 +1,38 @@
+.light {
+  border: none;
+  outline: none;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  background-color: white;
+  margin: 0 auto;
+  transition: 300ms ease;
+  cursor: pointer;
+  &:hover {
+    scale: 1.05;
+  }
+}
+
+.dark {
+  border: none;
+  outline: none;
+  background-color: rgb(54, 52, 52);
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  color: white;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: 300ms ease;
+  &:hover {
+    scale: 1.05;
+  }
+}
+
+@media screen and (max-width: 675px) {
+  .dark,
+  .light {
+    padding: 5px;
+    font-size: 0.75rem;
+  }
+}

@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { logIn } from "@/redux/features/auth-slice";
 import { CgProfile } from "react-icons/cg";
+import { serverUrl } from "@/app/utils/common";
+import { ThemeToggle } from "../action-buttons/ThemeToggle";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -16,7 +18,7 @@ export default function Navbar() {
   const router = useRouter();
 
   async function handleLogout() {
-    const res = await fetch(`http://localhost:4000/logout`, {
+    const res = await fetch(`${serverUrl}/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -58,6 +60,7 @@ export default function Navbar() {
             </Link>
           );
         })}
+        <ThemeToggle />
         <div
           className={`${
             pathname === `/profile/${user?.user_info?._id}`

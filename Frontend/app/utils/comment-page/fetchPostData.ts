@@ -10,6 +10,9 @@ export async function fetchPostData(postId: string) {
       const data = await res.json();
       return data;
     }
+    if (res.status === 404) {
+      return null;
+    }
   } catch (err) {
     console.log("Fetch post Data Error", err);
   }

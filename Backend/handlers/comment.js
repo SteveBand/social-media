@@ -1,9 +1,12 @@
 const {
-  fetchComments,
+  fetchCommentPostLogged,
   fetchCommentsLogged,
-  fetchCommentPost,
-  fetchPost,
-} = require("../lib/aggregations/comments/aggregations");
+} = require("../lib/aggregations/comments/logged");
+const {
+  fetchCommentPostUnLogged,
+  fetchCommentsUnlogged,
+} = require("../lib/aggregations/comments/unlogged");
+
 const { authGuard } = require("../middlewares/authGuard");
 const { CommentModel, Post, UserModel } = require("../models/models");
 const mongoose = require("mongoose");
@@ -79,7 +82,9 @@ module.exports = (app) => {
         : null;
 
       if (!userId) {
-        const comments = await CommentModel.aggregate(fetchComments(postId));
+        const comments = await CommentModel.aggregate(
+          fetchCommentsUnlogged(postId)
+        );
         return res.send(comments).status(200);
       } else {
         const comments = await CommentModel.aggregate(
@@ -105,12 +110,14 @@ module.exports = (app) => {
 
       if (userId) {
         const obj = await CommentModel.aggregate(
-          fetchCommentPost(postId, userId)
+          fetchCommentPostLogged(postId, userId)
         );
 
         return res.status(200).send(obj.pop());
       } else if (!userId) {
-        const obj = await CommentModel.aggregate(fetchCommentPost(postId));
+        const obj = await CommentModel.aggregate(
+          fetchCommentPostUnLogged(postId)
+        );
 
         return res.status(200).send(obj.pop());
       }
@@ -132,14 +139,18 @@ module.exports = (app) => {
       const comment = await CommentModel.findById(commentId);
       ///checks if logged User is admin or creator of comment
       if (
-        !comment.userId.equals(
-          new mongoose.Types.ObjectId(user._id) || !user.admin
-        )
+        !user.admin &&
+        !comment.userId.equals(new mongoose.Types.ObjectId(user._id))
       ) {
         return res.status(401).send({ message: "Unauthorized" });
       }
       ///finds the comment and deleting
+
       await CommentModel.findOneAndDelete({ _id: commentId });
+      await Post.findOneAndUpdate(
+        { _id: comment.parentId },
+        { $inc: { commentsCount: -1 } }
+      );
       return res.status(200).send({ message: "Delete Success" });
     } catch (error) {
       console.log("An error has occurred at /post/:postId/delete", error);

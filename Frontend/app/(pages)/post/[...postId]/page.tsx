@@ -26,7 +26,7 @@ export default function PostPage({ params }: { params: { postId: any } }) {
   useEffect(() => {
     if (!content) {
       Promise.all([
-        fetchPostData(params.postId[0], setContent),
+        fetchPostData(params.postId[0], setContent, router),
         fetchCommentsData(params.postId[0], setComments),
       ]).catch((err: any) => {
         console.log(err);
@@ -44,7 +44,11 @@ export default function PostPage({ params }: { params: { postId: any } }) {
         <FaArrowLeft className="back-button" onClick={() => router.back()} />
         <p>Post</p>
       </header>
-      <MainPost content={content} setComments={setComments} />
+      <MainPost
+        content={content}
+        setComments={setComments}
+        setContent={setContent}
+      />
       {user.status === "authenticated" && (
         <form>
           <p>

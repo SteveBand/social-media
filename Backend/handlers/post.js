@@ -65,6 +65,7 @@ module.exports = (app) => {
     try {
       if (userId) {
         const obj = await Post.aggregate(fetchPostLogged(postId, userId));
+     
         return res.status(200).send(obj.pop());
       } else {
         const obj = await Post.aggregate(fetchPostUnLogged(postId));
@@ -90,9 +91,8 @@ module.exports = (app) => {
       ///if niether of conditions is true, user is creator of post or is admin then return 401 Unauthorized
 
       if (
-        !post.parentId.equals(
-          new mongoose.Types.ObjectId(user._id) || !user.admin
-        )
+        !user.admin &&
+        !post.parentId.equals(new mongoose.Types.ObjectId(user._id))
       ) {
         return res.status(401).send({ message: "Unauthorized" });
       }
@@ -127,7 +127,6 @@ module.exports = (app) => {
       }
 
       //if loggedUser is not the creator then return 401 Unauthorized, checks to see post.parentId and logged user id
-
       if (!post.parentId.equals(userId)) {
         return res.status(401).send({ message: "Unauthorized" });
       }
